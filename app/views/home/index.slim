@@ -6,7 +6,7 @@
         h1.display-3.mb-4
           | Your Exile Server's Mission Control
         p.lead.text-muted.mb-5
-          | Stop remote desktop-ing into your server for basic admin tasks. ESM gives you 39 Discord commands, a full web dashboard, and real-time server integration to manage everything from your phone.
+          | Stop booting up Arma just to run basic admin commands. ESM gives you #{command_count} Discord commands, a full web dashboard, and real-time server integration to manage everything from Discord.
         = link_to "See What You Can Do", "#features",
           class: "btn btn-secondary btn-lg text-white",
           data: { bs_smooth_scroll: "true" }
@@ -19,7 +19,7 @@
         h4.text-white 7 Years
         p.text-muted.mb-0 99% Uptime
       .col-md-3.mb-3.mb-md-0
-        h4.text-white 39 Commands
+        h4.text-white #{command_count} Commands
         p.text-muted.mb-0 Discord Bot
       .col-md-3.mb-3.mb-md-0
         h4.text-white Web Dashboard
@@ -34,28 +34,28 @@
     .row.mb-5
       .col-12
         .text-center.mb-5
-          h2.display-5 Built by a Veteran Exile Developer Who Gets It
+          h2.display-5 From the Exile Community, For the Exile Community
         p.fs-5.text-center
-          | ESM isn't some generic game bot. It's a complete server management ecosystem that solves the specific headaches every Exile server admin knows by heart.
+          | ESM isn't some generic game bot - this is a purpose-built server management platform designed by the community for the real problems server admins actually face.
 
     .row.g-4.mb-5
       .col-lg-4
         .h-100
-          h4.mb-3 ⚡ Admin Commands From Anywhere
+          h4.mb-3 Admin Commands From Anywhere
           p Give players poptabs while you're at dinner. Execute SQF code from your phone. Search server logs without digging through files. Reset stuck players instantly.
           small.text-muted
           | /server admin modify_player, /server admin execute_code, /server admin search_logs
 
       .col-lg-4
         .h-100
-          h4.mb-3 🏰 Territory Management That Works
+          h4.mb-3 Territory Management That Works
           p Handle territory disputes from Discord. Restore accidentally deleted bases. View all territories with member lists. No more "can you add me to the base?" DMs.
           small.text-muted
           | /territory admin restore, /territory admin list, /territory add_player
 
       .col-lg-4
         .h-100
-          h4.mb-3 🔔 Smart Player Notifications
+          h4.mb-3 Smart Player Notifications
           p Your players get raid alerts, MarXet sales, and protection reminders sent to Discord automatically. Configure what goes where and customize every message.
           small.text-muted Custom templates, channel routing, XM8 integration
 
@@ -94,13 +94,13 @@
             h5.text-white Pay Bills From Discord
             p.text-muted Protection money and territory upgrades without logging into Arma
           .col-md-4.text-center
-            h5.text-white Actually Useful Gambling
-            p.text-muted Server-controlled odds and rewards that make sense for your economy
+            h5.text-white Gambling That Fits Your Economy
+            p.text-muted Server-controlled odds and rewards that make sense for your server
 
 / Reliability Section
 .py-5
   .container
-    .row.mb-5
+    .row
       .col-12
         .mb-4
           h2.display-5 Infrastructure That Just Works
@@ -119,8 +119,5 @@
       .col-12
         .text-center.mt-5
           h3.text-white.mb-4 Ready to Upgrade Your Server Management?
-          = link_to invite_path, class: "btn btn-primary btn-lg text-white me-3 mb-3 mb-md-0" do
-            = image_tag "discord_white.svg", size: "36x41", class: "me-2"
-            | Add to Discord
           = link_to "Get Started", getting_started_docs_path,
             class: "btn btn-secondary btn-lg text-white"
