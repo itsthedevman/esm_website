@@ -2,6 +2,7 @@
 
 class HomeController < ApplicationController
   def index
+    flash[:success] = "Hello!"
     command_count = ESM::CommandDetail.all.size
     render locals: {command_count:}
   end

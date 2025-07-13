@@ -17,6 +17,7 @@ html
     = vite_javascript_tag "application"
     = vite_stylesheet_tag "application.scss"
   body[data-bs-theme="dark"]
+    = render partial: "shared/toast_container", locals: local_assigns
     #nav-container
       = render partial: "shared/nav", locals: local_assigns
     #main-container

@@ -92,3 +92,5 @@ gem "vite_rails", "~> 3.0"
 gem "slim", "~> 5.2"
 
 gem "esm_ruby_core", path: "../esm_ruby_core"
+
+gem "view_component", "~> 3.23"
