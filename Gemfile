@@ -90,3 +90,5 @@ gem "vite_rails", "~> 3.0"
 
 # Slim template engine for Rails views
 gem "slim", "~> 5.2"
+
+gem "esm_ruby_core", path: "../esm_ruby_core"

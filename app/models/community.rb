@@ -21,7 +21,6 @@ class Community < ApplicationRecord
   attribute :allow_v2_servers, :boolean, default: false
   attribute :created_at, :datetime
   attribute :updated_at, :datetime
-  attribute :deleted_at, :datetime
 
   has_many :command_configurations, dependent: :destroy
   has_many :cooldowns, dependent: :destroy
