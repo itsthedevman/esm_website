@@ -94,3 +94,9 @@ gem "slim", "~> 5.2"
 gem "esm_ruby_core", path: "../esm_ruby_core"
 
 gem "view_component", "~> 3.23"
+
+gem "omniauth", "~> 2.1"
+
+gem "omniauth-discord", "~> 1.2"
+
+gem "omniauth-steam", "~> 1.0"

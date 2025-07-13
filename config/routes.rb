@@ -8,6 +8,11 @@ Rails.application.routes.draw do
   # /
   root "home#index"
 
+  devise_for :users, class_name: "ESM::User", controllers: {omniauth_callbacks: "callbacks"}
+  devise_scope :user do
+    delete "logout", to: "devise/sessions#destroy", as: :logout
+  end
+
   # /join
   get "join", to: redirect("https://discord.gg/28Ttc2s")
 
