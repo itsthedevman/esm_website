@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ESM
+class Bot
   def self.instance
     DRb::DRbObject.new_with_uri("druby://localhost:#{ENV["API_PORT"]}")
   end
@@ -53,33 +53,22 @@ class ESM
   def self.delete_community(community_id, user_id)
     instance.community_delete(id: community_id, user_id: user_id) || false
   end
+end
 
-  module COLORS
-    RED = 0xC62551
-    BLUE = 0x3ED3FB
-    GREEN = 0x9FDE3A
-    YELLOW = 0xDECA39
-    PURPLE = 0x793ADE
-    PINK = 0xDE3A9F
-    ORANGE = 0xDE7839
-    WHITE = 0xFFFFFF
-  end
+module EMBED
+  TITLE_LENGTH_MAX = 256
+  DESCRIPTION_LENGTH_MAX = 2048
+  FIELD_NAME_LENGTH_MAX = 256
+  FIELD_VALUE_LENGTH_MAX = 1024
 
-  module EMBED
-    TITLE_LENGTH_MAX = 256
-    DESCRIPTION_LENGTH_MAX = 2048
-    FIELD_NAME_LENGTH_MAX = 256
-    FIELD_VALUE_LENGTH_MAX = 1024
+  # Converts the constants into a key, value hash
+  def self.to_h
+    constant_hash = {}
 
-    # Converts the constants into a key, value hash
-    def self.to_h
-      constant_hash = {}
-
-      constants(false).each do |constant|
-        constant_hash[constant] = const_get(constant)
-      end
-
-      constant_hash
+    constants(false).each do |constant|
+      constant_hash[constant] = const_get(constant)
     end
+
+    constant_hash
   end
 end

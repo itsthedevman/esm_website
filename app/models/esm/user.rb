@@ -41,13 +41,13 @@ module ESM
 
     def admin_communities
       @admin_communities ||= Community.where(
-        id: ESM.user_community_ids(id, discord_server_ids, check_for_perms: true)
+        id: Bot.user_community_ids(id, discord_server_ids, check_for_perms: true)
       ).sort_by(&:community_id)
     end
 
     def player_communities
       @player_communities ||= Community.where(
-        id: ESM.user_community_ids(id, discord_server_ids),
+        id: Bot.user_community_ids(id, discord_server_ids),
         player_mode_enabled: true
       ).sort_by(&:community_id)
     end
