@@ -1,3 +1,8 @@
+PATH
+  remote: ../esm_ruby_core
+  specs:
+    esm_ruby_core (0.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -414,6 +419,7 @@ DEPENDENCIES
   capistrano-yarn
   devise (~> 4.9)
   ed25519
+  esm_ruby_core!
   everythingrb
   htmlbeautifier
   kramdown
