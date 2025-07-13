@@ -1,3 +1,69 @@
+// =============================================================================
+// ESM CORE BRAND COLORS
+// =============================================================================
+$esm-primary-blue: #1e354d;
+$esm-primary-red: #ce2d4e;
+
+// =============================================================================
+// ESM TOAST COLORS
+// =============================================================================
+$esm-toast-red: #c62551;
+$esm-toast-blue: #3ed3fb;
+$esm-toast-green: #9fde3a;
+$esm-toast-yellow: #deca39;
+$esm-toast-orange: #c64a25;
+$esm-toast-burnt-orange: #7d2f00;
+$esm-toast-purple: #793ade;
+$esm-toast-lavender: #344d71;
+$esm-toast-pink: #de3a9f;
+$esm-toast-white: #ffffff;
+$esm-toast-steel-green: #2f4858;
+$esm-toast-brown: #574143;
+$esm-toast-sage: #e9f6d0;
+
+// Dark mode versions - adjusted for better contrast and eye comfort on dark backgrounds
+$esm-toast-red-dark: #b8234a;
+$esm-toast-blue-dark: #2bc4e8;
+$esm-toast-green-dark: #8bc932;
+$esm-toast-yellow-dark: #c5b032;
+$esm-toast-orange-dark: #b43d20;
+$esm-toast-burnt-orange-dark: #a64a1a;
+$esm-toast-purple-dark: #6d32c7;
+$esm-toast-lavender-dark: #3a5580;
+$esm-toast-pink-dark: #c7328a;
+$esm-toast-white-dark: #f0f0f0;
+$esm-toast-steel-green-dark: #3a5768;
+$esm-toast-brown-dark: #6b4d4f;
+$esm-toast-sage-dark: #4a5c3a;
+
+// =============================================================================
+// BOOTSTRAP 5.3 THEME COLOR OVERRIDES
+// =============================================================================
+
+// Primary Bootstrap colors using ESM Toast palette
+$primary: $esm-toast-blue-dark;
+$secondary: $esm-toast-lavender-dark;
+$success: $esm-toast-green-dark;
+$info: $esm-primary-blue;
+$warning: $esm-toast-yellow-dark;
+$danger: $esm-toast-red-dark;
+$light: $esm-toast-sage-dark;
+$dark: $esm-toast-steel-green-dark;
+
+$white: #ffffff;
+$gray-100: #f5f5f5;
+$gray-200: #e8e8e8;
+$gray-300: #d0d0d0;
+$gray-400: #b0b0b0;
+$gray-500: #999999;
+$gray-600: #666666;
+$gray-700: #3a3a3a;
+$gray-800: #1a1a1a;
+$gray-900: #0a0a0a;
+$black: #000000;
+
+// =============================================================================
+
 $border-radius: 0;
 $border-radius-sm: 0;
 $border-radius-lg: 0;
