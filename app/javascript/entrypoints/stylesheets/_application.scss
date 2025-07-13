@@ -1,5 +1,9 @@
 @import "./vendor/bootstrap";
 
+body {
+    overflow-x: hidden;
+}
+
 #main-container {
     @extend .container-fluid;
     @extend .mt-4;
