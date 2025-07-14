@@ -1,0 +1,215 @@
+.container
+  h1.mb-4 Server Setup Guide
+  p.lead Install ESM on your Arma 3 server to enable Discord integration and management tools.
+
+  .alert.alert-warning
+    strong Setup time:
+    | 15-30 minutes (depending on your setup)
+
+  .row.mb-5
+    .col-lg-8
+      .accordion#serverSetupAccordion
+        .accordion-item
+          h2.accordion-header#step1Heading
+            button.accordion-button[
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#step1Collapse"
+              aria-expanded="true"
+              aria-controls="step1Collapse"
+            ]
+              | Step 1: Invite ESM to Discord
+          #step1Collapse.accordion-collapse.collapse.show[
+            aria-labelledby="step1Heading"
+            data-bs-parent="#serverSetupAccordion"
+          ]
+            .accordion-body
+              p First, add ESM to your Discord server:
+
+              ol
+                li
+                  = link_to invite_path, target: "_blank", class: "btn btn-primary btn-sm me-2"
+                    | Invite ESM Bot
+                  span Follow Discord's authorization flow
+                li ESM will send a welcome message with your Community ID
+                li Reply with <code>/mode admin</code> to enable server management features
+
+              .alert.alert-info.mt-3
+                strong Note:
+                | ESM doesn't request Administrator permissions. Ensure ESM has read/write access in channels where you want it to function.
+
+        .accordion-item
+          h2.accordion-header#step2Heading
+            button.accordion-button.collapsed[
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#step2Collapse"
+              aria-expanded="false"
+              aria-controls="step2Collapse"
+            ]
+              | Step 2: Register Your Account
+          #step2Collapse.accordion-collapse.collapse[
+            aria-labelledby="step2Heading"
+            data-bs-parent="#serverSetupAccordion"
+          ]
+            .accordion-body
+              p You need an ESM account to manage servers:
+
+              .d-grid.gap-2.d-md-block
+                = link_to register_path, class: "btn btn-outline-primary"
+                  | Register with ESM
+                small.text-muted.d-block.mt-2
+                  | This links your Steam and Discord accounts. You can also use the <code>/register</code> command in Discord.
+
+        .accordion-item
+          h2.accordion-header#step3Heading
+            button.accordion-button.collapsed[
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#step3Collapse"
+              aria-expanded="false"
+              aria-controls="step3Collapse"
+            ]
+              | Step 3: Install Server Mod
+          #step3Collapse.accordion-collapse.collapse[
+            aria-labelledby="step3Heading"
+            data-bs-parent="#serverSetupAccordion"
+          ]
+            .accordion-body
+              p Install the @ESM mod on your server:
+
+              ol
+                li
+                  = link_to latest_download_path, target: "_blank", class: "btn btn-outline-success btn-sm me-2"
+                    | Download @ESM
+                  span Get the latest version
+                li Extract <code>@ESM</code> to your server's root directory (alongside <code>@Exile</code>)
+                li Add <code>@ESM</code> to your <code>-servermod</code> startup parameter
+
+              .alert.alert-secondary.mt-3
+                h6 Example startup parameter:
+                code -servermod="@ExileServer;@infiSTAR;@ESM"
+
+        .accordion-item
+          h2.accordion-header#step4Heading
+            button.accordion-button.collapsed[
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#step4Collapse"
+              aria-expanded="false"
+              aria-controls="step4Collapse"
+            ]
+              | Step 4: Update Database
+          #step4Collapse.accordion-collapse.collapse[
+            aria-labelledby="step4Heading"
+            data-bs-parent="#serverSetupAccordion"
+          ]
+            .accordion-body
+              p Add required fields to your territory table:
+
+              ol
+                li Open <code>@ESM/esm.sql</code> in a text editor
+                li Copy the SQL commands
+                li Execute them on your MySQL server (phpMyAdmin, MySQL Workbench, etc.)
+                li Verify the <code>territory</code> table has the new <code>esm_custom_id</code> and <code>esm_payment_counter</code> columns
+
+              .alert.alert-success.mt-3
+                strong Safe operation:
+                | This only adds empty columns, no existing data is modified.
+
+        .accordion-item
+          h2.accordion-header#step5Heading
+            button.accordion-button.collapsed[
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#step5Collapse"
+              aria-expanded="false"
+              aria-controls="step5Collapse"
+            ]
+              | Step 5: Register Server
+          #step5Collapse.accordion-collapse.collapse[
+            aria-labelledby="step5Heading"
+            data-bs-parent="#serverSetupAccordion"
+          ]
+            .accordion-body
+              p Connect your Arma server to ESM:
+
+              ol
+                li
+                  | Open the
+                  = link_to "Web Dashboard", communities_path, target: "_blank", class: "link-primary"
+                  |  and log in
+                li Select your Discord server from the dropdown
+                li Click "Add Server" and enter your server details (IP, port, name)
+                li Download the generated <code>esm.key</code> file
+                li Place <code>esm.key</code> in your <code>@ESM</code> folder
+                li Start your Arma server
+                li Test the connection: Send <code>/servers</code> to ESM via DM
+
+    .col-lg-4
+      .card.bg-light.mb-4
+        .card-header
+          h6.mb-0 💡 What's a Community ID?
+        .card-body
+          p.small.mb-0 ESM assigns each Discord server a short identifier (like "abc123"). Players use this ID to reference your server in commands.
+
+      .card.bg-light.mb-4
+        .card-header
+          h6.mb-0 🔧 Need Help?
+        .card-body
+          p.small
+            | Having issues? Join our
+            = link_to "Discord support server", join_path, class: "link-primary"
+            |  for assistance.
+
+  .card.border-success.mt-5
+    .card-header.bg-success.text-white
+      h4.mb-0 🎉 Setup Complete!
+    .card-body
+      p <strong>Your server now has ESM integration.</strong>
+
+      .row
+        .col-md-6
+          h6 Admin Commands:
+          ul.small
+            li
+              code
+              | /server admin modify player
+            li
+              code
+              | /server admin execute
+            li
+              code
+              | /territory admin restore
+            li
+              code
+              | /server admin logs
+
+        .col-md-6
+          h6 Player Features:
+          ul.small
+            li Discord raid notifications
+            li Territory management from Discord
+            li Player stats and gambling
+            li Notification routing
+
+      hr
+
+      h6 Next Steps:
+      ul.mb-0
+        li
+          | Configure permissions in the
+          = link_to "web dashboard", communities_path, class: "link-primary"
+        li
+          | Review the
+          = link_to "commands guide", commands_docs_path, class: "link-primary"
+          |  to see what's available
+        li Test basic commands with your players
+
+  .mt-5.text-center
+    = link_to getting_started_docs_path, class: "btn btn-outline-secondary"
+      | ← Back to Getting Started
+    = link_to commands_docs_path, class: "btn btn-primary ms-2"
+      | Browse Commands
+    = link_to communities_path, class: "btn btn-success ms-2", target: "_blank"
+      | Web Dashboard

@@ -16,15 +16,17 @@ Rails.application.routes.draw do
   # /docs
   resources :docs, only: [] do
     collection do
-      get :getting_started
       get :commands
+      get :getting_started
+      get :player_setup
+      get :server_setup
     end
   end
 
   # /downloads/@esm/latest
   get "downloads/@esm/latest",
     to: redirect("https://github.com/itsthedevman/esm_arma/releases/latest"),
-    as: :latest_esm_download
+    as: :latest_download
 
   # /guides
   resources :guides, only: [] do
