@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import * as bootstrap from "bootstrap"
 
 // Connects to data-controller="notifications"
 export default class extends Controller {
