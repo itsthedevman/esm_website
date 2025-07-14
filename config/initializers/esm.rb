@@ -3,5 +3,5 @@
 Rails.application.config.to_prepare do
   require "esm_ruby_core/models"
 
-  Dir[Rails.root.join("app/models/esm/*.rb")].each { |f| require f }
+  Rails.autoloaders.main.eager_load_dir(Rails.root.join("app/models"))
 end
