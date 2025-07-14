@@ -56,3 +56,13 @@ body {
 .esm-text-color-toast-blue {
     color: #6b829e !important;
 }
+
+.table-of-contents {
+    @extend .sticky-top;
+    @extend .overflow-y-auto;
+    @extend .mb-3;
+
+    top: 1em;
+    height: 100%;
+    max-height: 100%;
+}

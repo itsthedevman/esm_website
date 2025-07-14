@@ -6,7 +6,7 @@ class DocsController < ApplicationController
       .order(command_category: :asc)
       .group_by(&:command_category)
 
-    all_commands.each_value { |c| c.sort_by.dig(:command_category).sort }
+    all_commands.each_value { |c| c.sort_by!(&:usage_without_category) }
 
     render locals: {all_commands:}
   end

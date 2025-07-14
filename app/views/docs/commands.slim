@@ -1,6 +1,25 @@
 .container
-  .row.justify-content-center
-    .col-lg-10
+  .row
+    / Table of Contents Sidebar
+    .col-lg-3.col-xl-2
+      .table-of-contents
+        .card.bg-dark.border-secondary.mb-4
+          .card-header.bg-secondary
+            h6.mb-0.text-white
+              i.bi.bi-list.me-2
+              | Categories
+          .card-body.p-0
+            .list-group.list-group-flush
+              - all_commands.each do |category, commands|
+                a.list-group-item.list-group-item-action.bg-dark.text-light.border-secondary href="##{category.parameterize}"
+                  = "/#{category}"
+                / Individual commands - always visible
+                - commands.each do |command|
+                  a.list-group-item.list-group-item-action.text-muted.border-secondary.ps-4.small href="##{command.command_name}"
+                    = command.usage_without_category
+
+    / Main Content
+    .col-lg-9.col-xl-10
       / Header section
       .border-bottom.border-primary.pb-4.mb-5
         h1.text-primary.mb-3 Commands
@@ -25,25 +44,25 @@
                 span.arg.identifier server_id
                 small.text-muted
                   strong Identifiers:
-                  | IDs for servers, communities, territories
+                  |< IDs for servers, communities, territories
             .col-md-6.col-lg-3
               .d-flex.align-items-center.gap-2
                 span.arg.target target
                 small.text-muted
                   strong Targets:
-                  | Players or users to execute commands on
+                  |< Players or users to execute commands on
             .col-md-6.col-lg-3
               .d-flex.align-items-center.gap-2
                 span.arg.content amount
                 small.text-muted
                   strong Content:
-                  | Values, messages, amounts to process
+                  |< Values, messages, amounts to process
             .col-md-6.col-lg-3
               .d-flex.align-items-center.gap-2
                 span.arg.option flags
                 small.text-muted
                   strong Options:
-                  | Flags, modes, and configuration settings
+                  |< Flags, modes, and configuration settings
 
       / Error state
       - if all_commands.empty?
@@ -53,10 +72,10 @@
 
       / Commands by category
       - all_commands.each do |category, commands|
-        .mb-5
+        .mb-5 id=category.parameterize
           h2.text-secondary.border-bottom.border-secondary.pb-2.mb-4
             = category.humanize
-            | Commands
+            |< Commands
 
           - commands.each_with_index do |command, index|
             .card.bg-dark.border-secondary.mb-4 id=command.command_name

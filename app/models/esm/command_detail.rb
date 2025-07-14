@@ -2,6 +2,10 @@
 
 module ESM
   class CommandDetail < ApplicationRecord
+    def usage_without_category
+      command_usage[1..].gsub(/^#{command_category}/, "")
+    end
+
     def usage_as_html
       arguments =
         command_arguments.join_map(" ") do |name, argument|
@@ -23,22 +27,19 @@ module ESM
           semantic_class = self.class.argument_semantic_class(name, argument)
 
           <<~HTML
-            <dt>
-              <strong class="arg #{semantic_class}">#{name}</strong><span class='text-muted'>:</span>
-            </dt>
-            <dd>
-              #{markdown_to_html(argument["description"])}
-              <br>
-              #{markdown_to_html(argument["description_extra"] || "")}
-            </dd>
+            <div class="mb-3 p-3 bg-black border border-secondary rounded">
+              <div class="mb-2">
+                <span class="arg #{semantic_class} fs-6">#{argument["display_name"]}</span>
+              </div>
+              <div class="text-light small">
+                #{markdown_to_html(argument["description"])}
+                #{"<br>#{markdown_to_html(argument["description_extra"])}" if argument["description_extra"].present?}
+              </div>
+            </div>
           HTML
         end
 
-      <<~HTML.html_safe
-        <dl>
-          #{arguments}
-        </dl>
-      HTML
+      arguments.html_safe
     end
 
     def example_as_html
@@ -57,17 +58,16 @@ module ESM
           end
 
         <<~HTML
-          <div class="mb-3">
-            <div class="command-syntax">
-              <code><span class="text-primary">#{command_usage}</span> #{arguments}</code>
+          <div class="bg-black border-start border-primary border-3 p-3 mb-3 rounded-end">
+            <div class="mb-2 small text-muted">#{markdown_to_html(example["description"])}</div>
+            <div class="font-monospace">
+              <span class="text-primary fw-bold">#{command_usage}</span> #{arguments}
             </div>
-            <p class="mb-0 mt-2">#{markdown_to_html(example["description"])}</p>
           </div>
         HTML
       end.html_safe
     end
 
-    # New method to determine semantic class for arguments
     def self.argument_semantic_class(name, argument)
       display_name = argument["display_name"] || name
 
