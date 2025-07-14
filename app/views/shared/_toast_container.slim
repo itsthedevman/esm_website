@@ -1,5 +1,5 @@
 .position-relative[aria-live="polite" aria-atomic="true"]
-  #toast-container.toast-container[style="top: 4.05em; right: 0;"]
+  #toast-container.toast-container
     - flash.each do |type, msg|
       - next if type == "timedout"
 

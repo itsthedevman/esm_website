@@ -1,0 +1,40 @@
+@use "./colors" as *;
+
+#toast-container {
+    top: 4.05em;
+    right: 1em;
+}
+
+.toast {
+    --bs-toast-border-color: transparent;
+    --bs-toast-header-border-color: transparent;
+
+    border: 0;
+    border-left-width: 3px;
+    border-left-style: solid;
+    border-left-color: #{$secondary};
+}
+
+.toast-blue {
+    --bs-toast-header-color: #{$primary};
+
+    border-left-color: #{$primary};
+}
+
+.toast-red {
+    --bs-toast-header-color: #{$danger};
+
+    border-left-color: #{$danger};
+}
+
+.toast-yellow {
+    --bs-toast-header-color: #{$warning};
+
+    border-left-color: #{$warning};
+}
+
+.toast-green {
+    --bs-toast-header-color: #{$success};
+
+    border-left-color: #{$success};
+}
