@@ -1,16 +1,16 @@
 .container
   .row.justify-content-center
     .col-lg-8
-      h1.mb-4 Player Setup
+      h1.mb-4.text-info Player Setup
       p.lead Link your Steam and Discord accounts to use ESM features on any server.
 
-      .alert.alert-info
+      .alert.alert-success
         strong Setup time:
         | About 2 minutes
 
-      .card.mb-4
-        .card-header
-          h4.mb-0 Step 1: Register Your Accounts
+      .card.border-primary.bg-primary.bg-opacity-10.mb-4
+        .card-header.border-primary
+          h4.mb-0.text-primary Step 1: Register Your Accounts
         .card-body
           p ESM needs to know who you are on both Discord and Steam to work properly.
 
@@ -20,21 +20,21 @@
             small.text-muted.d-block.mt-2
               | You'll log into both Steam and Discord. This connects your accounts so ESM knows you're the same person on the server.
 
-      .card.mb-4
-        .card-header
-          h4.mb-0 Step 2: Join a Discord with ESM
+      .card.border-warning.bg-warning.bg-opacity-10.mb-4
+        .card-header.border-warning
+          h4.mb-0.text-warning Step 2: Join a Discord with ESM
         .card-body
           p You need to be in a Discord server that has ESM installed to use the commands.
 
           ul
             li Ask your server admin for a Discord invite, or
             li
-              = link_to invite_path, target: "_blank", class: "link-primary"
+              = link_to invite_path, target: "_blank", class: "link-warning"
                 | Invite ESM to your own Discord server
 
-      .card.border-success
-        .card-header.bg-success.text-white
-          h4.mb-0 ✅ You're Ready!
+      .card.border-success.bg-success.bg-opacity-10
+        .card-header.border-success
+          h4.mb-0.text-success ✅ You're Ready!
         .card-body
           p.mb-3 Try these commands in Discord to get started:
 

@@ -1,12 +1,38 @@
 // =============================================================================
-// ESM CORE BRAND COLORS
+// ESM WARM DARK COLOR PALETTE
 // =============================================================================
+
+// Base brand colors
 $esm-primary-blue: #1e354d;
 $esm-primary-red: #ce2d4e;
 
 // =============================================================================
-// ESM TOAST COLORS
+// STRUCTURAL UI COLORS (Warm, muted, easy on eyes)
 // =============================================================================
+
+// Main theme colors - much warmer and softer
+$esm-ui-primary: #4a6b82;
+$esm-ui-secondary: #5a5a6b;
+$esm-ui-success: #6b8e5a;
+$esm-ui-info: #6b829e;
+$esm-ui-warning: #b8985a;
+$esm-ui-danger: #a85a6b;
+
+// Warm grays for backgrounds/borders
+$esm-warm-gray-900: #1a1b1e;
+$esm-warm-gray-800: #25262b;
+$esm-warm-gray-700: #373a40;
+$esm-warm-gray-600: #5c5f66;
+$esm-warm-gray-500: #6c7075;
+$esm-warm-gray-400: #868e96;
+$esm-warm-gray-300: #adb5bd;
+$esm-warm-gray-200: #ced4da;
+$esm-warm-gray-100: #f1f3f4;
+
+// =============================================================================
+// TOAST/NOTIFICATION COLORS
+// =============================================================================
+
 $esm-toast-red: #c62551;
 $esm-toast-blue: #3ed3fb;
 $esm-toast-green: #9fde3a;
@@ -20,18 +46,3 @@ $esm-toast-white: #ffffff;
 $esm-toast-steel-green: #2f4858;
 $esm-toast-brown: #574143;
 $esm-toast-sage: #e9f6d0;
-
-// Dark mode versions - adjusted for better contrast and eye comfort on dark backgrounds
-$esm-toast-red-dark: #b8234a;
-$esm-toast-blue-dark: #2bc4e8;
-$esm-toast-green-dark: #8bc932;
-$esm-toast-yellow-dark: #c5b032;
-$esm-toast-orange-dark: #b43d20;
-$esm-toast-burnt-orange-dark: #a64a1a;
-$esm-toast-purple-dark: #6d32c7;
-$esm-toast-lavender-dark: #3a5580;
-$esm-toast-pink-dark: #c7328a;
-$esm-toast-white-dark: #f0f0f0;
-$esm-toast-steel-green-dark: #3a5768;
-$esm-toast-brown-dark: #6b4d4f;
-$esm-toast-sage-dark: #4a5c3a;

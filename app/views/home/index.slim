@@ -3,99 +3,119 @@
   .container
     .row.justify-content-center
       .col-lg-10
-        h1.display-3.mb-4
-          | Your Exile Server's Mission Control
-        p.lead.text-muted.mb-5
-          | Stop booting up Arma just to run basic admin commands. ESM gives you #{command_count} Discord commands, a full web dashboard, and real-time server integration to manage everything from Discord.
-        = link_to "See What You Can Do", "#features",
-          class: "btn btn-secondary btn-lg text-white",
-          data: { bs_smooth_scroll: "true" }
+        h1.display-3.mb-4.text-info
+          | Your Exile Server's Management Platform
+        p.lead.mb-5
+          | ESM connects your Arma 3 server to Discord with real-time notifications, territory management, and admin tools. Stop logging into the game just to help players.
+        = link_to "Get Started", getting_started_docs_path,
+          class: "btn btn-primary btn-lg"
 
 / Quick Stats Bar
-.py-4.bg-dark
+.py-4.bg-primary.bg-opacity-10
   .container
     .row.text-center
       .col-md-3.mb-3.mb-md-0
-        h4.text-white 7 Years
+        h4.text-info 7 Years
         p.text-muted.mb-0 99% Uptime
       .col-md-3.mb-3.mb-md-0
-        h4.text-white #{command_count} Commands
+        h4.text-info #{command_count} Commands
         p.text-muted.mb-0 Discord Bot
       .col-md-3.mb-3.mb-md-0
-        h4.text-white Web Dashboard
+        h4.text-info Web Dashboard
         p.text-muted.mb-0 Full Configuration
       .col-md-3
-        h4.text-white Real-Time
+        h4.text-info Real-Time
         p.text-muted.mb-0 Server Integration
 
 / Main Features Section
-#features.py-5
+.py-5
   .container
     .row.mb-5
       .col-12
         .text-center.mb-5
-          h2.display-5 From the Exile Community, For the Exile Community
+          h2.display-5.text-primary From the Exile Community, For the Exile Community
         p.fs-5.text-center
           | ESM isn't some generic game bot - this is a purpose-built server management platform designed by the community for the real problems server admins actually face.
 
     .row.g-4.mb-5
       .col-lg-4
-        .h-100
-          h4.mb-3 Admin Commands From Anywhere
-          p Give players poptabs while you're at dinner. Execute SQF code from your phone. Search server logs without digging through files. Reset stuck players instantly.
-          small.text-muted
-          | /server admin modify_player, /server admin execute_code, /server admin search_logs
+        .card.h-100.border-primary.bg-primary.bg-opacity-10
+          .card-body
+            .text-primary.display-6.mb-3 ⚡
+            h4.mb-3.text-primary Admin Commands From Anywhere
+            p Give players poptabs while you're at dinner. Execute SQF code from your phone. Search server logs without digging through files. Reset stuck players instantly.
+            small.text-muted.font-monospace
+              | /server admin modify_player, /server admin execute_code, /server admin search_logs
 
       .col-lg-4
-        .h-100
-          h4.mb-3 Territory Management That Works
-          p Handle territory disputes from Discord. Restore accidentally deleted bases. View all territories with member lists. No more "can you add me to the base?" DMs.
-          small.text-muted
-          | /territory admin restore, /territory admin list, /territory add_player
+        .card.h-100.border-success.bg-success.bg-opacity-10
+          .card-body
+            .text-success.display-6.mb-3 🏗️
+            h4.mb-3.text-success Territory Management That Works
+            p Handle territory disputes from Discord. Restore accidentally deleted bases. View all territories with member lists. No more "can you add me to the base?" DMs.
+            small.text-muted.font-monospace
+              | /territory admin restore, /territory admin list, /territory add_player
 
       .col-lg-4
-        .h-100
-          h4.mb-3 Smart Player Notifications
-          p Your players get raid alerts, MarXet sales, and protection reminders sent to Discord automatically. Configure what goes where and customize every message.
-          small.text-muted Custom templates, channel routing, XM8 integration
+        .card.h-100.border-info.bg-info.bg-opacity-10
+          .card-body
+            .text-info.display-6.mb-3 🔔
+            h4.mb-3.text-info Smart Player Notifications
+            p Your players get raid alerts, MarXet sales, and protection reminders sent to Discord automatically. Configure what goes where and customize every message.
+            small.text-muted
+              | Custom templates, channel routing, XM8 integration
 
 / Web Dashboard Section
-.py-5.bg-light
+.py-5.bg-secondary.bg-opacity-10
   .container
     .row.align-items-center
       .col-lg-6
-        h3.mb-4 Web Dashboard for the Heavy Lifting
+        h3.mb-4.text-warning Web Dashboard for the Heavy Lifting
         p.mb-3
           | Some things are just easier with a proper interface. The web dashboard handles server registration, command configuration, notification templates, and all the stuff that would be painful in Discord.
         ul.list-unstyled
-          li ✓ Configure gambling odds and reward systems
-          li ✓ Set up notification routing for your community
-          li ✓ Enable/disable commands with role restrictions
-          li ✓ Create custom notification templates
-          li ✓ Search logs with regex patterns across multiple days
+          li.mb-2
+            span.text-success ✓
+            |  Configure gambling odds and reward systems
+          li.mb-2
+            span.text-success ✓
+            |  Set up notification routing for your community
+          li.mb-2
+            span.text-success ✓
+            |  Enable/disable commands with role restrictions
+          li.mb-2
+            span.text-success ✓
+            |  Create custom notification templates
+          li.mb-2
+            span.text-success ✓
+            |  Search logs with regex patterns across multiple days
       .col-lg-6
-        .text-center
-          .p-4.bg-secondary.rounded.text-white
-            | [Dashboard Screenshot/Visual Here]
+        .card.bg-secondary.bg-opacity-25.border-secondary
+          .card-body.text-center.py-5
+            .display-1.text-warning.mb-3 🌐
+            h5.mb-3 Dashboard Screenshot/Visual
             p.mb-0.small Point-and-click configuration
 
 / Player Benefits Section
-.py-5.bg-dark
+.py-5.bg-dark.bg-opacity-25
   .container
     .row
       .col-12
         .text-center.mb-5
-          h3.text-white Your Players Will Love You For This
+          h3.text-primary Your Players Will Love You For This
         .row.g-4
           .col-md-4.text-center
-            h5.text-white Never Miss a Raid Again
-            p.text-muted Territory alerts sent instantly to Discord, whether they're online or not
+            .text-danger.display-6.mb-3 🚨
+            h5.text-danger Never Miss a Raid Again
+            p Territory alerts sent instantly to Discord, whether they're online or not
           .col-md-4.text-center
-            h5.text-white Pay Bills From Discord
-            p.text-muted Protection money and territory upgrades without logging into Arma
+            .text-warning.display-6.mb-3 💰
+            h5.text-warning Pay Bills From Discord
+            p Protection money and territory upgrades without logging into Arma
           .col-md-4.text-center
-            h5.text-white Gambling That Fits Your Economy
-            p.text-muted Server-controlled odds and rewards that make sense for your server
+            .text-success.display-6.mb-3 🎲
+            h5.text-success Gambling That Fits Your Economy
+            p Server-controlled odds and rewards that make sense for your server
 
 / Reliability Section
 .py-5
@@ -103,21 +123,21 @@
     .row
       .col-12
         .mb-4
-          h2.display-5 Infrastructure That Just Works
+          h2.display-5.text-info Infrastructure That Just Works
         p.fs-5
-          strong 7 years, 99% uptime.
+          strong.text-success 7 years, 99% uptime.
           |  ESM has been handling Exile servers since 2018 - through busy weekend raids, 3 AM emergencies, and everything in between. It's the boring reliability you want from critical infrastructure.
-          br
-          br
-          h4 Zero Pain Setup
-          | Add ESM to Discord, register your server on the web dashboard, drop the mod file in your server folder. That's it. No complicated configs, no weird dependencies.
+        .mt-4
+          h4.text-warning Zero Pain Setup
+          p
+            | Add ESM to Discord, register your server on the web dashboard, drop the mod file in your server folder. That's it. No complicated configs, no weird dependencies.
 
 / Final CTA Section
-.pb-5
+.py-5.bg-primary.bg-opacity-10
   .container
     .row
       .col-12
         .text-center.mt-5
-          h3.text-white.mb-4 Ready to Upgrade Your Server Management?
+          h3.mb-4.text-primary Ready to Upgrade Your Server Management?
           = link_to "Get Started", getting_started_docs_path,
-            class: "btn btn-secondary btn-lg text-white"
+            class: "btn btn-primary btn-lg"

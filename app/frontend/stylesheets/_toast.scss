@@ -15,26 +15,22 @@
     border-left-color: #{$secondary};
 }
 
-.toast-blue {
-    --bs-toast-header-color: #{$primary};
-
-    border-left-color: #{$primary};
-}
-
 .toast-red {
-    --bs-toast-header-color: #{$danger};
-
-    border-left-color: #{$danger};
+    --bs-toast-header-color: #{$esm-toast-red};
+    border-left-color: #{$esm-toast-red};
 }
 
-.toast-yellow {
-    --bs-toast-header-color: #{$warning};
-
-    border-left-color: #{$warning};
+.toast-blue {
+    --bs-toast-header-color: #{$esm-toast-blue};
+    border-left-color: #{$esm-toast-blue};
 }
 
 .toast-green {
-    --bs-toast-header-color: #{$success};
+    --bs-toast-header-color: #{$esm-toast-green};
+    border-left-color: #{$esm-toast-green};
+}
 
-    border-left-color: #{$success};
+.toast-yellow {
+    --bs-toast-header-color: #{$esm-toast-yellow};
+    border-left-color: #{$esm-toast-yellow};
 }

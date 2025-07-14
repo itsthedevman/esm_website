@@ -1,4 +1,4 @@
-.container
+.container.pt-5
   .row.justify-content-center
     .col-lg-8
       h1.text-center.mb-4 Getting Started with ESM
@@ -8,23 +8,23 @@
 
       .row.g-4
         .col-md-6
-          .card.h-100.text-center.border-primary
+          .card.h-100.text-center
             .card-body.d-flex.flex-column
-              .display-1.text-primary.mb-3 🎮
+              .display-1.text-info.mb-3 🎮
               h3.card-title I'm a Player
               p.card-text.flex-grow-1 Link your Steam and Discord accounts to use ESM features on any server that has it installed.
               .mt-auto
-                = link_to player_setup_docs_path, class: "btn btn-primary btn-lg w-100"
+                = link_to player_setup_docs_path, class: "btn btn-outline-primary btn-lg w-100"
                   | Player Setup Guide
 
         .col-md-6
-          .card.h-100.text-center.border-success
+          .card.h-100.text-center
             .card-body.d-flex.flex-column
               .display-1.text-success.mb-3 ⚙️
               h3.card-title I'm a Server Owner
               p.card-text.flex-grow-1 Install ESM on your server to provide Discord integration and management tools for your community.
               .mt-auto
-                = link_to server_setup_docs_path, class: "btn btn-success btn-lg w-100"
+                = link_to server_setup_docs_path, class: "btn btn-outline-success btn-lg w-100"
                   | Server Setup Guide
 
       .text-center.mt-5
