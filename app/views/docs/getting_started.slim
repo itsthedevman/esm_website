@@ -1,1 +1,426 @@
-h1 Getting Started
+.container
+  .mb-4
+    h1.mt-4 Getting Started with ESM
+    p.lead Welcome to Exile Server Manager! ESM turns your Discord into mission control for your Arma 3 server. No more logging into the game just to help players or check on your base.
+
+    .card.border-secondary.mb-4
+      .card-body
+        h5.card-title What ESM Does
+        p.mb-2 ESM connects your Arma 3 server to Discord with these core features:
+        ul.mb-0
+          li.mb-1 <strong>Discord commands</strong> - Manage your server without logging into the game
+          li.mb-1 <strong>Real-time notifications</strong> - Players get Discord alerts for raids, payments, and sales
+          li.mb-1 <strong>Territory management</strong> - Players can handle base permissions through Discord
+          li <strong>Web dashboard</strong> - Configure settings through a web interface
+
+    hr.border-primary.border-2
+
+    .row.mb-5
+      .col-lg-6.mb-4
+        .card.h-100.border-secondary
+          .card-header.bg-light
+            h4.card-title.mb-0.text-dark I'm a Player
+          .card-body
+            p <strong>Setup time:</strong> 2 minutes
+            p Link your Steam and Discord accounts to use ESM features on any server that has it installed.
+
+            h6 Available Features:
+            ul.small
+              li Discord notifications for raids and territory events
+              li Pay territory protection from Discord
+              li Check player stats and manage territories
+              li Various utility commands
+
+            .mt-auto
+              = link_to register_path, class: "btn btn-outline-secondary w-100"
+                | Register Your Account
+
+      .col-lg-6.mb-4
+        .card.h-100.border-secondary
+          .card-header.bg-light
+            h4.card-title.mb-0.text-dark I'm a Server Owner
+          .card-body
+            p <strong>Setup time:</strong> 15-30 minutes
+            p Install ESM on your server to provide Discord integration and management tools.
+
+            h6 Server Features:
+            ul.small
+              li Execute SQF code and modify players remotely
+              li Search server logs and manage territories
+              li Configure notifications and command permissions
+              li Web dashboard for advanced settings
+
+            .mt-auto
+              = link_to "#server-setup", class: "btn btn-outline-secondary w-100", data: { bs_smooth_scroll: "true" }
+                | View Setup Instructions
+
+    hr.border-primary.border-2
+
+    .mb-5#player-setup
+      h2.mb-3 🎮 Player Setup (2 Minutes)
+
+      .row
+        .col-lg-8
+          p.lead Dead simple. You need to connect your Steam and Discord accounts so ESM knows who you are on the server.
+
+          .card.border-info.mb-3
+            .card-body
+              h6.card-title Step 1: Link Your Accounts
+              p.card-text.mb-2
+                | Click here to connect Steam + Discord:
+                = link_to "Register with ESM", register_path, class: "btn btn-info btn-sm"
+              p.small.text-muted You'll log into both Steam and Discord - this is how ESM knows you're the same person.
+
+          .card.border-info.mb-3
+            .card-body
+              h6.card-title Step 2: Join a Server with ESM
+              p.card-text.mb-2 Find a Discord server that uses ESM, or invite ESM to your own Discord.
+              = link_to invite_path, class: "btn btn-outline-info btn-sm", target: "_blank"
+                | Invite ESM to My Discord
+
+          .card.border-success
+            .card-body
+              h6.card-title.text-success ✅ You're Done!
+              p.card-text.mb-0 Try typing <code>/help</code> in Discord to see all the commands you can use.
+
+        .col-lg-4
+          .card.bg-light
+            .card-header
+              h6.mb-0 💡 What You Can Do Now
+            .card-body
+              ul.small.mb-0
+                li Check your poptabs: <code>/me stats</code>
+                li See your territories: <code>/territories</code>
+                li Pay protection money: <code>/pay</code>
+                li Gamble some poptabs: <code>/gamble</code>
+                li Get raid alerts automatically
+                li Manage base members from Discord
+
+    hr.border-primary.border-2
+
+    .mb-5#server-setup
+      h2.mb-3 ⚙️ Server Owner Setup (15-30 Minutes)
+      p.lead Setting up ESM gives you professional-grade server management tools. It's a bit more involved than player setup, but you'll wonder how you managed without it.
+
+      .accordion.mb-4#serverSetupAccordion
+        .accordion-item
+          h2.accordion-header#step1Heading
+            button.accordion-button[
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#step1Collapse"
+              aria-expanded="true"
+              aria-controls="step1Collapse"
+            ]
+              | Step 1: Invite ESM to Your Discord (2 minutes)
+          #step1Collapse.accordion-collapse.collapse.show[
+            aria-labelledby="step1Heading"
+            data-bs-parent="#serverSetupAccordion"
+          ]
+            .accordion-body
+              .row
+                .col-lg-8
+                  p First, get ESM into your Discord server:
+                  ol
+                    li
+                      = link_to invite_path, target: "_blank", class: "btn btn-primary btn-sm me-2"
+                        | Invite ESM Bot
+                      span Click this and follow Discord's setup
+                    li ESM will send you a welcome message with your Community ID
+                    li Reply with <code>/mode admin</code> to enable server management features
+
+                  .alert.alert-warning.mt-3
+                    strong ⚠️ Important:
+                    | ESM doesn't ask for Administrator permissions. Make sure ESM can read/write in the channels you want it to work in.
+
+                .col-lg-4
+                  .card.bg-light
+                    .card-body
+                      h6 🤔 What's a Community ID?
+                      p.small.mb-0 ESM gives every Discord server a short ID (like "abc123"). This is how players find your server with commands.
+
+        .accordion-item
+          h2.accordion-header#step2Heading
+            button.accordion-button.collapsed[
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#step2Collapse"
+              aria-expanded="false"
+              aria-controls="step2Collapse"
+            ]
+              | Step 2: Get Your Account Ready (2 minutes)
+          #step2Collapse.accordion-collapse.collapse[
+            aria-labelledby="step2Heading"
+            data-bs-parent="#serverSetupAccordion"
+          ]
+            .accordion-body
+              p You need an ESM account to manage servers:
+              ul
+                li
+                  | Register at:
+                  = link_to "Register with ESM", register_path, class: "link-info"
+                  |  (links your Steam + Discord)
+                li Or use the <code>/register</code> command in Discord
+
+              p.small.text-muted This is the same process players go through, but you'll get admin powers once your server is connected.
+
+        .accordion-item
+          h2.accordion-header#step3Heading
+            button.accordion-button.collapsed[
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#step3Collapse"
+              aria-expanded="false"
+              aria-controls="step3Collapse"
+            ]
+              | Step 3: Install the Server Mod (5 minutes)
+          #step3Collapse.accordion-collapse.collapse[
+            aria-labelledby="step3Heading"
+            data-bs-parent="#serverSetupAccordion"
+          ]
+            .accordion-body
+              p ESM needs a small mod on your server to communicate with Discord:
+
+              ol
+                li
+                  strong Download @ESM:
+                  = link_to "Get Latest Version", latest_esm_download_path, target: "_blank", class: "btn btn-outline-primary btn-sm"
+                li Extract the <code>@ESM</code> folder to your server's root directory (same place as <code>@Exile</code>)
+                li Add <code>@ESM</code> to your server's <code>-servermod</code> startup parameter
+
+              .alert.alert-info.mt-3
+                h6 💡 Example Startup Line:
+                code -servermod="@ExileServer;@infiSTAR;@ESM"
+
+        .accordion-item
+          h2.accordion-header#step4Heading
+            button.accordion-button.collapsed[
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#step4Collapse"
+              aria-expanded="false"
+              aria-controls="step4Collapse"
+            ]
+              | Step 4: Update Your Database (2 minutes)
+          #step4Collapse.accordion-collapse.collapse[
+            aria-labelledby="step4Heading"
+            data-bs-parent="#serverSetupAccordion"
+          ]
+            .accordion-body
+              p ESM needs to add two small fields to your territory table:
+
+              ol
+                li Open <code>@ESM/esm.sql</code> in a text editor
+                li Copy the SQL commands inside
+                li Run them on your MySQL server (phpMyAdmin, MySQL Workbench, etc.)
+                li Verify the <code>territory</code> table now has <code>esm_custom_id</code> and <code>esm_payment_counter</code> columns
+
+              .alert.alert-success.mt-3
+                strong ✅ Don't worry:
+                | This doesn't change any existing data, just adds empty columns for ESM to use.
+
+        .accordion-item
+          h2.accordion-header#step5Heading
+            button.accordion-button.collapsed[
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#step5Collapse"
+              aria-expanded="false"
+              aria-controls="step5Collapse"
+            ]
+              | Step 5: Register Your Server (5 minutes)
+          #step5Collapse.accordion-collapse.collapse[
+            aria-labelledby="step5Heading"
+            data-bs-parent="#serverSetupAccordion"
+          ]
+            .accordion-body
+              p Now connect your Arma server to ESM:
+
+              ol
+                li
+                  | Go to the
+                  = link_to "Web Dashboard", communities_path, target: "_blank", class: "link-info"
+                  |  and log in
+                li Select your Discord server from the dropdown
+                li Click "Add Server" and fill in your server details (IP, port, name)
+                li Download the <code>esm.key</code> file and put it in your <code>@ESM</code> folder
+                li Start your Arma server
+                li Test it works: DM the ESM bot <code>/servers</code>
+
+              .alert.alert-info.mt-3
+                strong 🎯 Pro Tip:
+                | The web dashboard is where you'll configure commands, notifications, and all the advanced stuff. Bookmark it!
+
+      .card.border-secondary.mt-4
+        .card-header.bg-light
+          h5.mb-0.text-dark Setup Complete
+        .card-body
+          p <strong>Your server now has ESM integration.</strong>
+          .row
+            .col-md-6
+              h6 Admin Commands Available:
+              ul.small
+                li <code>/server admin modify player</code> - Modify player stats
+                li <code>/server admin execute</code> - Execute SQF code
+                li <code>/territory admin restore</code> - Restore deleted territories
+                li <code>/server admin logs</code> - Search server logs
+
+            .col-md-6
+              h6 Player Features Enabled:
+              ul.small
+                li Discord notifications for raids and events
+                li Territory management from Discord
+                li Player statistics and gambling commands
+                li Notification routing and preferences
+
+          p.mb-0
+            strong Next:
+            | Visit the
+            = link_to "web dashboard", communities_path, class: "link-secondary"
+            |  to configure permissions and settings. See the
+            = link_to "commands guide", commands_docs_path, class: "link-secondary"
+            |  for usage information.
+
+    hr.border-primary.border-2
+
+    .mb-5
+      h2.mb-3 🔧 Understanding ESM's Features
+      p Now that you're set up, here's what you actually have access to:
+
+      .row.g-4
+        .col-md-6.col-lg-4
+          .card.h-100
+            .card-body.text-center
+              .display-4.text-primary 💬
+              h5.card-title Discord Commands
+              p.card-text.small 50+ commands for players and admins. Territory management, player stats, server control - all from Discord.
+
+        .col-md-6.col-lg-4
+          .card.h-100
+            .card-body.text-center
+              .display-4.text-info 🔔
+              h5.card-title Real-Time Notifications
+              p.card-text.small Players get instant Discord alerts for raids, payments due, MarXet sales. No more missed events.
+
+        .col-md-6.col-lg-4
+          .card.h-100
+            .card-body.text-center
+              .display-4.text-success 🌐
+              h5.card-title Web Dashboard
+              p.card-text.small Point-and-click configuration for commands, notifications, gambling settings, and more. No config file hell.
+
+        .col-md-6.col-lg-4
+          .card.h-100
+            .card-body.text-center
+              .display-4.text-warning 🏗️
+              h5.card-title Territory Tools
+              p.card-text.small Players manage base access from Discord. Admins can restore deleted territories. No more DM spam.
+
+        .col-md-6.col-lg-4
+          .card.h-100
+            .card-body.text-center
+              .display-4.text-danger 🎲
+              h5.card-title Gambling & Rewards
+              p.card-text.small Built-in gambling system with configurable odds. Custom reward system for events and competitions.
+
+        .col-md-6.col-lg-4
+          .card.h-100
+            .card-body.text-center
+              .display-4.text-secondary 📊
+              h5.card-title Admin Power Tools
+              p.card-text.small Execute SQF code remotely, search logs with regex, modify players instantly. Your server, your rules.
+
+    hr.border-primary.border-2
+
+    .mb-5
+      h2.mb-3 💡 Common Questions
+
+      .accordion#faqAccordion
+        .accordion-item
+          h2.accordion-header#faq1Heading
+            button.accordion-button.collapsed[
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#faq1Collapse"
+              aria-expanded="false"
+              aria-controls="faq1Collapse"
+            ]
+              | Do I need to give ESM Administrator permissions in Discord?
+          #faq1Collapse.accordion-collapse.collapse[
+            aria-labelledby="faq1Heading"
+            data-bs-parent="#faqAccordion"
+          ]
+            .accordion-body
+              p <strong>No!</strong> ESM is designed to work without Administrator permissions for security. Just make sure ESM can read/write in channels where you want it to work.
+              p This gives you more control and peace of mind about what the bot can access.
+
+        .accordion-item
+          h2.accordion-header#faq2Heading
+            button.accordion-button.collapsed[
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#faq2Collapse"
+              aria-expanded="false"
+              aria-controls="faq2Collapse"
+            ]
+              | Will ESM slow down my server?
+          #faq2Collapse.accordion-collapse.collapse[
+            aria-labelledby="faq2Heading"
+            data-bs-parent="#faqAccordion"
+          ]
+            .accordion-body
+              p ESM is incredibly lightweight. The mod is tiny and only communicates when needed. Most servers see zero performance impact.
+              p ESM has been running on busy servers for 7+ years with 99% uptime.
+
+        .accordion-item
+          h2.accordion-header#faq3Heading
+            button.accordion-button.collapsed[
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#faq3Collapse"
+              aria-expanded="false"
+              aria-controls="faq3Collapse"
+            ]
+              | What if my players don't want to register?
+          #faq3Collapse.accordion-collapse.collapse[
+            aria-labelledby="faq3Heading"
+            data-bs-parent="#faqAccordion"
+          ]
+            .accordion-body
+              p Registration is only required for players who want to use ESM features. Your server works normally for everyone else.
+              p Most players love the convenience once they try it - base raid alerts alone sell it.
+
+        .accordion-item
+          h2.accordion-header#faq4Heading
+            button.accordion-button.collapsed[
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#faq4Collapse"
+              aria-expanded="false"
+              aria-controls="faq4Collapse"
+            ]
+              | How much does ESM cost?
+          #faq4Collapse.accordion-collapse.collapse[
+            aria-labelledby="faq4Heading"
+            data-bs-parent="#faqAccordion"
+          ]
+            .accordion-body
+              p <strong>ESM is completely free.</strong> No ads, no premium tiers, no catches.
+              p If you want to support the project, there's a PayPal donation link, but it's totally optional.
+
+    hr.border-primary.border-2
+
+    .text-center.py-4
+      h3.mb-3 Ready to Transform Your Server?
+      p.lead ESM is used by hundreds of Exile servers and thousands of players. Join the community that's been making Exile server management actually enjoyable since 2018.
+
+      .row.justify-content-center.g-3
+        .col-auto
+          = link_to invite_path, class: "btn btn-primary btn-lg", target: "_blank"
+            | Add ESM to Discord
+        .col-auto
+          = link_to commands_docs_path, class: "btn btn-outline-primary btn-lg"
+            | Browse Commands
+        .col-auto
+          = link_to join_path, class: "btn btn-outline-secondary btn-lg"
+            | Join Our Discord

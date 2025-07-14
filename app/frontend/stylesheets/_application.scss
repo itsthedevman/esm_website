@@ -4,7 +4,7 @@
 body {
     overflow-x: hidden;
     height: 100%;
-    width: 100%
+    width: 100%;
 }
 
 #main-container {
@@ -14,6 +14,7 @@ body {
     @extend .pe-0;
     @extend .overflow-y-auto;
 
+    overflow-x: hidden;
     padding-top: calc(map-get($spacers, 5) + map-get($spacers, 3));
     max-height: 98vh;
     height: 98vh;

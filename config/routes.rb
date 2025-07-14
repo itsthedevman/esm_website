@@ -1,23 +1,17 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", :as => :rails_health_check
+  # Devise shit
+  devise_for :users, class_name: "ESM::User", controllers: {omniauth_callbacks: "callbacks"}
+  devise_scope :user do
+    delete :logout, to: "devise/sessions#destroy", as: :logout
+  end
 
   # /
   root "home#index"
 
-  devise_for :users, class_name: "ESM::User", controllers: {omniauth_callbacks: "callbacks"}
-  devise_scope :user do
-    delete "logout", to: "devise/sessions#destroy", as: :logout
-  end
-
-  # /join
-  get "join", to: redirect("https://discord.gg/28Ttc2s")
-
-  # /invite
-  get "invite", to: redirect("https://discordapp.com/api/oauth2/authorize?client_id=417847994197737482&permissions=125952&redirect_uri=https%3A%2F%2Fwww.esmbot.com&scope=bot")
+  # /communities
+  resources :communities
 
   # /docs
   resources :docs, only: [] do
@@ -27,6 +21,11 @@ Rails.application.routes.draw do
     end
   end
 
+  # /downloads/@esm/latest
+  get "downloads/@esm/latest",
+    to: redirect("https://github.com/itsthedevman/esm_arma/releases/latest"),
+    as: :latest_esm_download
+
   # /guides
   resources :guides, only: [] do
     collection do
@@ -35,4 +34,16 @@ Rails.application.routes.draw do
       get :server_notifications
     end
   end
+
+  # /invite
+  get :invite, to: redirect("https://discordapp.com/api/oauth2/authorize?client_id=417847994197737482&permissions=125952&redirect_uri=https%3A%2F%2Fwww.esmbot.com&scope=bot")
+
+  # /join
+  get :join, to: redirect("https://discord.gg/28Ttc2s")
+
+  # /register
+  get :register, to: "user_controller#index"
+
+  # /up
+  get :up, to: "rails/health#show", as: :rails_health_check
 end
