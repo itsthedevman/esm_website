@@ -2,55 +2,12 @@
 
 module ESM
   class CommandDetail < ApplicationRecord
-    COLORS = %i[green yellow orange purple pink burnt-orange lavender steel-green sage].freeze
-
-    attr_reader :configuration
-
-    def self.all_arguments
-      Rails.cache.fetch("all-arguments", expires_in: 1.hour) do
-        all.pluck(:command_arguments)
-          .flat_map(&:values)
-          .uniq { |a| a["name"] }
-          .each_with_object({}) do |template, hash|
-          hash[template["name"]] ||= template
-          hash[template["display_name"]] ||= template
-        end
-      end
-    end
-
-    def self.argument_colors
-      Rails.cache.fetch("argument-colors", expires_in: 1.hour) do
-        colors = (COLORS.shuffle + COLORS.shuffle) # I have 10 colors and 16 unique arguments
-
-        all.pluck(:command_arguments)
-          .flat_map(&:values)
-          .uniq { |a| a["name"] }
-          .shuffle
-          .each_with_object({}) do |template, hash|
-            color = "color-#{colors.pop}"
-
-            hash[template["name"]] = color
-            hash[template["display_name"]] = color
-          end
-      end
-    end
-
-    def self.all_commands
-      commands =
-        Rails.cache.fetch("all-commands", expires_in: 1.hour) do
-          all.each_with_object({}) { |command, hash| hash[command.command_name] = command.attributes }
-        end
-
-      commands.with_indifferent_access
-        .transform_values! { |c| new(**c) }
-    end
-
     def usage_as_html
       arguments =
-        command_arguments.format(join_with: " ") do |name, argument|
-          argument_color = self.class.argument_colors[name]
+        command_arguments.join_map(" ") do |name, argument|
+          semantic_class = self.class.argument_semantic_class(name, argument)
 
-          "<span class='#{argument_color}'>#{argument["display_name"]}</span><span class='uk-text-muted'>:</span><span class='#{argument_color}'>&lt;#{argument["placeholder"]}&gt;</span>"
+          "<span class='arg #{semantic_class}'>#{argument["display_name"]}</span><span class='text-muted'>:</span><span class='arg #{semantic_class}'>&lt;#{argument["placeholder"]}&gt;</span>"
         end
 
       "#{command_usage} #{arguments}".html_safe
@@ -62,12 +19,12 @@ module ESM
 
     def arguments_as_html
       arguments =
-        command_arguments.format do |name, argument|
-          argument_color = self.class.argument_colors[name]
+        command_arguments.join_map do |name, argument|
+          semantic_class = self.class.argument_semantic_class(name, argument)
 
           <<~HTML
             <dt>
-              <pre class="uk-margin-remove-bottom"><strong class="#{argument_color}">#{name}</strong><span class='uk-text-muted'>:</span></pre>
+              <strong class="arg #{semantic_class}">#{name}</strong><span class='text-muted'>:</span>
             </dt>
             <dd>
               #{markdown_to_html(argument["description"])}
@@ -78,38 +35,75 @@ module ESM
         end
 
       <<~HTML.html_safe
-        <dl class="uk-description-list">
+        <dl>
           #{arguments}
         </dl>
       HTML
     end
 
     def example_as_html
-      command_examples.format do |example|
+      command_examples.join_map do |example|
         arguments =
-          (example["arguments"] || []).format(join_with: " ") do |name, value|
-            argument_color = self.class.argument_colors[name]
+          (example["arguments"] || []).join_map(" ") do |name, value|
+            # Try to find the semantic class for this argument name
+            arg_def = command_arguments[name]
+            semantic_class = if arg_def
+              self.class.argument_semantic_class(name, arg_def)
+            else
+              "content" # fallback for unknown arguments
+            end
 
-            "<span class='#{argument_color}'>#{name}</span><span class='uk-text-muted'>:</span><span class='#{argument_color}'>#{value}</span>"
+            "<span class='arg #{semantic_class}'>#{name}</span><span class='text-muted'>:</span><span class='arg #{semantic_class}'>#{value}</span>"
           end
 
         <<~HTML
-          <div class="uk-margin-small-bottom" uk-grid>
-            <div>
-              <div class="command-syntax uk-width-auto">
-                <code><span class="esm-text-color-toast-blue">#{command_usage}</span> #{arguments}</code>
-              </div>
+          <div class="mb-3">
+            <div class="command-syntax">
+              <code><span class="text-primary">#{command_usage}</span> #{arguments}</code>
             </div>
+            <p class="mb-0 mt-2">#{markdown_to_html(example["description"])}</p>
           </div>
-
-          <p class="uk-margin-remove-top">#{markdown_to_html(example["description"])}</p>
         HTML
       end.html_safe
+    end
+
+    # New method to determine semantic class for arguments
+    def self.argument_semantic_class(name, argument)
+      display_name = argument["display_name"] || name
+
+      # Identifiers - things that reference entities in the system
+      return "identifier" if %w[
+        server_id community_id territory_id
+        on for from to in
+      ].include?(display_name)
+
+      # Targets - users/players to act upon
+      return "target" if %w[
+        target whom who
+      ].include?(display_name)
+
+      # Content - values, messages, data to process
+      return "content" if %w[
+        amount value money poptabs respect
+        message reason description execute
+        code_to_execute search_text
+      ].include?(display_name)
+
+      # Options - flags, modes, settings
+      return "option" if %w[
+        action type mode order_by broadcast_to
+        cooldown_type notification_type
+      ].include?(display_name)
+
+      # Default fallback - most arguments are content-like
+      "content"
     end
 
     private
 
     def markdown_to_html(markdown)
+      return "" if markdown.blank?
+
       Kramdown::Document.new(markdown.gsub("\n", "<br>"))
         .to_html
         .gsub(/<p>|<\/p>/, "") # Remove the <p> tag that Kramdown adds

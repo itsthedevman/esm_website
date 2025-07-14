@@ -1,0 +1,94 @@
+.container
+  .row.justify-content-center
+    .col-lg-10
+      / Header section
+      .border-bottom.border-primary.pb-4.mb-5
+        h1.text-primary.mb-3 Commands
+        p.text-muted.fs-5
+          | Command documentation can be found, at any time, by using the
+          = command_usage(:help)
+          | command.
+          br
+          | For example, use
+          = command_usage(:help, arguments: {with: "/community servers"})
+          | to show the documentation for the
+          = command_usage(:servers, only: [])
+          | command.
+
+      / Color legend for arguments
+      .card.bg-dark.border-secondary.mb-5
+        .card-body
+          h6.text-primary.fw-bold.mb-3 Argument Color Guide
+          .row.g-3
+            .col-md-6.col-lg-3
+              .d-flex.align-items-center.gap-2
+                span.arg.identifier server_id
+                small.text-muted
+                  strong Identifiers:
+                  | IDs for servers, communities, territories
+            .col-md-6.col-lg-3
+              .d-flex.align-items-center.gap-2
+                span.arg.target target
+                small.text-muted
+                  strong Targets:
+                  | Players or users to execute commands on
+            .col-md-6.col-lg-3
+              .d-flex.align-items-center.gap-2
+                span.arg.content amount
+                small.text-muted
+                  strong Content:
+                  | Values, messages, amounts to process
+            .col-md-6.col-lg-3
+              .d-flex.align-items-center.gap-2
+                span.arg.option flags
+                small.text-muted
+                  strong Options:
+                  | Flags, modes, and configuration settings
+
+      / Error state
+      - if all_commands.empty?
+        .alert.alert-warning.text-center
+          h5 Failed to retrieve commands. Please try refreshing this page.
+          small If this persists, please let us know via our Discord
+
+      / Commands by category
+      - all_commands.each do |category, commands|
+        .mb-5
+          h2.text-secondary.border-bottom.border-secondary.pb-2.mb-4
+            = category.humanize
+            | Commands
+
+          - commands.each_with_index do |command, index|
+            .card.bg-dark.border-secondary.mb-4 id=command.command_name
+              .card-body
+                / Command title and admin indicator
+                .d-flex.align-items-center.gap-2.mb-3
+                  - if command.command_type == "admin"
+                    i.fas.fa-user-lock.text-warning data-bs-toggle="tooltip" title="This is an admin command and may be restricted to certain roles"
+
+                  h4.text-success.mb-0.font-monospace
+                    = command.usage_as_html
+
+                / Command description
+                .mb-3
+                  = command.description_as_html
+
+                / Usage section
+                .bg-black.border.border-secondary.rounded.p-3.mb-3
+                  .text-warning.fw-bold.text-uppercase.small.mb-2 Usage
+                  .font-monospace.fs-6
+                    = command.usage_as_html
+
+                / Arguments section
+                - if command.command_arguments.present?
+                  .mb-3
+                    .text-warning.fw-bold.text-uppercase.small.mb-2 Arguments
+                    .ps-3
+                      = command.arguments_as_html
+
+                / Examples section
+                - if command.command_examples.present?
+                  .mb-0
+                    .text-warning.fw-bold.text-uppercase.small.mb-2 Examples
+                    .ps-3
+                      = command.example_as_html

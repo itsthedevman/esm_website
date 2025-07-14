@@ -19,3 +19,40 @@ body {
     max-height: 98vh;
     height: 98vh;
 }
+
+.arg {
+    font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+    font-weight: 600;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin: 0 2px;
+    font-size: 0.95em;
+}
+
+.arg.identifier {
+    background: rgba(107, 130, 158, 0.12);
+    color: #6b829e;
+}
+
+.arg.target {
+    background: rgba(184, 152, 90, 0.12);
+    color: #b8985a;
+}
+
+.arg.content {
+    background: rgba(107, 142, 90, 0.12);
+    color: #6b8e5a;
+}
+
+.arg.option {
+    background: rgba(90, 90, 107, 0.12);
+    color: #5a5a6b;
+}
+
+.command-syntax {
+    font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+}
+
+.esm-text-color-toast-blue {
+    color: #6b829e !important;
+}
