@@ -10,13 +10,13 @@
               | Categories
           .card-body.p-0
             .list-group.list-group-flush
-              - all_commands.each do |category, commands|
+              - all_commands.each do |(domain, category), commands|
                 a.list-group-item.list-group-item-action.bg-dark.text-light.border-secondary href="##{category.parameterize}"
-                  = "/#{category}"
+                  = "/#{domain}"
                 / Individual commands - always visible
                 - commands.each do |command|
                   a.list-group-item.list-group-item-action.text-muted.border-secondary.ps-4.small href="##{command.name}"
-                    = command.usage_without_category
+                    = command.operation
 
     / Main Content
     .col-lg-9.col-xl-10
@@ -71,46 +71,46 @@
           small If this persists, please let us know via our Discord
 
       / Commands by category
-      - all_commands.each do |category, commands|
-        .mb-5 id=category.parameterize
+      - all_commands.each do |(domain, category), commands|
+        .mb-5 id=category.to_s.parameterize
           h2.text-secondary.border-bottom.border-secondary.pb-2.mb-4
             = category.humanize
             |< Commands
 
           - commands.each_with_index do |command, index|
-            .card.bg-dark.border-secondary.mb-4 id=command.command_name
+            .card.bg-dark.border-secondary.mb-4 id=command.name
               .card-body
                 / Command title and admin indicator
                 .d-flex.align-items-center.gap-2.mb-3
-                  - if command.command_type == "admin"
+                  - if command.type == "admin"
                     i.bi.bi-person-fill-lock.fs-2.text-warning[
                       data-bs-toggle="tooltip"
                       title="This is an admin command and may be restricted to certain roles"
                     ]
 
                   h4.text-primary.mb-0.font-monospace
-                    = command.command_usage
+                    = command.name
 
                 / Command description
                 .mb-3
-                  = command.description_as_html
+                  = Markdown.to_html(command.description).html_safe
 
                 / Usage section
                 .bg-black.border.border-secondary.rounded.p-3.mb-3
                   .text-warning.fw-bold.text-uppercase.small.mb-2 Usage
                   .font-monospace.fs-6
-                    = command.usage_as_html
+                    = command.name
 
                 / Arguments section
-                - if command.command_arguments.present?
+                - if command.arguments.present?
                   .mb-3
                     .text-warning.fw-bold.text-uppercase.small.mb-2 Arguments
                     .ps-3
-                      = command.arguments_as_html
+                      = command.name
 
                 / Examples section
-                - if command.command_examples.present?
+                - if command.examples.present?
                   .mb-0
                     .text-warning.fw-bold.text-uppercase.small.mb-2 Examples
                     .ps-3
-                      = command.example_as_html
+                      = command.name

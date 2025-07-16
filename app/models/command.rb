@@ -13,6 +13,36 @@ class Command
     @admin = scope == :admin
   end
 
+  def name
+    @details.command_name
+  end
+
+  def type
+    @details.command_type
+  end
+
+  def description
+    @details.command_description
+  end
+
+  def arguments
+    @details.command_arguments
+  end
+
+  def examples
+    @details.command_examples
+  end
+
+  def category
+    @details.command_category
+  end
+
+  def operation
+    operation = ""
+    operation += "#{scope} " if scope
+    operation + action.to_s
+  end
+
   private
 
   def parse_command_usage
@@ -23,10 +53,18 @@ class Command
     @scope = nil
     @action = parts.third&.to_sym
 
+    # If there is an action, we have a scope (/server admin find, /server my player)
+    # Otherwise, there is no scope (/server gamble, /community servers)
     if @action.present?
       @scope = parts.second&.to_sym
     else
       @action = parts.second&.to_sym
+    end
+
+    # For commands like /help or /register
+    if @scope.nil? && @action.nil?
+      @action = @domain
+      @domain = nil
     end
   end
 end

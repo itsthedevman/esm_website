@@ -4,10 +4,10 @@ class DocsController < ApplicationController
   def commands
     all_commands = ESM::CommandDetail.all
       .order(command_category: :asc)
-      .group_by(&:command_category)
-      .each_value do |commands|
-        commands.map! { |c| Command.new(c) }.sort_by!(&:domain)
-      end
+      .map { |c| Command.new(c) }
+      .group_by { |c| [c.domain, c.category] }
+      .each_value { |commands| commands.sort_by!(&:operation) }
+      .sort_by { |k, v| k.first || :"" } # Sort by domain, pushes the root commands to the top
 
     render locals: {all_commands:}
   end
