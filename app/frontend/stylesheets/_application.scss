@@ -17,9 +17,15 @@ body {
     @extend .overflow-x-hidden;
     @extend .px-0;
 
-    top: calc(map-get($spacers, 5) + map-get($spacers, 4));
-    max-height: 98vh;
-    height: 98vh;
+    $distance: calc(map-get($spacers, 5) + map-get($spacers, 4));
+
+    top: $distance;
+    max-height: calc(100vh - $distance);
+    height: calc(100vh - $distance);
+
+    .window {
+        @extend .mt-4;
+    }
 }
 
 .arg {
