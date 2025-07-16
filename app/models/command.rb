@@ -37,6 +37,10 @@ class Command
     @details.command_category
   end
 
+  def usage
+    @details.command_usage
+  end
+
   def operation
     operation = ""
     operation += "#{scope} " if scope

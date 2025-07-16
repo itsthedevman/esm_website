@@ -5,7 +5,12 @@
       .table-of-contents
         .card.bg-dark.mb-4.border.border-0
           .card-body.p-0
-            .list-group.list-group-flush
+            .list-group.list-group-flush[
+              data-bs-spy="scroll"
+              data-bs-target="#commands"
+              data-bs-offset="0"
+              data-bs-smooth-scroll="true"
+            ]
               - commands_by_domain.each do |(domain, category), commands|
                 a.list-group-item.list-group-item-action.text-light.border.border-0 href="##{category.parameterize}"
                   strong = "/#{domain}"
@@ -67,46 +72,47 @@
           small If this persists, please let us know via our Discord
 
       / Commands by category
-      - commands_by_domain.each do |(domain, category), commands|
-        .mb-5 id=category.to_s.parameterize
-          h2.text-secondary.border-bottom.border-secondary.pb-2.mb-4
-            = category.humanize
-            |< Commands
+      #commands
+        - commands_by_domain.each do |(domain, category), commands|
+          .mb-5 id=category.to_s.parameterize
+            h2.text-secondary.border-bottom.border-secondary.pb-2.mb-4
+              = category.humanize
+              |< Commands
 
-          - commands.each_with_index do |command, index|
-            .card.bg-dark.border-secondary.mb-4 id=command.name
-              .card-body
-                / Command title and admin indicator
-                .d-flex.align-items-center.gap-2.mb-3
-                  - if command.type == "admin"
-                    i.bi.bi-person-fill-lock.fs-2.text-warning[
-                      data-bs-toggle="tooltip"
-                      title="This is an admin command and may be restricted to certain roles"
-                    ]
+            - commands.each_with_index do |command, index|
+              .card.bg-dark.border-secondary.mb-4 id=command.name
+                .card-body
+                  / Command title and admin indicator
+                  .d-flex.align-items-center.gap-2.mb-3
+                    - if command.type == "admin"
+                      i.bi.bi-person-fill-lock.fs-2.text-warning[
+                        data-bs-toggle="tooltip"
+                        title="This is an admin command and may be restricted to certain roles"
+                      ]
 
-                  h4.text-primary.mb-0.font-monospace
-                    = command.name
+                    h4.text-primary.mb-0.font-monospace
+                      = command.usage
 
-                / Command description
-                .mb-3
-                  = Markdown.to_html(command.description).html_safe
-
-                / Usage section
-                .bg-black.border.border-secondary.rounded.p-3.mb-3
-                  .text-warning.fw-bold.text-uppercase.small.mb-2 Usage
-                  .font-monospace.fs-6
-                    = command.name
-
-                / Arguments section
-                - if command.arguments.present?
+                  / Command description
                   .mb-3
-                    .text-warning.fw-bold.text-uppercase.small.mb-2 Arguments
-                    .ps-3
+                    = Markdown.to_html(command.description).html_safe
+
+                  / Usage section
+                  .bg-black.border.border-secondary.rounded.p-3.mb-3
+                    .text-warning.fw-bold.text-uppercase.small.mb-2 Usage
+                    .font-monospace.fs-6
                       = command.name
 
-                / Examples section
-                - if command.examples.present?
-                  .mb-0
-                    .text-warning.fw-bold.text-uppercase.small.mb-2 Examples
-                    .ps-3
-                      = command.name
+                  / Arguments section
+                  - if command.arguments.present?
+                    .mb-3
+                      .text-warning.fw-bold.text-uppercase.small.mb-2 Arguments
+                      .ps-3
+                        = command.name
+
+                  / Examples section
+                  - if command.examples.present?
+                    .mb-0
+                      .text-warning.fw-bold.text-uppercase.small.mb-2 Examples
+                      .ps-3
+                        = command.name
