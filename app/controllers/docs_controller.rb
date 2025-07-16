@@ -5,8 +5,9 @@ class DocsController < ApplicationController
     all_commands = ESM::CommandDetail.all
       .order(command_category: :asc)
       .group_by(&:command_category)
-
-    all_commands.each_value { |c| c.sort_by!(&:usage_without_category) }
+      .each_value do |commands|
+        commands.map! { |c| Command.new(c) }.sort_by!(&:domain)
+      end
 
     render locals: {all_commands:}
   end

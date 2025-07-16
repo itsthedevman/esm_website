@@ -15,7 +15,7 @@
                   = "/#{category}"
                 / Individual commands - always visible
                 - commands.each do |command|
-                  a.list-group-item.list-group-item-action.text-muted.border-secondary.ps-4.small href="##{command.command_name}"
+                  a.list-group-item.list-group-item-action.text-muted.border-secondary.ps-4.small href="##{command.name}"
                     = command.usage_without_category
 
     / Main Content
@@ -83,10 +83,13 @@
                 / Command title and admin indicator
                 .d-flex.align-items-center.gap-2.mb-3
                   - if command.command_type == "admin"
-                    i.fas.fa-user-lock.text-warning data-bs-toggle="tooltip" title="This is an admin command and may be restricted to certain roles"
+                    i.bi.bi-person-fill-lock.fs-2.text-warning[
+                      data-bs-toggle="tooltip"
+                      title="This is an admin command and may be restricted to certain roles"
+                    ]
 
-                  h4.text-success.mb-0.font-monospace
-                    = command.usage_as_html
+                  h4.text-primary.mb-0.font-monospace
+                    = command.command_usage
 
                 / Command description
                 .mb-3

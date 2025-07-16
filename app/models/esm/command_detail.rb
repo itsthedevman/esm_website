@@ -2,10 +2,6 @@
 
 module ESM
   class CommandDetail < ApplicationRecord
-    def usage_without_category
-      command_usage[1..].gsub(/^#{command_category}/, "")
-    end
-
     def usage_as_html
       arguments =
         command_arguments.join_map(" ") do |name, argument|
