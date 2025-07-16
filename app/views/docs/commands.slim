@@ -10,10 +10,10 @@
               | Categories
           .card-body.p-0
             .list-group.list-group-flush
-              - all_commands.each do |(domain, category), commands|
+              - commands_by_domain.each do |(domain, category), commands|
                 a.list-group-item.list-group-item-action.bg-dark.text-light.border-secondary href="##{category.parameterize}"
                   = "/#{domain}"
-                / Individual commands - always visible
+                / Individual commands
                 - commands.each do |command|
                   a.list-group-item.list-group-item-action.text-muted.border-secondary.ps-4.small href="##{command.name}"
                     = command.operation
@@ -25,7 +25,7 @@
         h1.text-primary.mb-3 Commands
         p.text-muted.fs-5
           | Command documentation can be found, at any time, by using the
-          = command_usage(:help)
+          = render_component(CommandComponent, command: :help)
           | command.
           br
           | For example, use
@@ -65,13 +65,13 @@
                   |< Flags, modes, and configuration settings
 
       / Error state
-      - if all_commands.empty?
+      - if commands_by_domain.empty?
         .alert.alert-warning.text-center
           h5 Failed to retrieve commands. Please try refreshing this page.
           small If this persists, please let us know via our Discord
 
       / Commands by category
-      - all_commands.each do |(domain, category), commands|
+      - commands_by_domain.each do |(domain, category), commands|
         .mb-5 id=category.to_s.parameterize
           h2.text-secondary.border-bottom.border-secondary.pb-2.mb-4
             = category.humanize

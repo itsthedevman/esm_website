@@ -4,6 +4,9 @@ class CommandComponent < ApplicationComponent
   def on_load(command:)
   end
 
+  def call
+  end
+
   def usage_as_html
     arguments =
       command_arguments.join_map(" ") do |name, argument|
