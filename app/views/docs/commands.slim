@@ -41,29 +41,25 @@
           h6.text-primary.fw-bold.mb-3 Argument Color Guide
           .row.g-3
             .col-md-6.col-lg-3
-              .d-flex.align-items-center.gap-2
-                span.arg.identifier server_id
-                small.text-muted
-                  strong Identifiers:
-                  |< IDs for servers, communities, territories
+              strong.me-1 Identifiers:
+              span.arg.identifier server_id
+              .small.text-muted.mt-2
+                |< Which server, community, or territory
             .col-md-6.col-lg-3
-              .d-flex.align-items-center.gap-2
-                span.arg.target target
-                small.text-muted
-                  strong Targets:
-                  |< Players or users to execute commands on
+              strong.me-1 Targets:
+              span.arg.target target
+              .small.text-muted.mt-2
+                |< Who you're running the command on
             .col-md-6.col-lg-3
-              .d-flex.align-items-center.gap-2
-                span.arg.content amount
-                small.text-muted
-                  strong Content:
-                  |< Values, messages, amounts to process
+              strong.me-1 Content:
+              span.arg.content amount
+              .small.text-muted.mt-2
+                |< The actual stuff (money, messages, etc.)
             .col-md-6.col-lg-3
-              .d-flex.align-items-center.gap-2
-                span.arg.option flags
-                small.text-muted
-                  strong Options:
-                  |< Flags, modes, and configuration settings
+              strong.me-1 Options:
+              span.arg.option flags
+              .small.text-muted.mt-2
+                |< How the command should behave
 
       / Error state
       - if commands_by_domain.empty?
