@@ -3,23 +3,19 @@
     / Table of Contents Sidebar
     .col-lg-3.col-xl-2
       .table-of-contents
-        .card.bg-dark.border-secondary.mb-4
-          .card-header.bg-secondary
-            h6.mb-0.text-white
-              i.bi.bi-list.me-2
-              | Categories
+        .card.bg-dark.mb-4.border.border-0
           .card-body.p-0
             .list-group.list-group-flush
               - commands_by_domain.each do |(domain, category), commands|
-                a.list-group-item.list-group-item-action.bg-dark.text-light.border-secondary href="##{category.parameterize}"
-                  = "/#{domain}"
+                a.list-group-item.list-group-item-action.text-light.border.border-0 href="##{category.parameterize}"
+                  strong = "/#{domain}"
                 / Individual commands
                 - commands.each do |command|
-                  a.list-group-item.list-group-item-action.text-muted.border-secondary.ps-4.small href="##{command.name}"
+                  a.list-group-item.list-group-item-action.text-muted.ps-4.border.border-0.small href="##{command.name}"
                     = command.operation
 
     / Main Content
-    .col-lg-9.col-xl-10
+    .col-lg-9.col-xl-10.overflow-y-auto
       / Header section
       .border-bottom.border-primary.pb-4.mb-5
         h1.text-primary.mb-3 Commands
