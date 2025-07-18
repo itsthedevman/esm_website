@@ -26,7 +26,6 @@
         h1.text-primary.mb-3 Commands
         p.text-muted.fs-5
           | Command documentation can be found, at any time, by using the
-          = render_component(CommandComponent, command: :help)
           | command.
           br
           | For example, use
@@ -71,7 +70,7 @@
       #commands
         - commands_by_domain.each do |(domain, category), commands|
           .mb-5 id=category.to_s.parameterize
-            h2.text-secondary.border-bottom.border-secondary.pb-2.mb-4
+            h2.border-bottom.border-secondary.pb-2.mb-4
               = category.humanize
               |< Commands
 
@@ -97,18 +96,18 @@
                   .bg-black.border.border-secondary.rounded.p-3.mb-3
                     .text-warning.fw-bold.text-uppercase.small.mb-2 Usage
                     .font-monospace.fs-6
-                      = command.name
+                      = render_component(CommandUsageDocsComponent, command:)
 
                   / Arguments section
                   - if command.arguments.present?
                     .mb-3
                       .text-warning.fw-bold.text-uppercase.small.mb-2 Arguments
                       .ps-3
-                        = command.name
+                        = render_component(CommandArgumentDocsComponent, command:)
 
                   / Examples section
                   - if command.examples.present?
                     .mb-0
                       .text-warning.fw-bold.text-uppercase.small.mb-2 Examples
                       .ps-3
-                        = command.name
+                        = render_component(CommandExampleDocsComponent, command:)
