@@ -13,17 +13,15 @@ class CommandExampleDocsComponent < ApplicationComponent
         (example["arguments"] || []).join_map(" ") do |name, value|
           # Try to find the semantic class for this argument name
           arg_def = @command.arguments[name]
-          semantic_class = if arg_def
-            argument_semantic_class(name, arg_def)
-          else
-            "content" # fallback for unknown arguments
-          end
 
-          <<~HTML
-            <span class='arg #{semantic_class}'>#{name}</span>
-            <span class='text-muted'>:</span>
-            <span class='arg #{semantic_class}'>#{value}</span>
-          HTML
+          semantic_class =
+            if arg_def
+              argument_semantic_class(name, arg_def)
+            else
+              "content" # fallback for unknown arguments
+            end
+
+          format_argument(name, "arg #{semantic_class}", value:)
         end
 
       <<~HTML
