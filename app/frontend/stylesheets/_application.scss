@@ -90,3 +90,14 @@ $nav-offset: calc(map-get($spacers, 5) + map-get($spacers, 4));
     top: 1em;
     height: calc(98vh - $nav-offset);
 }
+
+/* Hide the icon by default */
+.anchor-link .bi-link-45deg {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Show it on hover */
+.anchor-link:hover .bi-link-45deg {
+  opacity: 1;
+}

@@ -86,8 +86,10 @@
                         title="This is an admin command and may be restricted to certain roles"
                       ]
 
-                    h4.text-primary.mb-0.font-monospace
+                    h3.mb-0.font-monospace.anchor-link
                       = command.usage
+                      = link_to "##{command.name}", class: "ms-2"
+                        i.bi.bi-link-45deg.fs-2.text-primary
 
                   / Command description
                   .mb-3
