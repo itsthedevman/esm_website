@@ -43,20 +43,16 @@
               h6 Basic Commands:
               ul.small
                 li
-                  code
-                  | /help
+                  = command_usage(:help, show_arguments: false)
                   |  - See all commands
                 li
-                  code
-                  | /me stats
+                  = command_usage(:me, show_arguments: false)
                   |  - Check your poptabs
                 li
-                  code
-                  | /territories
+                  = command_usage(:territories, show_arguments: false)
                   |  - See your bases
                 li
-                  code
-                  | /servers
+                  = command_usage(:servers, show_arguments: false)
                   |  - List available servers
 
             .col-md-6
