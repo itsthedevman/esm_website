@@ -19,6 +19,6 @@ class CommandUsageDocsComponent < ApplicationComponent
         )
       end
 
-    "#{@command.usage} #{arguments}".html_safe
+    content_tag(:span, "#{@command.usage} #{arguments}".html_safe, class: "command")
   end
 end

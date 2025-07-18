@@ -1,3 +1,5 @@
+@use "./colors" as *;
+
 @import "./vendor/bootstrap";
 @import "./toast";
 
@@ -10,6 +12,14 @@ body {
     width: 100%;
 }
 
+code {
+    background: $esm-warm-gray-800;
+    color: lighten($esm-warm-gray-100, 10%);
+    border: 1px solid rgba($esm-warm-gray-100, 0.3);
+    padding: 2px 6px;
+    border-radius: 2px;
+}
+
 $nav-offset: calc(map-get($spacers, 5) + map-get($spacers, 4));
 
 #main-container {
@@ -17,7 +27,6 @@ $nav-offset: calc(map-get($spacers, 5) + map-get($spacers, 4));
     @extend .container-fluid;
     @extend .overflow-x-hidden;
     @extend .px-0;
-
 
     top: $nav-offset;
     max-height: calc(100vh - $nav-offset);
@@ -28,8 +37,20 @@ $nav-offset: calc(map-get($spacers, 5) + map-get($spacers, 4));
     }
 }
 
+.command {
+    @extend .d-inline-block;
+    @extend .font-monospace;
+
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin: 0 2px;
+    color: $esm-warm-gray-300;
+}
+
 .arg {
-    font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+    @extend .d-inline-block;
+    @extend .font-monospace;
+
     font-weight: 600;
     padding: 2px 5px;
     border-radius: 3px;
@@ -38,31 +59,27 @@ $nav-offset: calc(map-get($spacers, 5) + map-get($spacers, 4));
 }
 
 .arg.identifier {
-    background: rgba(107, 130, 158, 0.12);
-    color: #6b829e;
+    background: rgba($esm-ui-info, 0.15);
+    color: lighten($esm-ui-info, 25%);
+    border: 1px solid rgba($esm-ui-info, 0.3);
 }
 
 .arg.target {
-    background: rgba(184, 152, 90, 0.12);
-    color: #b8985a;
+    background: rgba($esm-ui-warning, 0.15);
+    color: lighten($esm-ui-warning, 20%);
+    border: 1px solid rgba($esm-ui-warning, 0.3);
 }
 
 .arg.content {
-    background: rgba(107, 142, 90, 0.12);
-    color: #6b8e5a;
+    background: rgba($esm-ui-success, 0.15);
+    color: lighten($esm-ui-success, 25%);
+    border: 1px solid rgba($esm-ui-success, 0.3);
 }
 
 .arg.option {
-    background: rgba(90, 90, 107, 0.12);
-    color: #5a5a6b;
-}
-
-.command-syntax {
-    font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
-}
-
-.esm-text-color-toast-blue {
-    color: #6b829e !important;
+    background: rgba($esm-ui-danger, 0.15);
+    color: lighten($esm-ui-danger, 25%);
+    border: 1px solid rgba($esm-ui-danger, 0.3);
 }
 
 .table-of-contents {

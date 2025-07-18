@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 class Command
+  def self.all
+    @all ||= ESM::CommandDetail.all
+      .map { |c| Command.new(c) }
+      .index_by(&:name)
+      .symbolize_keys!
+  end
+
   attr_reader :domain, :scope, :action
 
   attr_predicate :admin

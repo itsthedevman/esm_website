@@ -26,13 +26,13 @@
         h1.text-primary.mb-3 Commands
         p.text-muted.fs-5
           | Command documentation can be found, at any time, by using the
-          = command_usage(:help)
+          = command_usage(:help, show_arguments: false)
           | command.
           br
           | For example, use
           = command_usage(:help, arguments: {with: "/community servers"})
           | to show the documentation for the
-          = command_usage(:servers, only: [])
+          = command_usage(:servers, show_arguments: false)
           | command.
 
       / Color legend for arguments
