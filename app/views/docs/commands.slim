@@ -96,21 +96,21 @@
                     = Markdown.to_html(command.description).html_safe
 
                   / Usage section
+                  .text-warning.fw-bold.text-uppercase.small.mb-2 Usage
                   .bg-black.border.border-secondary.rounded.p-3.mb-3
-                    .text-warning.fw-bold.text-uppercase.small.mb-2 Usage
                     .font-monospace.fs-6
                       = render_component(CommandUsageDocsComponent, command:)
 
                   / Arguments section
                   - if command.arguments.present?
                     .mb-3
-                      .text-warning.fw-bold.text-uppercase.small.mb-2 Arguments
-                      .ps-3
+                      .px-3
+                        .text-warning.fw-bold.text-uppercase.small.mb-2 Arguments
                         = render_component(CommandArgumentDocsComponent, command:)
 
                   / Examples section
                   - if command.examples.present?
                     .mb-0
-                      .text-warning.fw-bold.text-uppercase.small.mb-2 Examples
-                      .ps-3
+                      .px-3
+                        .text-warning.fw-bold.text-uppercase.small.mb-2 Examples
                         = render_component(CommandExampleDocsComponent, command:)
