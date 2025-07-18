@@ -15,9 +15,13 @@ body {
 code {
     background: $esm-warm-gray-800;
     color: lighten($esm-warm-gray-100, 10%);
+
     border: 1px solid rgba($esm-warm-gray-100, 0.3);
-    padding: 2px 6px;
     border-radius: 2px;
+
+    padding-top: 2px;
+    padding-right: 5px;
+    padding-left: 5px;
 }
 
 $nav-offset: calc(map-get($spacers, 5) + map-get($spacers, 4));
@@ -52,10 +56,12 @@ $nav-offset: calc(map-get($spacers, 5) + map-get($spacers, 4));
     @extend .font-monospace;
 
     font-weight: 600;
-    padding: 2px 5px;
     border-radius: 3px;
-    margin: 0 2px;
     font-size: 0.95em;
+
+    padding-top: 2px;
+    padding-right: 5px;
+    padding-left: 5px;
 }
 
 .arg.identifier {
@@ -93,11 +99,11 @@ $nav-offset: calc(map-get($spacers, 5) + map-get($spacers, 4));
 
 /* Hide the icon by default */
 .anchor-link .bi-link-45deg {
-  opacity: 0;
-  transition: opacity 0.2s ease;
+    opacity: 0;
+    transition: opacity 0.2s ease;
 }
 
 /* Show it on hover */
 .anchor-link:hover .bi-link-45deg {
-  opacity: 1;
+    opacity: 1;
 }
