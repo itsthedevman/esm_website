@@ -37,7 +37,7 @@ $nav-offset: calc(map-get($spacers, 5) + map-get($spacers, 4));
     height: calc(100vh - $nav-offset);
 
     .window {
-        @extend .mt-4;
+        @extend .my-4;
     }
 }
 
