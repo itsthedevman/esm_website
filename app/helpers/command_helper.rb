@@ -7,14 +7,16 @@ module CommandHelper
     command = Command.all[command_name]
     return command_name.to_s unless command
 
-    content_tag(:span, class: "command") do
-      if show_arguments && arguments.present?
-        args_html = build_custom_arguments(command, arguments.with_indifferent_access)
+    if show_arguments && arguments.present?
+      args_html = build_custom_arguments(command, arguments.with_indifferent_access)
 
+      content_tag(:span, class: "command") do
         content_tag(:span, "#{command.usage} #{args_html}".html_safe)
-      elsif show_arguments
-        render_component(CommandUsageDocsComponent, command: command)
-      else
+      end
+    elsif show_arguments
+      render_component(CommandUsageDocsComponent, command: command)
+    else
+      content_tag(:span, class: "command") do
         content_tag(:span, command.usage)
       end
     end

@@ -4,7 +4,7 @@
 
   .alert.alert-info
     strong Setup time:
-    | 15-30 minutes (depending on your setup)
+    |< 15-30 minutes (depending on your setup)
 
   .row.mb-5
     .col-lg-8
@@ -30,7 +30,6 @@
                 li
                   = link_to invite_path, target: "_blank", class: "btn btn-outline-primary btn-sm me-2"
                     | Invite ESM Bot
-                  span Follow Discord's authorization flow
                 li ESM will send a welcome message with your Community ID
                 li Reply with #{command_usage(:mode)} to enable server management features
 
@@ -76,19 +75,19 @@
             data-bs-parent="#serverSetupAccordion"
           ]
             .accordion-body
-              p Install the @ESM mod on your server:
+              p Install the @esm mod on your server:
 
               ol
                 li
                   = link_to latest_download_path, target: "_blank", class: "btn btn-outline-success btn-sm me-2"
-                    | Download @ESM
-                  span Get the latest version
-                li Extract <code>@ESM</code> to your server's root directory (alongside <code>@Exile</code>)
-                li Add <code>@ESM</code> to your <code>-servermod</code> startup parameter
+                    | Download @esm
+                li Extract <code>@esm</code> to your server's root directory (alongside <code>@Exile</code>)
+                li Add <code>@esm</code> to your <code>-servermod</code> startup parameter
 
               .alert.alert-secondary.mt-3
                 h6 Example startup parameter:
-                code -servermod="@ExileServer;@infiSTAR;@ESM"
+                .font-monospace
+                  | -servermod="@ExileServer;@infiSTAR;@esm"
 
         .accordion-item
           h2.accordion-header#step4Heading
@@ -108,7 +107,7 @@
               p Add required fields to your territory table:
 
               ol
-                li Open <code>@ESM/esm.sql</code> in a text editor
+                li Open <code>@esm/esm.sql</code> in a text editor
                 li Copy the SQL commands
                 li Execute them on your MySQL server (phpMyAdmin, MySQL Workbench, etc.)
                 li Verify the <code>territory</code> table has the new <code>esm_custom_id</code> and <code>esm_payment_counter</code> columns
@@ -142,7 +141,7 @@
                 li Select your Discord server from the dropdown
                 li Click "Add Server" and enter your server details (IP, port, name)
                 li Download the generated <code>esm.key</code> file
-                li Place <code>esm.key</code> in your <code>@ESM</code> folder
+                li Place <code>esm.key</code> in your <code>@esm</code> folder
                 li Start your Arma server
                 li Test the connection: Send #{command_usage(:servers, show_arguments: false)} to ESM via DM
 
@@ -151,7 +150,7 @@
         .card-header.border-info
           h6.mb-0.text-info 💡 What's a Community ID?
         .card-body
-          p.small.mb-0 ESM assigns each Discord server a short identifier (like "abc123"). Players use this ID to reference your server in commands.
+          p.small.mb-0 ESM assigns each Discord server a short identifier (like "abc"). Players use this ID to reference your server in commands.
 
       .card.bg-warning.bg-opacity-10.border-warning.mb-4
         .card-header.border-warning
@@ -159,7 +158,7 @@
         .card-body
           p.small
             | Having issues? Join our
-            = link_to "Discord support server", join_path, class: "link-warning"
+            =< link_to "Discord support server", join_path, class: "link-warning"
             |  for assistance.
 
   .card.bg-success.bg-opacity-10.border-success.mt-5
