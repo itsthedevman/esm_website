@@ -1,10 +1,10 @@
 .container.window
   h1.mb-4.text-primary Server Setup Guide
-  p.lead Install ESM v2 on your Arma 3 server for Discord integration and management tools.
+  p.lead Install ESM on your Arma 3 server for Discord integration and management tools.
 
   .alert.alert-info
     strong Setup time:
-    | 10-20 minutes for fresh installs
+    |< 10-20 minutes for fresh installs
 
   / Upgrade Notice
   .alert.alert-warning.border-warning.bg-warning.bg-opacity-10.mb-4
@@ -16,7 +16,7 @@
       ol
         li Remove your existing <code>@ESM</code> directory completely
         li Update dashboard settings to v2 and download new <code>esm.key</code>
-        li Execute <code>02.sql</code> on your MySQL server (this adds v2 tables)
+        li Execute <code>02.sql</code> on your MySQL server (this adds new tables)
         li Follow the fresh installation steps below with the new <code>@esm</code> mod
     = link_to "#upgradeSteps", class: "btn btn-outline-warning btn-sm", "data-bs-toggle": "collapse"
       | Show Upgrade Steps
@@ -122,7 +122,8 @@
 
               .alert.alert-secondary.mt-3
                 h6 Example startup parameter:
-                code -servermod="@ExileServer;@infiSTAR;@esm"
+                code
+                  | -servermod="@ExileServer;@infiSTAR;@esm"
 
         .accordion-item
           h2.accordion-header#step4Heading
