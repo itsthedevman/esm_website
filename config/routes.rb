@@ -13,6 +13,9 @@ Rails.application.routes.draw do
   # /communities
   resources :communities
 
+  # /discover
+  resources :discoveries, only: [:index]
+
   # /docs
   resources :docs, only: [] do
     collection do
