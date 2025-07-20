@@ -2,8 +2,8 @@
 
 class CommunitiesController < AuthenticatedController
   def index
-    @server_communities = ESM::Community.all.player_mode_disabled
-    @player_communities = [] # ESM::Community.all.player_mode_enabled
+    @server_communities = current_user.admin_communities
+    @player_communities = current_user.player_communities
 
     render locals: {}
   end

@@ -18,4 +18,8 @@ module ESM
       constant_hash
     end
   end
+
+  def self.bot
+    Bot
+  end
 end

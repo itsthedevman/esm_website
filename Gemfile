@@ -104,3 +104,5 @@ gem "omniauth-steam", "~> 1.0"
 gem "ostruct", "~> 0.6.2"
 
 gem "omniauth-rails_csrf_protection", "~> 1.0"
+
+gem "http", "~> 5.3"

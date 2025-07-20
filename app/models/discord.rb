@@ -1,14 +1,19 @@
 # frozen_string_literal: true
 
 class Discord
-  # include HTTParty
+  include Singleton
 
-  # base_uri "discord.com/api/v10"
-  # debug_output
+  def self.channels(guild_id)
+    instance.get("/guilds/#{guild_id}/channels")
+  end
 
-  # OPTIONS = {headers: {Authorization: "Bot #{ENV["DISCORD_TOKEN"]}"}}.freeze
+  def initialize
+    token = Rails.application.credentials.discord[:token]
+    @client = HTTP.auth("Bot #{token}")
+    @base_url = "https://discord.com/api/v10"
+  end
 
-  # def self.channels(guild_id)
-  #   get("/guilds/#{guild_id}/channels", **OPTIONS)
-  # end
+  def get(url)
+    @client.get("#{@base_url}/#{url}")
+  end
 end

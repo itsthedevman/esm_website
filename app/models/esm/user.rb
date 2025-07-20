@@ -17,37 +17,19 @@ module ESM
       user
     end
 
-    def to_error_h
-      {
-        id: id,
-        discord_username: discord_username,
-        steam_uid: steam_uid
-      }
-    end
-
-    def clientize
-      {
-        id: discord_id,
-        public_id: discord_id,
-        name: username,
-        avatar: avatar_url,
-        steam_uid: steam_uid
-      }
-    end
-
     def timeout_in
       2.days
     end
 
-    def admin_communities
-      @admin_communities ||= ESM::Community.where(
-        id: Bot.user_community_ids(id, discord_server_ids, check_for_perms: true)
+    def server_communities
+      @server_communities ||= ESM::Community.where(
+        id: ESM.bot.user_community_ids(id, discord_server_ids, check_for_perms: true)
       ).sort_by(&:community_id)
     end
 
     def player_communities
       @player_communities ||= ESM::Community.where(
-        id: Bot.user_community_ids(id, discord_server_ids),
+        id: ESM.bot.user_community_ids(id, discord_server_ids),
         player_mode_enabled: true
       ).sort_by(&:community_id)
     end
@@ -62,7 +44,10 @@ module ESM
 
     def discord_server_ids
       @discord_server_ids ||= begin
-        response = HTTParty.get("http://discordapp.com/api/users/@me/guilds", headers: {Authorization: "Bearer #{discord_access_token}"})
+        response = HTTP.auth("Bearer #{discord_access_token}")
+          .get("http://discordapp.com/api/users/@me/guilds")
+
+        binding.pry
         return [] unless response.ok?
 
         response.parsed_response.map { |s| s["id"] }
