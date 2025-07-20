@@ -100,3 +100,5 @@ gem "omniauth", "~> 2.1"
 gem "omniauth-discord", "~> 1.2"
 
 gem "omniauth-steam", "~> 1.0"
+
+gem "ostruct", "~> 0.6.2"

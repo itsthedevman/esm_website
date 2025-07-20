@@ -482,6 +482,7 @@ DEPENDENCIES
   omniauth (~> 2.1)
   omniauth-discord (~> 1.2)
   omniauth-steam (~> 1.0)
+  ostruct (~> 0.6.2)
   pg (~> 1.1)
   propshaft
   pry
