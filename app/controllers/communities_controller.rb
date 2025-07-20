@@ -12,7 +12,8 @@ class CommunitiesController < AuthenticatedController
   end
 
   def show
-    @community = ESM::Community.all.first
+    check_for_community_access!
+
     render locals: {}
   end
 end
