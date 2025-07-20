@@ -47,6 +47,10 @@ module ESM
     # INSTANCE METHODS
     # =============================================================================
 
+    def server_mode_enabled?
+      !player_mode_enabled?
+    end
+
     def modifiable_by?(user)
       Bot.community_modifiable_by?(id, user.id)
     end
