@@ -1,6 +1,7 @@
 @use "./colors" as *;
 
 @import "./vendor/bootstrap";
+@import "./dashboard";
 @import "./toast";
 
 $nav-offset: calc(map-get($spacers, 5) + map-get($spacers, 4));
