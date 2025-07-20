@@ -1,1 +1,101 @@
-= render partial: "shared/dashboard_nav", locals: local_assigns
+/ app/views/communities/index.slim
+
+.container.window
+  h1.mb-4 Dashboard
+  p.lead.mb-5 Select a community to manage servers and settings.
+
+  .row.g-5
+    / Server Communities Column
+    .col-lg-7
+      .d-flex.align-items-center.mb-4
+        h3.mb-0.me-3
+          i.bi.bi-hdd-network.text-primary.me-2
+          | Server Communities
+        small.badge.bg-secondary = "#{@server_communities.count} #{'community'.pluralize(@server_communities.count)}"
+
+      - if @server_communities.any?
+        .row.g-4
+          - @server_communities.each do |community|
+            .col
+              = link_to community_path(community.public_id), class: "text-decoration-none d-block h-100"
+                .card.h-100.community-card
+                  .card-body.d-flex.flex-column
+                    .d-flex.align-items-start.justify-content-between.mb-3
+                      h5.card-title.mb-1.text-light = community.community_name
+                      .badge.bg-success.small = community.servers.count
+
+                    p.card-text.text-muted.small.mb-3 = community.community_id
+
+                    / Server status indicators - pushed to bottom
+                    .mt-auto
+                      - if community.servers.any?
+                        .d-flex.align-items-center.gap-2.flex-wrap
+                          - online_count = community.servers.select(&:connected?).count
+                          - offline_count = community.servers.count - online_count
+
+                          - if online_count > 0
+                            .d-flex.align-items-center
+                              .server-status.server-status--online.me-1
+                              small.text-muted = "#{online_count} online"
+
+                          - if offline_count > 0
+                            .d-flex.align-items-center
+                              .server-status.server-status--offline.me-1
+                              small.text-muted = "#{offline_count} offline"
+                      - else
+                        small.text-muted.fst-italic No servers registered
+      - else
+        .card.bg-dark.border-secondary.text-center.py-5
+          .card-body
+            i.bi.bi-hdd-network.display-4.text-muted.mb-3
+            h5.text-muted No server communities found
+            p.text-muted.mb-0 Add ESM to a Discord server to get started
+
+    / Player Communities Column - give it proper space too
+    .col-5
+      .d-flex.align-items-center.mb-4
+        h3.mb-0.me-3
+          i.bi.bi-people.text-info.me-2
+          | Player Communities
+        small.badge.bg-secondary = "#{@player_communities.count} #{'community'.pluralize(@player_communities.count)}"
+
+      - if @player_communities.any?
+        .row.g-4
+          - @player_communities.each do |community|
+            .col-12
+              = link_to community_path(community.public_id), class: "text-decoration-none d-block h-100"
+                .card.h-100.community-card.community-card--player
+                  .card-body.d-flex.flex-column
+                    h5.card-title.mb-2.text-light = community.community_name
+                    p.card-text.text-muted.small.mb-3 = community.community_id
+
+                    / XM8 info - pushed to bottom
+                    .mt-auto
+                      .d-flex.align-items-center
+                        i.bi.bi-arrow-left-right.text-info.me-2
+                        small.text-muted XM8 Notification Routing
+      - else
+        .card.bg-dark.border-secondary.text-center.py-4
+          .card-body
+            i.bi.bi-people.display-4.text-muted.mb-3
+            h5.text-muted No player communities found
+            p.text-muted.mb-0 Join personal Discord servers with ESM
+
+  / Global Empty State - only show when BOTH are empty
+  - if @server_communities.empty? && @player_communities.empty?
+    .row.justify-content-center.mt-5
+      .col-lg-8.col-xl-6
+        .card.bg-dark.border-secondary.text-center.py-5
+          .card-body
+            i.bi.bi-plus-circle.display-1.text-muted.mb-4
+            h3.text-muted.mb-3 No Communities Found
+            p.text-muted.mb-4
+              | ESM needs to be invited to your Discord server and you must have the proper permissions to manage it.
+
+            .d-flex.gap-3.justify-content-center.flex-wrap
+              = link_to invite_path, class: "btn btn-primary", target: "_blank"
+                i.bi.bi-discord.me-2
+                | Invite ESM Bot
+              = link_to getting_started_docs_path, class: "btn btn-outline-secondary"
+                i.bi.bi-book.me-2
+                | Getting Started Guide

@@ -1,11 +1,15 @@
-// app/frontend/stylesheets/_dashboard_sidebar.scss
+// app/frontend/stylesheets/_dashboard.scss
+
+// =============================================================================
+// DASHBOARD SIDEBAR
+// =============================================================================
 
 .dashboard-sidebar {
     position: sticky;
     top: 1rem;
     max-height: calc(100vh - 2rem);
     overflow-y: auto;
-    padding-right: 1rem; // More breathing room
+    padding-right: 1rem;
 }
 
 .server-status {
@@ -15,18 +19,18 @@
     flex-shrink: 0;
 
     &--online {
-        background-color: var(--bs-success);
-        box-shadow: 0 0 0 2px rgba(var(--bs-success-rgb), 0.2);
+        background-color: $esm-ui-success;
+        box-shadow: 0 0 0 2px rgba($esm-ui-success, 0.2);
     }
 
     &--warning {
-        background-color: var(--bs-warning);
-        box-shadow: 0 0 0 2px rgba(var(--bs-warning-rgb), 0.2);
+        background-color: $esm-ui-warning;
+        box-shadow: 0 0 0 2px rgba($esm-ui-warning, 0.2);
     }
 
     &--offline {
-        background-color: var(--bs-danger);
-        box-shadow: 0 0 0 2px rgba(var(--bs-danger-rgb), 0.2);
+        background-color: $esm-ui-danger;
+        box-shadow: 0 0 0 2px rgba($esm-ui-danger, 0.2);
     }
 }
 
@@ -38,7 +42,7 @@
 // Better spacing and typography for sidebar items
 .dashboard-sidebar {
     .list-group-item {
-        border-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba($esm-warm-gray-100, 0.1);
 
         &:hover {
             .server-status {
@@ -49,7 +53,7 @@
     }
 
     .card-header h5 {
-        color: var(--bs-gray-300);
+        color: $esm-warm-gray-300;
         letter-spacing: 0.5px;
     }
 
@@ -62,5 +66,94 @@
     small {
         font-size: 0.8rem;
         opacity: 0.8;
+    }
+}
+
+// =============================================================================
+// COMMUNITIES OVERVIEW
+// =============================================================================
+
+.community-card {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    border: 1px solid rgba($esm-warm-gray-100, 0.1);
+    min-height: 180px; // Slightly taller for better proportions
+    width: 100%; // Force full width usage
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba($esm-warm-gray-900, 0.4);
+        border-color: rgba($esm-warm-gray-100, 0.2);
+    }
+
+    // Server community cards get the primary blue accent
+    &:not(.community-card--player) {
+        border-left: 3px solid $esm-ui-primary;
+
+        &:hover {
+            border-left-color: lighten($esm-ui-primary, 15%);
+        }
+    }
+
+    // Player community cards get the info accent
+    &--player {
+        border-left: 3px solid $esm-ui-info;
+
+        &:hover {
+            border-left-color: lighten($esm-ui-info, 15%);
+        }
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+        line-height: 1.3;
+        color: $esm-warm-gray-100;
+        font-weight: 600;
+    }
+
+    .card-text {
+        color: $esm-warm-gray-400;
+    }
+
+    // Server count badge styling
+    .badge {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        background-color: $esm-ui-success !important;
+        font-weight: 600;
+    }
+
+    // Ensure flexbox behavior for equal heights
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        padding: 1.25rem; // Slightly more padding for breathing room
+
+        .mt-auto {
+            margin-top: auto !important;
+        }
+    }
+}
+
+// =============================================================================
+// SHARED STATUS INDICATORS
+// =============================================================================
+
+// Smaller status dots for the overview cards
+.community-card .server-status {
+    width: 8px;
+    height: 8px;
+
+    &--online {
+        background-color: $esm-ui-success;
+    }
+
+    &--offline {
+        background-color: $esm-ui-danger;
+    }
+
+    &--warning {
+        background-color: $esm-ui-warning;
     }
 }
