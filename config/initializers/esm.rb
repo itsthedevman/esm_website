@@ -6,7 +6,7 @@ Rails.application.config.to_prepare do
     .join("esm_ruby_core/lib")
 
   Dir[core_path.join("esm/models/*.rb")].sort.each do |file|
-    require file
+    load file
   end
 
   # Now load website extensions

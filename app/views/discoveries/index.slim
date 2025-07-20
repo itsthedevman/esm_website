@@ -4,7 +4,7 @@
       h1.mb-4.text-primary Discover Communities & Servers
       p.lead.mb-4
         | Looking for a community or server but don't know their ID? Search by Discord server name,
-        | Discord server ID, Arma 3 server name, or IP address.
+        |< Discord server ID, Arma 3 server name, or IP address.
 
       / Search Form
       .card.bg-dark.border-secondary.mb-4
@@ -28,14 +28,14 @@
               i.bi.bi-discord.text-primary.me-2
               | Communities
           .card-body.p-0
-            - if communities.empty? && related_communities.empty?
+            - if communities.empty?
               .text-center.py-4.text-muted
                 i.bi.bi-search.fs-1.mb-3.d-block
                 p.mb-0 No communities found
             - else
               .table-responsive
-                table.table.table-dark.table-hover.mb-0
-                  thead.table-secondary
+                table.table.table-hover.mb-0
+                  thead
                     tr
                       th.w-25 Community ID
                       th Name
@@ -45,11 +45,6 @@
                         td
                           code.text-info = community.community_id
                         td = community.community_name
-                    - related_communities.each do |community|
-                      tr.text-muted
-                        td
-                          code.text-muted = community.community_id
-                        td = community.community_name
 
       - if local_assigns[:servers]
         .card.bg-dark.border-secondary.mb-4
@@ -58,14 +53,14 @@
               i.bi.bi-hdd-network.text-success.me-2
               | Servers
           .card-body.p-0
-            - if servers.empty? && related_servers.empty?
+            - if servers.empty?
               .text-center.py-4.text-muted
                 i.bi.bi-search.fs-1.mb-3.d-block
                 p.mb-0 No servers found
             - else
               .table-responsive
-                table.table.table-dark.table-hover.mb-0
-                  thead.table-secondary
+                table.table.table-hover.mb-0
+                  thead
                     tr
                       th.w-25 Server ID
                       th Name
@@ -75,13 +70,6 @@
                       tr
                         td
                           code.text-warning = server.server_id
-                        td = server.server_name
-                        td
-                          code.text-muted = server.server_ip
-                    - related_servers.each do |server|
-                      tr.text-muted
-                        td
-                          code.text-muted = server.server_id
                         td = server.server_name
                         td
                           code.text-muted = server.server_ip
