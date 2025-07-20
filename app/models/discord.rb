@@ -1,19 +1,35 @@
 # frozen_string_literal: true
 
 class Discord
-  include Singleton
-
-  def self.channels(guild_id)
-    instance.get("/guilds/#{guild_id}/channels")
+  def self.client(...)
+    new(...)
   end
 
-  def initialize
-    token = Rails.application.credentials.discord[:token]
-    @client = HTTP.auth("Bot #{token}")
+  attr_reader :client, :base_url
+
+  def initialize(token = nil)
+    auth =
+      if token
+        "Bearer #{token}"
+      else
+        "Bot #{Rails.application.credentials.discord[:token]}"
+      end
+
+    @client = HTTP.auth(auth)
     @base_url = "https://discord.com/api/v10"
   end
 
-  def get(url)
-    @client.get("#{@base_url}/#{url}")
+  def guild_channels(guild_id)
+    client.get(build_url("/guilds/#{guild_id}/channels"))
+  end
+
+  def user_guilds
+    client.get(build_url("/users/@me/guilds"))
+  end
+
+  private
+
+  def build_url(url)
+    "#{base_url}#{url}"
   end
 end

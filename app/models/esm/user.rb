@@ -24,14 +24,14 @@ module ESM
     def server_communities
       @server_communities ||= ESM::Community.where(
         id: ESM.bot.user_community_ids(id, discord_server_ids, check_for_perms: true)
-      ).sort_by(&:community_id)
+      ).order(:community_id)
     end
 
     def player_communities
       @player_communities ||= ESM::Community.where(
         id: ESM.bot.user_community_ids(id, discord_server_ids),
         player_mode_enabled: true
-      ).sort_by(&:community_id)
+      ).order(:community_id)
     end
 
     def avatar_url
@@ -44,13 +44,13 @@ module ESM
 
     def discord_server_ids
       @discord_server_ids ||= begin
-        response = HTTP.auth("Bearer #{discord_access_token}")
-          .get("http://discordapp.com/api/users/@me/guilds")
+        response = Discord.client(discord_access_token).user_guilds
+        raise HTTP::ConnectionError unless response.status.success?
 
-        binding.pry
-        return [] unless response.ok?
-
-        response.parsed_response.map { |s| s["id"] }
+        response.body
+          .to_s # JSON
+          .to_a # Array<Hash>
+          .key_map(:id)
       end
     end
   end
