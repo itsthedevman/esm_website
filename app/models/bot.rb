@@ -134,7 +134,7 @@ class Bot
   # @param check_for_perms [Boolean] Whether to check if user has modification permissions
   # @return [Array<Integer>] Array of community database IDs
   #
-  def self.user_community_ids(user_id, guild_ids, check_for_perms: false)
-    instance.user_communities(id: user_id, guild_ids:, check_for_perms:) || []
+  def self.user_community_permissions(user_id, guild_ids)
+    instance.user_community_permissions(id: user_id, guild_ids:) || []
   end
 end

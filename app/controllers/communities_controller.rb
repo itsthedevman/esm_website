@@ -2,10 +2,13 @@
 
 class CommunitiesController < AuthenticatedController
   def index
-    @server_communities = current_user.server_communities
-    @player_communities = current_user.player_communities
+    server_communities = current_user.server_communities.load
+    player_communities = current_user.player_communities.load
 
-    render locals: {}
+    render locals: {
+      server_communities:,
+      player_communities:
+    }
   end
 
   def show

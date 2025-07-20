@@ -21,17 +21,30 @@ module ESM
       2.days
     end
 
+    def community_permissions
+      @community_permissions ||= ESM.bot.user_community_permissions(id, discord_server_ids)
+    end
+
+    def admin_community_ids
+      community_permissions.select { |c| c[:modifiable] }.key_map(:id)
+    end
+
+    def player_community_ids
+      community_permissions.key_map(:id)
+    end
+
     def server_communities
-      @server_communities ||= ESM::Community.where(
-        id: ESM.bot.user_community_ids(id, discord_server_ids, check_for_perms: true)
-      ).order(:community_id)
+      @server_communities ||= ESM::Community.all
+        .includes(:servers)
+        .order(:community_id)
+        .where(id: admin_community_ids, player_mode_enabled: false)
     end
 
     def player_communities
-      @player_communities ||= ESM::Community.where(
-        id: ESM.bot.user_community_ids(id, discord_server_ids),
-        player_mode_enabled: true
-      ).order(:community_id)
+      @player_communities ||= ESM::Community.all
+        .includes(:servers)
+        .order(:community_id)
+        .where(id: player_community_ids, player_mode_enabled: true)
     end
 
     def avatar_url
@@ -43,7 +56,10 @@ module ESM
     end
 
     def discord_server_ids
-      @discord_server_ids ||= begin
+      @discord_server_ids ||= Rails.cache.fetch(
+        "user:#{id}:discord_server_ids",
+        expires_in: 5.minutes
+      ) do
         response = Discord.client(discord_access_token).user_guilds
         raise HTTP::ConnectionError unless response.status.success?
 

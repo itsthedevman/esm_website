@@ -2,7 +2,7 @@
   h1.mb-4 Dashboard
   p.lead.mb-5 Select a community to manage servers and settings.
 
-  - if @server_communities.any? && @player_communities.any?
+  - if server_communities.size > 0 && player_communities.size > 0
     / Both types exist - show two-column layout
     .row.g-5
       / Server Communities Column
@@ -11,17 +11,17 @@
           h3.mb-0.me-3
             i.bi.bi-hdd-network.text-primary.me-2
             | Server Communities
-          small.badge.bg-secondary = "#{@server_communities.count} #{'community'.pluralize(@server_communities.count)}"
+          small.badge.bg-secondary = "#{server_communities.size} #{'community'.pluralize(server_communities.size)}"
 
         .row.g-4
-          - @server_communities.each do |community|
+          - server_communities.each do |community|
             .col
               = link_to community_path(community.public_id), class: "text-decoration-none d-block h-100"
                 .card.h-100.community-card
                   .card-body.d-flex.flex-column
                     .d-flex.align-items-start.justify-content-between.mb-3
                       h5.card-title.mb-1.text-light = community.community_name
-                      .badge.bg-success.small = community.servers.count
+                      .badge.bg-success.small = community.servers.size
 
                     p.card-text.text-muted.small.mb-3 = community.community_id
 
@@ -29,8 +29,8 @@
                     .mt-auto
                       - if community.servers.any?
                         .d-flex.align-items-center.gap-2.flex-wrap
-                          - online_count = community.servers.select(&:connected?).count
-                          - offline_count = community.servers.count - online_count
+                          - online_count = community.servers.select(&:connected?).size
+                          - offline_count = community.servers.size - online_count
 
                           - if online_count > 0
                             .d-flex.align-items-center
@@ -50,10 +50,10 @@
           h3.mb-0.me-3
             i.bi.bi-people.text-info.me-2
             | Player Communities
-          small.badge.bg-secondary = "#{@player_communities.count} #{'community'.pluralize(@player_communities.count)}"
+          small.badge.bg-secondary = "#{player_communities.size} #{'community'.pluralize(player_communities.size)}"
 
         .row.g-4
-          - @player_communities.each do |community|
+          - player_communities.each do |community|
             .col-12
               = link_to community_path(community.public_id), class: "text-decoration-none d-block h-100"
                 .card.h-100.community-card.community-card--player
@@ -67,23 +67,23 @@
                         i.bi.bi-arrow-left-right.text-info.me-2
                         small.text-muted XM8 Notification Routing
 
-  - elsif @server_communities.any?
+  - elsif server_communities.size > 0
     / Only server communities - full width with help banner
     .d-flex.align-items-center.mb-4
       h3.mb-0.me-3
         i.bi.bi-hdd-network.text-primary.me-2
         | Server Communities
-      small.badge.bg-secondary = "#{@server_communities.count} #{'community'.pluralize(@server_communities.count)}"
+      small.badge.bg-secondary = "#{server_communities.size} #{'community'.pluralize(server_communities.size)}"
 
     .row.g-4.mb-5
-      - @server_communities.each do |community|
+      - server_communities.each do |community|
         .col-7
           = link_to community_path(community.public_id), class: "text-decoration-none d-block h-100"
             .card.h-100.community-card
               .card-body.d-flex.flex-column
                 .d-flex.align-items-start.justify-content-between.mb-3
                   h5.card-title.mb-1.text-light = community.community_name
-                  .badge.bg-success.small = community.servers.count
+                  .badge.bg-success.small = community.servers.size
 
                 p.card-text.text-muted.small.mb-3 = community.community_id
 
@@ -91,8 +91,8 @@
                 .mt-auto
                   - if community.servers.any?
                     .d-flex.align-items-center.gap-2.flex-wrap
-                      - online_count = community.servers.select(&:connected?).count
-                      - offline_count = community.servers.count - online_count
+                      - online_count = community.servers.select(&:connected?).size
+                      - offline_count = community.servers.size - online_count
 
                       - if online_count > 0
                         .d-flex.align-items-center
@@ -114,16 +114,16 @@
           h6.mb-1.text-info Also manage XM8 notifications?
           p.mb-0.text-muted.small Join Discord servers as a player to route notifications to your personal channels.
 
-  - elsif @player_communities.any?
+  - elsif player_communities.size > 0
     / Only player communities - full width with help banner
     .d-flex.align-items-center.mb-4
       h3.mb-0.me-3
         i.bi.bi-people.text-info.me-2
         | Player Communities
-      small.badge.bg-secondary = "#{@player_communities.count} #{'community'.pluralize(@player_communities.count)}"
+      small.badge.bg-secondary = "#{player_communities.size} #{'community'.pluralize(player_communities.size)}"
 
     .row.g-4.mb-5
-      - @player_communities.each do |community|
+      - player_communities.each do |community|
         .col-lg-4.col-md-6
           = link_to community_path(community.public_id), class: "text-decoration-none d-block h-100"
             .card.h-100.community-card.community-card--player
