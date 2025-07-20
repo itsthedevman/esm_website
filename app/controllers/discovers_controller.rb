@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class DiscoveriesController < ApplicationController
-  def index
+class DiscoversController < ApplicationController
+  def show
     return if params[:q].blank?
 
     search_term = params.require(:q)
