@@ -2,16 +2,17 @@
   h1.mb-4 Dashboard
   p.lead.mb-5 Select a community to manage servers and settings.
 
-  .row.g-5
-    / Server Communities Column
-    .col-lg-7
-      .d-flex.align-items-center.mb-4
-        h3.mb-0.me-3
-          i.bi.bi-hdd-network.text-primary.me-2
-          | Server Communities
-        small.badge.bg-secondary = "#{@server_communities.count} #{'community'.pluralize(@server_communities.count)}"
+  - if @server_communities.any? && @player_communities.any?
+    / Both types exist - show two-column layout
+    .row.g-5
+      / Server Communities Column
+      .col-lg-7
+        .d-flex.align-items-center.mb-4
+          h3.mb-0.me-3
+            i.bi.bi-hdd-network.text-primary.me-2
+            | Server Communities
+          small.badge.bg-secondary = "#{@server_communities.count} #{'community'.pluralize(@server_communities.count)}"
 
-      - if @server_communities.any?
         .row.g-4
           - @server_communities.each do |community|
             .col
@@ -42,25 +43,15 @@
                               small.text-muted = "#{offline_count} offline"
                       - else
                         small.text-muted.fst-italic No servers registered
-      - else
-        .card.bg-dark.border-secondary.text-center.empty-state-card
-          .card-body
-            i.bi.bi-hdd-network.display-4.text-muted.mb-3
-            h5.text-muted No server communities
-            p.text-muted.mb-3 Add ESM to a Discord server to manage servers and configure settings
-            = link_to invite_path, class: "btn btn-outline-primary btn-sm", target: "_blank"
-              i.bi.bi-discord.me-2
-              | Invite ESM Bot
 
-    / Player Communities Column
-    .col-lg-5
-      .d-flex.align-items-center.mb-4
-        h3.mb-0.me-3
-          i.bi.bi-people.text-info.me-2
-          | Player Communities
-        small.badge.bg-secondary = "#{@player_communities.count} #{'community'.pluralize(@player_communities.count)}"
+      / Player Communities Column
+      .col-lg-5
+        .d-flex.align-items-center.mb-4
+          h3.mb-0.me-3
+            i.bi.bi-people.text-info.me-2
+            | Player Communities
+          small.badge.bg-secondary = "#{@player_communities.count} #{'community'.pluralize(@player_communities.count)}"
 
-      - if @player_communities.any?
         .row.g-4
           - @player_communities.each do |community|
             .col-12
@@ -75,12 +66,100 @@
                       .d-flex.align-items-center
                         i.bi.bi-arrow-left-right.text-info.me-2
                         small.text-muted XM8 Notification Routing
-      - else
-        .card.bg-dark.border-secondary.text-center.empty-state-card
+
+  - elsif @server_communities.any?
+    / Only server communities - full width with help banner
+    .d-flex.align-items-center.mb-4
+      h3.mb-0.me-3
+        i.bi.bi-hdd-network.text-primary.me-2
+        | Server Communities
+      small.badge.bg-secondary = "#{@server_communities.count} #{'community'.pluralize(@server_communities.count)}"
+
+    .row.g-4.mb-5
+      - @server_communities.each do |community|
+        .col-7
+          = link_to community_path(community.public_id), class: "text-decoration-none d-block h-100"
+            .card.h-100.community-card
+              .card-body.d-flex.flex-column
+                .d-flex.align-items-start.justify-content-between.mb-3
+                  h5.card-title.mb-1.text-light = community.community_name
+                  .badge.bg-success.small = community.servers.count
+
+                p.card-text.text-muted.small.mb-3 = community.community_id
+
+                / Server status indicators - pushed to bottom
+                .mt-auto
+                  - if community.servers.any?
+                    .d-flex.align-items-center.gap-2.flex-wrap
+                      - online_count = community.servers.select(&:connected?).count
+                      - offline_count = community.servers.count - online_count
+
+                      - if online_count > 0
+                        .d-flex.align-items-center
+                          .server-status.server-status--online.me-1
+                          small.text-muted = "#{online_count} online"
+
+                      - if offline_count > 0
+                        .d-flex.align-items-center
+                          .server-status.server-status--offline.me-1
+                          small.text-muted = "#{offline_count} offline"
+                  - else
+                    small.text-muted.fst-italic No servers registered
+
+    / Help banner for player features
+    .alert.alert-info.border-info.bg-info.bg-opacity-10
+      .d-flex.align-items-center
+        i.bi.bi-lightbulb.text-info.me-3.fs-4
+        div
+          h6.mb-1.text-info Also manage XM8 notifications?
+          p.mb-0.text-muted.small Join Discord servers as a player to route notifications to your personal channels.
+
+  - elsif @player_communities.any?
+    / Only player communities - full width with help banner
+    .d-flex.align-items-center.mb-4
+      h3.mb-0.me-3
+        i.bi.bi-people.text-info.me-2
+        | Player Communities
+      small.badge.bg-secondary = "#{@player_communities.count} #{'community'.pluralize(@player_communities.count)}"
+
+    .row.g-4.mb-5
+      - @player_communities.each do |community|
+        .col-lg-4.col-md-6
+          = link_to community_path(community.public_id), class: "text-decoration-none d-block h-100"
+            .card.h-100.community-card.community-card--player
+              .card-body.d-flex.flex-column
+                h5.card-title.mb-2.text-light = community.community_name
+                p.card-text.text-muted.small.mb-3 = community.community_id
+
+                / XM8 info - pushed to bottom
+                .mt-auto
+                  .d-flex.align-items-center
+                    i.bi.bi-arrow-left-right.text-info.me-2
+                    small.text-muted XM8 Notification Routing
+
+    / Help banner for server features
+    .alert.alert-primary.border-primary.bg-primary.bg-opacity-10
+      .d-flex.align-items-center
+        i.bi.bi-lightbulb.text-primary.me-3.fs-4
+        div
+          h6.mb-1.text-primary Run your own server?
+          p.mb-0.text-muted.small ESM also provides server management tools for Discord communities.
+
+  - else
+    / No communities at all - show getting started
+    .row.justify-content-center
+      .col-lg-8.col-xl-6
+        .card.bg-dark.border-secondary.text-center.py-5
           .card-body
-            i.bi.bi-people.display-4.text-muted.mb-3
-            h5.text-muted No player communities
-            p.text-muted.mb-3 Join Discord servers with ESM to receive XM8 notifications
-            = link_to getting_started_docs_path, class: "btn btn-outline-secondary btn-sm"
-              i.bi.bi-book.me-2
-              | Getting Started Guide
+            i.bi.bi-plus-circle.display-1.text-muted.mb-4
+            h3.text-muted.mb-3 Welcome to ESM Dashboard
+            p.text-muted.mb-4
+              | ESM needs to be invited to your Discord server and you must have the proper permissions to manage it.
+
+            .d-flex.gap-3.justify-content-center.flex-wrap
+              = link_to invite_path, class: "btn btn-primary", target: "_blank"
+                i.bi.bi-discord.me-2
+                | Invite ESM Bot
+              = link_to getting_started_docs_path, class: "btn btn-outline-secondary"
+                i.bi.bi-book.me-2
+                | Getting Started Guide
