@@ -6,7 +6,7 @@
     / Both types exist - show two-column layout
     .row.g-5
       / Server Communities Column
-      .col-lg-7
+      .col-12.col-lg-7
         .d-flex.align-items-center.mb-4
           h3.mb-0.me-3
             i.bi.bi-hdd-network.text-primary.me-2
@@ -15,7 +15,7 @@
 
         .row.g-4
           - server_communities.each do |community|
-            .col
+            .col-12
               = link_to community_path(community.public_id), class: "text-decoration-none d-block h-100"
                 .card.h-100.community-card
                   .card-body.d-flex.flex-column
