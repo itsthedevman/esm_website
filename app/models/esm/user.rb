@@ -5,7 +5,7 @@ module ESM
     devise :omniauthable, :timeoutable, omniauth_providers: %i[discord steam]
 
     def self.from_omniauth(auth)
-      user = User.where(discord_id: auth.uid).first_or_initialize
+      user = where(discord_id: auth.uid).first_or_initialize
 
       user.update!(
         discord_username: auth.info.name,
@@ -40,13 +40,13 @@ module ESM
     end
 
     def admin_communities
-      @admin_communities ||= Community.where(
+      @admin_communities ||= ESM::Community.where(
         id: Bot.user_community_ids(id, discord_server_ids, check_for_perms: true)
       ).sort_by(&:community_id)
     end
 
     def player_communities
-      @player_communities ||= Community.where(
+      @player_communities ||= ESM::Community.where(
         id: Bot.user_community_ids(id, discord_server_ids),
         player_mode_enabled: true
       ).sort_by(&:community_id)

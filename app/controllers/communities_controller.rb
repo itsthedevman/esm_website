@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CommunitiesController < ApplicationController
+class CommunitiesController < AuthenticatedController
   def index
     @server_communities = ESM::Community.all.player_mode_disabled
     @player_communities = [] # ESM::Community.all.player_mode_enabled

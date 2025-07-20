@@ -2,7 +2,7 @@
 
 Rails.application.routes.draw do
   # Devise shit
-  devise_for :users, class_name: "ESM::User", controllers: {omniauth_callbacks: "callbacks"}
+  devise_for :users, class_name: "ESM::User", controllers: {omniauth_callbacks: "oauth"}
   devise_scope :user do
     delete :logout, to: "devise/sessions#destroy", as: :logout
   end

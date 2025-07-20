@@ -23,6 +23,6 @@ nav.navbar.fixed-top.navbar-expand-lg.bg-body-tertiary
         = link_to "Discover", discover_path, class: "nav-link"
         = link_to "Support", invite_path, class: "nav-link"
       .navbar-nav.flex-row.flex-wrap.ms-md-auto.gap-3.gap-lg-2
-        = link_to "", class: "btn btn-primary d-flex align-items-center gap-2"
+        = button_to user_discord_omniauth_authorize_path, class: "btn btn-primary d-flex align-items-center gap-2", data: {turbo: false}
           i.bi.bi-discord
           span Login

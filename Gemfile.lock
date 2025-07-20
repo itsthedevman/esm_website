@@ -233,6 +233,9 @@ GEM
       rack-openid (~> 1.4)
       ruby-openid (~> 2.1, >= 2.1.8)
       version_gem (~> 1.1, >= 1.1.8)
+    omniauth-rails_csrf_protection (1.0.2)
+      actionpack (>= 4.2)
+      omniauth (~> 2.0)
     omniauth-steam (1.0.6)
       multi_json
       omniauth-openid
@@ -481,6 +484,7 @@ DEPENDENCIES
   kramdown-parser-gfm
   omniauth (~> 2.1)
   omniauth-discord (~> 1.2)
+  omniauth-rails_csrf_protection (~> 1.0)
   omniauth-steam (~> 1.0)
   ostruct (~> 0.6.2)
   pg (~> 1.1)
