@@ -22,7 +22,7 @@
 
     border-radius: $border-radius !important;
     background-color: transparent !important;
-    border-color: $success !important;
+    border-color: var(--bs-border-color);
 }
 
 .choices__input {

@@ -1,3 +1,5 @@
+= render "communities/role_styles"
+
 = render "communities/container", **local_assigns do
   h1.mb-4 Modify Community
 
@@ -74,10 +76,8 @@
           p.text-muted.small
             | Users with these roles will be able to run territory based commands as the owner, regardless of them being a member of that territory.
 
-          .btn-group.flex-wrap[role="group" data-controller="role-toggle"]
-            - current_community.roles.each do |role|
-              input.btn-check[type="checkbox" name="community[territory_admin_ids][]" value=role.id id="role_#{role.id}" checked=current_community.territory_admin_ids.include?(role.id)]
-              label.btn.btn-outline-primary[for="role_#{role.id}" style="color: ##{role.color}"] = role.name
+          div
+            = f.select :role_visibility, [], {}, multiple: "", data: {roles: territory_admin_roles, controller: "role-selector"}
 
     / Server Dashboard Management Section
     .card.mb-4
@@ -87,44 +87,8 @@
         p.text-muted.small
           | Users with these roles will have full management access to this community's server dashboard. Useful for communities with non-admin developers
 
-        .row.g-4
-          .col-md-6
-            h6 Available Roles
-            .list-group.list-group-flush[
-              data-controller="role-selector"
-              data-role-selector-target="availableRoles"
-              data-role-selector-selected-value=current_community.dashboard_access_role_ids.to_json
-            ]
-              - current_community.roles.each do |role|
-                .list-group-item.d-flex.justify-content-between.align-items-center.py-2.border-0[
-                  data-role-id=role.id
-                  data-role-name=role.name
-                  data-role-color=role.color
-                  class=("d-none" if current_community.dashboard_access_role_ids.include?(role.id))
-                ]
-                  span[style="color: ##{role.color}"] = role.name
-                  button.btn.btn-sm.btn-outline-primary[
-                    type="button"
-                    data-action="click->role-selector#addRole"
-                    disabled=(current_community.dashboard_access_role_ids.include?(role.id))
-                  ] Add
-
-          .col-md-6
-            h6 Selected Roles
-            .list-group.list-group-flush[data-role-selector-target="selectedRoles"]
-              - current_community.dashboard_admins.each do |role|
-                .list-group-item.d-flex.justify-content-between.align-items-center.py-2.border-0[
-                  data-role-id=role.id
-                ]
-                  span[style="color: ##{role.color}"] = role.name
-                  button.btn.btn-sm.btn-outline-danger[
-                    type="button"
-                    data-action="click->role-selector#removeRole"
-                  ] Remove
-                  = f.hidden_field :dashboard_access_role_ids,
-                      value: role.id,
-                      multiple: true,
-                      data: { role_selector_target: "hiddenField" }
+        div
+          = f.select :role_visibility, [], {}, multiple: "", data: {roles: access_roles, controller: "role-selector"}
 
     / Welcome Message Section
     .card.mb-4

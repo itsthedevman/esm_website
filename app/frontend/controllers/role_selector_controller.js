@@ -12,6 +12,13 @@ export default class extends Controller {
     if (rolesJSON == null || rolesJSON.length === 0) return;
 
     const roles = JSON.parse(rolesJSON);
-    new Choices(element, { choices: roles, allowHTML: true });
+    new Choices(
+      element,
+      {
+        choices: roles,
+        allowHTML: true,
+        removeItemButton: true
+      }
+    );
   }
 }

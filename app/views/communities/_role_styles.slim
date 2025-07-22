@@ -1,0 +1,6 @@
+style
+  - current_community.roles.each do |role|
+    | .choices__item[data-value="#{role.id}"] {
+    |   border-color: ##{role.color} !important;
+    |   color: ##{role.color} !important;
+    | }

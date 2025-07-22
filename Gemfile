@@ -106,3 +106,5 @@ gem "ostruct", "~> 0.6.2"
 gem "omniauth-rails_csrf_protection", "~> 1.0"
 
 gem "http", "~> 5.3"
+
+gem "sass-embedded", "~> 1.89"
