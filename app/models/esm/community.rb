@@ -52,19 +52,19 @@ module ESM
     end
 
     def modifiable_by?(user)
-      Bot.community_modifiable_by?(id, user.id)
+      ESM.bot.community_modifiable_by?(id, user.id)
     end
 
     def admin_channels
-      @admin_channels ||= Bot.community_channels(id)
+      @admin_channels ||= ESM.bot.community_channels(id)
     end
 
     def player_channels(user)
-      @player_channels ||= Bot.community_channels(id, user_id: user.id)
+      @player_channels ||= ESM.bot.community_channels(id, user_id: user.id)
     end
 
     def roles
-      @roles ||= Bot.community_roles(id).map { |role| Struct.new(*role.keys).new(*role.values) }
+      @roles ||= ESM.bot.community_roles(id).map(&:to_struct)
     end
 
     def territory_admins
@@ -82,7 +82,7 @@ module ESM
         server.update(server_id: server.server_id.gsub("#{community_id}_", "#{new_id}_"))
 
         # Force the server to reconnect
-        Bot.reconnect_server(server.id, old_id)
+        ESM.bot.reconnect_server(server.id, old_id)
       end
 
       update(community_id: new_id)

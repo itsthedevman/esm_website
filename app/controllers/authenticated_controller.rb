@@ -12,12 +12,13 @@ class AuthenticatedController < ApplicationController
   helper_method :current_context
 
   def current_community
-    return @current_community if @current_community
+    @current_community ||= begin
+      # Nested resources will have "community_" prefixed to "community_id"...
+      public_id = params[:community_id] || params[:community_community_id]
+      return if public_id.blank?
 
-    public_id = params[:community_id] || params[:id]
-    return if public_id.blank?
-
-    @current_community ||= ESM::Community.all.includes(:servers).find_by(public_id:)
+      ESM::Community.all.includes(:servers).find_by(public_id:)
+    end
   end
 
   helper_method :current_community

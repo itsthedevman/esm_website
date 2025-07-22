@@ -11,8 +11,8 @@ Rails.application.routes.draw do
   root "home#index"
 
   # /communities
-  resources :communities do
-    resources :servers do
+  resources :communities, param: :community_id do
+    resources :servers, param: :server_id do
       # member do
       #   get "key" # V1
       #   get "server_token"
