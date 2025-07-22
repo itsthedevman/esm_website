@@ -5,7 +5,7 @@ import "choices.js/public/assets/styles/choices.css";
 // Connects to data-controller="role-selector"
 export default class extends Controller {
   connect() {
-    const element = this.element as HTMLElement;
+    const element = this.element;
     if (element.classList.contains("choices__input")) return;
 
     const rolesJSON = element.dataset.roles;
