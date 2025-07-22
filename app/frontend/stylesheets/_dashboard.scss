@@ -4,10 +4,9 @@
 
 .dashboard-sidebar {
     position: sticky;
-    top: 1rem;
     max-height: calc(100vh - 2rem);
     overflow-y: auto;
-    padding-right: 1rem;
+    width: 100%;
 }
 
 .server-status {
@@ -30,11 +29,6 @@
         background-color: $esm-ui-danger;
         box-shadow: 0 0 0 2px rgba($esm-ui-danger, 0.2);
     }
-}
-
-// Ensure text truncation works properly in flex containers
-.min-w-0 {
-    min-width: 0;
 }
 
 // Better spacing and typography for sidebar items

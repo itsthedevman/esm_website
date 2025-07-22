@@ -1,3 +1,2 @@
-= render partial: "shared/dashboard_nav", locals: local_assigns
-
-= server.to_json
+= render "communities/container" do
+  = server.to_json
