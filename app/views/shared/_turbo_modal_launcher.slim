@@ -1,0 +1,28 @@
+script
+  | document.addEventListener("DOMContentLoaded", function() {
+      fetch(#{raw (local_assigns[:path] || local_assigns[:url]).in_quotes})
+        .then((r) => {
+          return r.text();
+        })
+        .then((html) => {
+          // The response is HTML that contains the turbo frame and the contents of the modal
+          const responseDocument = new DOMParser().parseFromString(html, "text/html");
+
+          // Contents we have to get from inside the turbo_modal
+          const frameContent = responseDocument.getElementById("turbo_modal");
+          if (!frameContent) return;
+
+          // Now get the current page's turbo_modal
+          const modalFrame = document.getElementById("turbo_modal");
+          if (!modalFrame) return;
+
+          // In order to load the data in
+          modalFrame.innerHTML = frameContent.innerHTML;
+
+          // And then show the modal
+          bootstrap.Modal.getOrCreateInstance(document.getElementById("turbo-modal")).show();
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    });

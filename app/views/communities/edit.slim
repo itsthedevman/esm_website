@@ -1,4 +1,5 @@
 = render "communities/role_styles"
+= render "communities/destroy_modal"
 
 = render "communities/container", **local_assigns do
   h1.mb-4 Modify Community
@@ -128,7 +129,7 @@
         button.btn.btn-danger[
           type="button"
           data-bs-toggle="modal"
-          data-bs-target="#delete-community-modal"
+          data-bs-target="#destroy-community-modal"
         ] Delete Community
 
       .d-flex.gap-3

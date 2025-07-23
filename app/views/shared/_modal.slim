@@ -1,0 +1,9 @@
+.modal[
+  class=class_names(*local_assigns[:class])
+  tabindex="-1"
+  id=local_assigns[:id]
+  data-bs-backdrop="static"
+]
+  .modal-dialog
+    .modal-content
+      = yield
