@@ -75,9 +75,9 @@ module ESM
       validate_and_decorate_roles(dashboard_access_role_ids)
     end
 
-    def change_id_to(new_id)
+    def update_community_id!(new_id)
       # Adjust the server IDs
-      Server.where(community_id: id).each do |server|
+      ESM::Server.where(community_id: id).each do |server|
         old_id = server.server_id
         server.update(server_id: server.server_id.gsub("#{community_id}_", "#{new_id}_"))
 
@@ -85,7 +85,7 @@ module ESM
         ESM.bot.reconnect_server(server.id, old_id)
       end
 
-      update(community_id: new_id)
+      update!(community_id: new_id)
     end
 
     private

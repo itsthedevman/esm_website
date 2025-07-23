@@ -9,6 +9,17 @@ module ApplicationHelper
     render(component)
   end
 
+  def create_toast(body, title: "", subtitle: "")
+    turbo_stream.append("toast-container") do
+      concat(
+        render_component(
+          ToastComponent,
+          title: title, subtitle: subtitle, body: body
+        )
+      )
+    end
+  end
+
   def update_turbo_modal(&block)
     turbo_frame_tag "turbo_modal" do
       yield

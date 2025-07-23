@@ -14,6 +14,7 @@ class CommunitiesController < AuthenticatedController
   end
 
   def show
+    redirect_to edit_community_path(current_community)
   end
 
   def edit
@@ -43,30 +44,27 @@ class CommunitiesController < AuthenticatedController
   end
 
   def update
-    # community_id = params.dig(:community, :community_id)
-    # community_id = community_id.downcase if community_id.present?
+    community_id = params.dig(:community, :community_id)
+    community_id = community_id.downcase if community_id.present?
 
-    # updated_community_data = community_params.to_h
-    # updated_community_data["territory_admin_ids"] ||= []
-    # updated_community_data["dashboard_access_role_ids"] ||= []
+    community_data = community_params
+    (community_data[:territory_admin_ids] ||= []).compact_blank!
+    (community_data[:dashboard_access_role_ids] ||= []).compact_blank!
 
-    # # The ID has changed, update the community and servers
-    # if community_id.present? && community_id != current_community.community_id
-    #   if Community.find_by_community_id(community_id).present?
-    #     return redirect_to edit_community_path(current_community.public_id),
-    #       alert: "ID <code>#{community_id}</code> is already in use, please provide a different ID"
-    #   end
+    # The ID has changed, update the community and servers
+    if community_id.present? && community_id != current_community.community_id
+      # Check to see if it exists
+      if ESM::Community.by_community_id(community_id).exists?
+        redirect_to edit_community_path(current_community),
+          alert: "<code>#{community_id}</code> is already in use, please provide a different ID"
 
-    #   current_community.change_id_to(community_id)
-    # end
+        return
+      end
 
-    # if current_community.update(updated_community_data)
-    #   flash[:success] = "#{current_community.community_id} has been updated"
-    #   redirect_to edit_community_path(current_community.public_id)
-    # else
-    #   redirect_to edit_community_path(current_community.public_id),
-    #     alert: "Failed to update.<br><span class='esm-text-color-red'>Please log out and log back in again</span><br>If this error persists, please join our Discord and let us know."
-    # end
+      current_community.update_community_id!(community_id)
+    end
+
+    current_community.update!(community_data)
   end
 
   def destroy

@@ -3,10 +3,10 @@
 @import "vendor/bootstrap";
 @import "vendor/choices";
 
+$nav-offset: calc(map-get($spacers, 5) + map-get($spacers, 4));
+
 @import "dashboard";
 @import "toast";
-
-$nav-offset: calc(map-get($spacers, 5) + map-get($spacers, 4));
 
 body {
     min-height: 100vh;
@@ -93,7 +93,8 @@ code {
     @extend .overflow-y-auto;
     @extend .mb-3;
 
-    top: 1em;
+    // Add the padding from the .window class
+    top: calc($nav-offset + map-get($spacers, 5)) !important;
     height: calc(98vh - $nav-offset);
 }
 

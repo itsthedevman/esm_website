@@ -1,7 +1,7 @@
 @use "./colors" as *;
 
 #toast-container {
-    top: 4.05em;
+    top: $nav-offset !important;
     right: 1em;
 }
 
