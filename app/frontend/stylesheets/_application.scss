@@ -88,14 +88,19 @@ code {
     border: 1px solid rgba($esm-ui-danger, 0.3);
 }
 
-.table-of-contents {
+.sidebar {
     @extend .sticky-top;
     @extend .overflow-y-auto;
     @extend .mb-3;
 
+    max-height: calc(97vh - $nav-offset);
+
     // Add the padding from the .window class
     top: calc($nav-offset + map-get($spacers, 5)) !important;
-    height: calc(98vh - $nav-offset);
+}
+
+.table-of-contents {
+    @extend .sidebar;
 }
 
 /* Hide the icon by default */

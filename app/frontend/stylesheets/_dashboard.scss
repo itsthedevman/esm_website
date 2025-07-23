@@ -2,11 +2,8 @@
 // DASHBOARD SIDEBAR
 // =============================================================================
 
-.dashboard-sidebar {
-    position: sticky;
-    max-height: calc(100vh - 2rem);
-    overflow-y: auto;
-    width: 100%;
+#dashboard-sidebar {
+    @extend .sidebar;
 }
 
 .server-status {
