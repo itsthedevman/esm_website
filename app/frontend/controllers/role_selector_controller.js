@@ -17,7 +17,8 @@ export default class extends Controller {
       {
         choices: roles,
         allowHTML: true,
-        removeItemButton: true
+        removeItemButton: true,
+        placeholderValue: "  Search for roles to add..."
       }
     );
   }
