@@ -1,0 +1,46 @@
+#add-mod-modal.modal.fade[tabindex="-1" aria-labelledby="add-mod-modal-label" aria-hidden="true"]
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header
+        h5#add-mod-modal-label.modal-title Add a New Mod
+        button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
+
+      .modal-body
+        form#add-mod-form
+          .row.g-3.mb-3
+            .col-lg-8
+              label.form-label Mod Name
+              input.form-control[
+                type="text"
+                placeholder="@Exile"
+                id="mod-name"
+                required
+              ]
+            .col-lg-4
+              label.form-label Version
+              input.form-control[
+                type="text"
+                placeholder="1.0.4"
+                id="mod-version"
+              ]
+
+          .row.g-3.mb-3
+            .col-lg-8
+              label.form-label Download Link
+              input.form-control[
+                type="url"
+                placeholder="https://www.exilemod.com/downloads"
+                id="mod-link"
+              ]
+            .col-lg-4
+              label.form-label Options
+              .form-check.mt-2
+                input.form-check-input[type="checkbox" id="mod-required"]
+                label.form-check-label[for="mod-required"] Required Mod
+
+      .modal-footer.d-flex.justify-content-between
+        .text-muted.small
+          | You can always modify a mod later via the "Modify Server" section
+        div
+          button.btn.btn-secondary[type="button" data-bs-dismiss="modal"] Cancel
+          button.btn.btn-primary.ms-2[type="button" id="add-mod-btn"] Add Mod

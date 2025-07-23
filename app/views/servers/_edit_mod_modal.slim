@@ -1,0 +1,43 @@
+#edit-mod-modal.modal.fade[tabindex="-1" aria-labelledby="edit-mod-modal-label" aria-hidden="true"]
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header
+        h5#edit-mod-modal-label.modal-title Edit Mod
+        button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
+
+      .modal-body
+        form#edit-mod-form
+          .row.g-3.mb-3
+            .col-lg-8
+              label.form-label Mod Name
+              input.form-control[
+                type="text"
+                placeholder="@Exile"
+                id="edit-mod-name"
+                required
+              ]
+            .col-lg-4
+              label.form-label Version
+              input.form-control[
+                type="text"
+                placeholder="1.0.4"
+                id="edit-mod-version"
+              ]
+
+          .row.g-3.mb-3
+            .col-lg-8
+              label.form-label Download Link
+              input.form-control[
+                type="url"
+                placeholder="https://www.exilemod.com/downloads"
+                id="edit-mod-link"
+              ]
+            .col-lg-4
+              label.form-label Options
+              .form-check.mt-2
+                input.form-check-input[type="checkbox" id="edit-mod-required"]
+                label.form-check-label[for="edit-mod-required"] Required Mod
+
+      .modal-footer
+        button.btn.btn-secondary[type="button" data-bs-dismiss="modal"] Cancel
+        button.btn.btn-primary[type="button" id="save-mod-btn"] Save Changes

@@ -1,0 +1,239 @@
+hr.my-4
+
+.card.mb-4
+  .card-header
+    h4.mb-0
+      | Advanced Settings
+      span.badge.bg-info.ms-2 NEW
+
+  .accordion#advanced-settings-accordion
+    / Core Settings
+    .accordion-item
+      h2.accordion-header#core-settings-heading
+        button.accordion-button.collapsed[
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#core-settings-collapse"
+          aria-expanded="false"
+          aria-controls="core-settings-collapse"
+        ]
+          | Core Settings
+
+      #core-settings-collapse.accordion-collapse.collapse[
+        aria-labelledby="core-settings-heading"
+        data-bs-parent="#advanced-settings-accordion"
+      ]
+        .accordion-body
+          p.text-muted.small.mb-4
+            | Configure core V2 server settings including database connections, logging, and ExtDB options.
+            br
+            | ESM works out of the box with sensible defaults - these settings only need to be changed for custom configurations.
+            br
+            strong After saving, make sure to download your config.yml file and place it in your server's @esm folder.
+
+          .row.g-4
+            .col-md-6
+              .mb-3
+                h6.mb-2 Database URI
+                p.text-muted.small.mb-2
+                  | Database connection string in URI format. When set, this overrides ExtDB configuration.
+                  br
+                  | Format:
+                  code mysql://user:password@host:port/database_name
+                = f.text_field :database_uri,
+                    class: "form-control",
+                    placeholder: "Leave blank for default"
+
+            .col-md-6
+              .mb-3
+                h6.mb-2 Number Locale
+                p.text-muted.small.mb-2
+                  | Controls how numbers display (thousands/decimal separators)
+                  br
+                  | Examples:
+                  code en
+                  |  (12,345.67),
+                  code de_DE
+                  |  (12.345,67)
+                = f.text_field :number_locale,
+                    class: "form-control",
+                    placeholder: "Leave blank for default (en)"
+
+            .col-md-6
+              .mb-3
+                h6.mb-2 Server Mod Name
+                p.text-muted.small.mb-2
+                  | Directory containing Exile server files
+                  br
+                  | Default:
+                  code @ExileServer
+                  |  (Windows),
+                  code @exileserver
+                  |  (Linux)
+                = f.text_field :server_mod_name,
+                    class: "form-control",
+                    placeholder: "Leave blank for default"
+
+    / ExtDB Settings
+    .accordion-item
+      h2.accordion-header#extdb-settings-heading
+        button.accordion-button.collapsed[
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#extdb-settings-collapse"
+          aria-expanded="false"
+          aria-controls="extdb-settings-collapse"
+        ]
+          | ExtDB Settings
+
+      #extdb-settings-collapse.accordion-collapse.collapse[
+        aria-labelledby="extdb-settings-heading"
+        data-bs-parent="#advanced-settings-accordion"
+      ]
+        .accordion-body
+          .row.g-4
+            .col-md-6
+              .mb-3
+                h6.mb-2 Path to Config
+                p.text-muted.small.mb-2
+                  | Path to ExtDB configuration file. Must be a valid INI file with database settings.
+                  br
+                  | Ignored if database_uri is set above.
+                = f.text_field :extdb_conf_path,
+                    class: "form-control",
+                    placeholder: "Leave blank for default"
+                small.form-text.text-muted
+                  | Default locations: @ExileServer/extdb3-conf.ini (Windows), @exileserver/extdb3-conf.ini (Linux)
+
+            .col-md-6
+              .mb-3
+                h6.mb-2 Header Name
+                p.text-muted.small.mb-2
+                  | Database configuration section name in ExtDB config. Identifies which database settings to use.
+                = f.text_field :extdb_conf_header_name,
+                    class: "form-control",
+                    placeholder: "Leave blank for default (exile)"
+
+            .col-md-6
+              .mb-3
+                h6.mb-2 Extension Version
+                p.text-muted.small.mb-2
+                  | ExtDB version override. Only set this if automatic detection fails.
+                = f.select :extdb_version,
+                    options_for_select([["Leave blank for default", ""], ["2", 2], ["3", 3]], ""),
+                    {},
+                    class: "form-select"
+
+    / Log Processing
+    .accordion-item
+      h2.accordion-header#log-processing-heading
+        button.accordion-button.collapsed[
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#log-processing-collapse"
+          aria-expanded="false"
+          aria-controls="log-processing-collapse"
+        ]
+          | Log Processing
+
+      #log-processing-collapse.accordion-collapse.collapse[
+        aria-labelledby="log-processing-heading"
+        data-bs-parent="#advanced-settings-accordion"
+      ]
+        .accordion-body
+          .row.g-4
+            .col-md-6
+              .mb-3
+                h6.mb-2 Exile Log Search Days
+                p.text-muted.small.mb-2
+                  | How many days of logs to search. Example: 7 searches the last week of logs.
+                = f.number_field :exile_logs_search_days,
+                    class: "form-control",
+                    placeholder: "Leave blank for default (14)",
+                    min: 1
+
+            .col-12
+              .mb-3
+                h6.mb-2 Additional Logs
+                p.text-muted.small.mb-2
+                  | Additional log files to search. Can be relative to server directory or absolute paths.
+                  br
+                  | Examples:
+                  code logs/server.log
+                  |  (relative),
+                  code /home/steam/logs/error.log
+                  |  (absolute)
+
+                .table-responsive
+                  table.table.table-sm.table-striped.mb-3#additional-logs-table
+                    thead.table-dark
+                      tr
+                        th Log Path
+                        th Actions
+                    tbody
+                      / Dynamic log paths will be added here
+                    tfoot
+                      tr
+                        td
+                          input.form-control.form-control-sm[
+                            type="text"
+                            placeholder="/servers/altis/logs"
+                            id="additional-log-path"
+                          ]
+                        td
+                          button.btn.btn-outline-success.btn-sm[type="button" id="add-log-path"]
+                            i.bi.bi-plus
+                            | Add
+
+    / Log Configuration
+    .accordion-item
+      h2.accordion-header#log-config-heading
+        button.accordion-button.collapsed[
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#log-config-collapse"
+          aria-expanded="false"
+          aria-controls="log-config-collapse"
+        ]
+          | Log Configuration
+
+      #log-config-collapse.accordion-collapse.collapse[
+        aria-labelledby="log-config-heading"
+        data-bs-parent="#advanced-settings-accordion"
+      ]
+        .accordion-body
+          .row.g-4
+            .col-md-6
+              .mb-3
+                h6.mb-2 Log Destination
+                p.text-muted.small.mb-2
+                  | Where to send SQF log messages
+                = f.select :log_output,
+                    options_for_select([
+                      ["Leave blank for default", ""],
+                      ["RPT log only", "rpt"],
+                      ["Extension log only", "extension"],
+                      ["Both RPT and extension", "both"]
+                    ], ""),
+                    {},
+                    class: "form-select"
+                small.form-text.text-muted Default: extension
+
+            .col-md-6
+              .mb-3
+                h6.mb-2 Logging Path
+                p.text-muted.small.mb-2
+                  | ESM extension log file location
+                = f.text_field :logging_path,
+                    class: "form-control",
+                    placeholder: "Leave blank for default"
+                small.form-text.text-muted Default: &lt;server_path&gt;/@esm/log/esm.log
+
+.alert.alert-warning.border-warning.bg-warning.bg-opacity-10.mt-3
+  .d-flex.align-items-center
+    i.bi.bi-exclamation-triangle.text-warning.me-3.fs-4
+    div
+      h6.mb-1.text-warning Important Configuration Note
+      p.mb-0.small
+        | These settings require downloading and installing the config file for your server after saving.
+        | Most servers don't need custom settings - ESM works great with defaults!

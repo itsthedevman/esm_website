@@ -1,0 +1,224 @@
+.card.mb-4
+  .card-header
+    h4.mb-0 Server Settings
+
+  .card-body
+    / Restart Settings
+    .mb-4
+      h5.mb-2
+        | Restart Settings
+        span.badge.bg-info.ms-2 NEW
+      p.text-muted.small.mb-3
+        | Configure restart intervals for the server. ESM uses these settings to calculate and display the remaining time until the next restart.
+
+      .row.g-3
+        .col-md-6
+          label.form-label Hours
+          = f.number_field :server_restart_hour,
+              class: "form-control",
+              placeholder: "3",
+              min: 0,
+              max: 100
+        .col-md-6
+          label.form-label Minutes
+          = f.number_field :server_restart_min,
+              class: "form-control",
+              placeholder: "0",
+              min: 0,
+              max: 59
+
+    hr.my-4
+
+    / Gambling Settings
+    .mb-4
+      h5.mb-2 Gambling Settings
+      p.text-muted.small.mb-3 Control gambling probabilities and payouts
+
+      h6.mb-2 Core Settings
+      .row.g-3.mb-3
+        .col-md-6
+          label.form-label Win Chance (%)
+          = f.number_field :gambling_win_percentage,
+              class: "form-control",
+              placeholder: "35",
+              min: 0,
+              max: 100
+        .col-md-6
+          .form-check.mt-4
+            = f.check_box :gambling_locker_limit_enabled,
+                class: "form-check-input"
+            = f.label :gambling_locker_limit_enabled,
+                class: "form-check-label" do
+              | Restrict winnings to player's locker capacity
+              span.badge.bg-info.ms-1 NEW
+
+      h6.mb-2
+        | Payout Configuration
+        = link_to "#", class: "float-end small text-muted"
+          i.bi.bi-info-circle
+          | Detailed Explanation
+
+      .row.g-3.mb-3
+        .col-md-6
+          label.form-label Payout Percentage (0-100%)
+          = f.number_field :gambling_payout_base,
+              class: "form-control",
+              placeholder: "95",
+              min: 0,
+              max: 100
+        .col-md-6
+          label.form-label Payout Modifier (≥ 1)
+          = f.number_field :gambling_modifier,
+              class: "form-control",
+              placeholder: "1",
+              min: 0,
+              step: 0.1
+
+      h6.mb-2 Randomizer Range
+      .row.g-3
+        .col-md-4
+          label.form-label Minimum
+          = f.number_field :gambling_payout_randomizer_min,
+              class: "form-control",
+              placeholder: "0",
+              min: 0,
+              step: 0.1
+        .col-md-4
+          label.form-label Middle
+          = f.number_field :gambling_payout_randomizer_mid,
+              class: "form-control",
+              placeholder: "0.5",
+              min: 0,
+              step: 0.1
+        .col-md-4
+          label.form-label Maximum
+          = f.number_field :gambling_payout_randomizer_max,
+              class: "form-control",
+              placeholder: "1",
+              min: 0,
+              step: 0.1
+
+    hr.my-4
+
+    / Logging Settings
+    .mb-4
+      h5.mb-2 Logging Settings
+      p.text-muted.small.mb-3
+        | Log information from the following actions to the logging channel
+
+      .row.g-3
+        .col-md-6
+          .form-check
+            = f.check_box :logging_exec, class: "form-check-input"
+            = f.label :logging_exec, class: "form-check-label" do
+              | Admin - execute code
+              br
+              small.text-muted
+              | /sqf command
+
+          .form-check
+            = f.check_box :logging_modify_player, class: "form-check-input"
+            = f.label :logging_modify_player, class: "form-check-label" do
+              | Admin - modify player attributes
+              br
+              small.text-muted
+              | /player command
+
+          .form-check
+            = f.check_box :logging_gamble, class: "form-check-input"
+            = f.label :logging_gamble, class: "form-check-label" do
+              | Gamble poptabs
+              br
+              small.text-muted
+              | /gamble command
+
+          .form-check
+            = f.check_box :logging_reward_player, class: "form-check-input"
+            = f.label :logging_reward_player, class: "form-check-label" do
+              | Reward player
+              br
+              small.text-muted
+              | /reward command
+
+        .col-md-6
+          .form-check
+            = f.check_box :logging_add_player_to_territory, class: "form-check-input"
+            = f.label :logging_add_player_to_territory, class: "form-check-label" do
+              | Territory - add player
+              br
+              small.text-muted
+              | /add command
+
+          .form-check
+            = f.check_box :logging_demote_player, class: "form-check-input"
+            = f.label :logging_demote_player, class: "form-check-label" do
+              | Territory - demote player
+              br
+              small.text-muted
+              | /demote command
+
+          .form-check
+            = f.check_box :logging_pay_territory, class: "form-check-input"
+            = f.label :logging_pay_territory, class: "form-check-label" do
+              | Territory - pay protection money
+              br
+              small.text-muted
+              | /pay command
+
+          .form-check
+            = f.check_box :logging_promote_player, class: "form-check-input"
+            = f.label :logging_promote_player, class: "form-check-label" do
+              | Territory - promote player
+              br
+              small.text-muted
+              | /promote command
+
+          .form-check
+            = f.check_box :logging_remove_player_from_territory, class: "form-check-input"
+            = f.label :logging_remove_player_from_territory, class: "form-check-label" do
+              | Territory - remove player
+              br
+              small.text-muted
+              | /remove command
+
+          .form-check
+            = f.check_box :logging_upgrade_territory, class: "form-check-input"
+            = f.label :logging_upgrade_territory, class: "form-check-label" do
+              | Territory - upgrade
+              br
+              small.text-muted
+              | /upgrade command
+
+    hr.my-4
+
+    / Territory Settings
+    .mb-0
+      h5.mb-2 Territory Settings
+      p.text-muted.small.mb-3
+        | Configure territory payments, taxes, and limitations
+
+      h6.mb-2 Payment Limits
+      .mb-3
+        label.form-label Maximum Payments Before Server Join
+        = f.number_field :max_payment_count,
+            class: "form-control w-auto",
+            placeholder: "0",
+            min: 0
+        small.form-text.text-muted Set to 0 for unlimited payments
+
+      h6.mb-2 Territory Taxes
+      .row.g-3
+        .col-md-6
+          label.form-label Territory Payment Tax (0-100%)
+          = f.number_field :territory_payment_tax,
+              class: "form-control",
+              placeholder: "0",
+              min: 0,
+              max: 100
+        .col-md-6
+          label.form-label Territory Upgrade Tax (0-100%)
+          = f.number_field :territory_upgrade_tax,
+              class: "form-control",
+              placeholder: "0",
+              min: 0,
+              max: 100
