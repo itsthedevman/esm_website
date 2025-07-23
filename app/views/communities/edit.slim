@@ -11,22 +11,21 @@
         local: true do |f|
 
       / Community ID Section
-      - if current_community.server_mode_enabled?
-        .card.mb-4
-          .card-header
-            h5.mb-0 Community ID
-          .card-body
-            p.text-muted.small
-              | Your community's unique ID for ESM. This ID is used in commands that require referencing your community or servers.
+      .card.mb-4
+        .card-header
+          h5.mb-0 Community ID
+        .card-body
+          p.text-muted.small
+            | Your community's unique ID for ESM. This ID is used in commands that require referencing your community or servers.
 
-            .row
-              .col-md-6
-                = f.hidden_field :current_community_id, value: current_community.community_id
-                = f.text_field :community_id,
-                    placeholder: current_community.community_id,
-                    class: "form-control"
-                .invalid-feedback
-                small.form-text.text-muted Enter a new community ID if you want to change it
+          .row
+            .col-md-6
+              = f.hidden_field :current_community_id, value: current_community.community_id
+              = f.text_field :community_id,
+                  placeholder: current_community.community_id,
+                  class: "form-control"
+              .invalid-feedback
+              small.form-text.text-muted Enter a new community ID if you want to change it
 
       / Logging Channel Section
       - if current_community.server_mode_enabled?
