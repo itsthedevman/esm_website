@@ -159,9 +159,11 @@ hr.my-4
                   | Additional log files to search. Can be relative to server directory or absolute paths.
                   br
                   | Examples:
-                  code logs/server.log
+                  code
+                    | logs/server.log
                   |  (relative),
-                  code /home/steam/logs/error.log
+                  code
+                    | /home/steam/logs/error.log
                   |  (absolute)
 
                 .table-responsive
@@ -209,12 +211,12 @@ hr.my-4
                 p.text-muted.small.mb-2
                   | Where to send SQF log messages
                 = f.select :log_output,
-                    options_for_select([
+                    options_for_select([ \
                       ["Leave blank for default", ""],
                       ["RPT log only", "rpt"],
                       ["Extension log only", "extension"],
-                      ["Both RPT and extension", "both"]
-                    ], ""),
+                      ["Both RPT and extension", "both"]],
+                    ""),
                     {},
                     class: "form-select"
                 small.form-text.text-muted Default: extension
