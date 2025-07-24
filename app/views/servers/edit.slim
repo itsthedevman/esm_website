@@ -1,0 +1,104 @@
+= render "communities/container" do
+  h1.mb-4 Modify #{server.server_id}
+
+  = form_with model: server,
+      url: community_server_path(current_community, server),
+      class: "needs-validation" do |f|
+
+    .row.g-4.mb-4
+      / Left column - Basic server info
+      .col-12
+        / Server ID Card
+        .card.mb-4
+          .card-header
+            h5.mb-0
+              span.text-danger *
+              | Server ID
+          .card-body
+            p.text-muted.small.mb-3
+              | Your players will be typing this with every command, make sure to make it short and sweet
+            .input-group
+              span.input-group-text = "#{current_community.community_id}_"
+              = f.text_field :server_id, class: "form-control", required: true
+
+        / Server Connection Card
+        .card.mb-4
+          .card-header
+            h5.mb-0
+              span.text-danger *
+              | Server IP and Port
+          .card-body
+            p.text-muted.small.mb-3 Important for new and returning players
+            .row
+              .col-md-8
+                = f.text_field :server_ip, class: "form-control", required: true
+              .col-md-4
+                = f.number_field :server_port, class: "form-control", required: true
+
+        / Server Mods Card
+        .card.mb-4
+          .card-header
+            h5.mb-0 Server Mods
+          .card-body
+            p.text-muted.small.mb-3 Let players know what cool mods you have
+            / Mod management table here
+            button.btn.btn-outline-primary.btn-sm Add Mod
+
+        / Rewards Card
+        .card.mb-4
+          .card-header
+            h5.mb-0 Rewards
+          .card-body
+            / Poptabs/respect inputs + items table
+
+        / Visibility Card
+        .card.mb-4
+          .card-header
+            h5.mb-0 Visibility
+          .card-body
+            = f.select :server_visibility, options_for_select([])
+
+      / Right column would be settings
+      .col-12
+        / Logging Settings Card
+        .card.mb-4
+          .card-header
+            h4.mb-0 Logging Settings
+          .card-body
+            / Bunch of checkboxes for different log types
+
+        / Territory Taxes Card
+        .card.mb-4
+          .card-header
+            h4.mb-0 Territory Taxes
+          .card-body
+            / Tax percentage inputs
+
+        / Gambling Settings Card
+        .card.mb-4
+          .card-header
+            h4.mb-0 Gambling Settings
+          .card-body
+            / Win percentage input
+
+        / Payment Limits Card
+        .card.mb-4
+          .card-header
+            h4.mb-0 Payment Limits
+          .card-body
+            / Max payment count
+
+        / Advanced Settings Card
+        .card.mb-4
+          .card-header
+            h4.mb-0 Advanced Settings
+          .card-body
+            .accordion
+              / Advanced Gambling Configuration
+              / Custom File Paths
+              / Request Threading
+
+    / Save buttons
+    .d-flex.justify-content-between.pt-4
+      = link_to "Cancel", community_path(current_community), class: "btn btn-outline-secondary"
+      = f.submit "Save Changes", class: "btn btn-primary"

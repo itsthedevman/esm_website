@@ -1,38 +1,126 @@
 = render "communities/container" do
-  h1.mb-4 Register a Server
+  / Hero section
+  .text-center.mb-4
+    h1.mb-3 Register Your Server
+    p.lead.text-muted Choose your ESM version
 
-  = form_with model: ESM::Server.new,
+  / Version selection cards
+  .row.g-4.mb-5
+    .col-md-6
+      .card.h-100.border-primary.version-card
+        .card-header.border-primary.text-center
+          h4.mb-0.text-primary
+            | Version 1
+          .badge.bg-success.mt-2 Stable & Proven
+        .card-body.text-center
+          ul.list-unstyled.text-start.mb-4
+            li.mb-2
+              i.bi.bi-check-circle.text-success.me-2
+              | Windows servers only
+            li.mb-2
+              i.bi.bi-check-circle.text-success.me-2
+              | 7 years of production use
+            li.mb-2
+              i.bi.bi-check-circle.text-success.me-2
+              | Battle-tested reliability
+          .mt-auto
+            button.btn.btn-outline-primary.w-100[type="button"] Choose v1
+
+    .col-md-6
+      .card.h-100.border-info.version-card
+        .card-header.border-info.text-center
+          h4.mb-0.text-info
+            | Version 2
+          .badge.bg-info.mt-2 Enhanced & Cross-Platform
+        .card-body.text-center
+          ul.list-unstyled.text-start.mb-4
+            li.mb-2
+              i.bi.bi-check-circle.text-success.me-2
+              | Works on Windows & Linux
+            li.mb-2
+              i.bi.bi-check-circle.text-success.me-2
+              | Modern Rust architecture
+            li.mb-2
+              i.bi.bi-check-circle.text-success.me-2
+              | Improved performance
+            li.mb-2
+              i.bi.bi-check-circle.text-success.me-2
+              | Enhanced XM8 notifications
+          .mt-auto
+            button.btn.btn-outline-info.w-100[type="button"] Choose v2
+
+  / Server details form
+  .card.bg-dark
+    .card-header.d-flex.align-items-center.py-3
+      h4.mb-0
+        i.bi.bi-hdd-network.me-3
+        | Enter your server's information
+    = form_with model: ESM::Server.new,
       url: community_servers_path(current_community.public_id),
-      local: true,
-      class: "needs-validation",
-      novalidate: true do |f|
+      class: "needs-validation" do |f|
+        .card-body.p-4
+          / Server ID - the key identifier
+          .mb-4
+            label.form-label.h6.mb-2
+              i.bi.bi-tag.text-primary.me-2
+              | Server ID
+              span.text-danger.ms-1 *
+            .input-group.input-group-lg
+              span.input-group-text.bg-secondary.border-secondary.fw-bold
+                = "#{current_community.community_id}_"
+              = f.text_field :server_id,
+                  class: "form-control border-secondary",
+                  placeholder: "altis",
+                  required: true
+            .form-text.text-muted.mt-2
+              i.bi.bi-lightbulb.me-1
+              | Players type this in Discord commands - keep it short and memorable!
 
-    - if current_community.allow_v2_servers? && params[:v2]
-      = f.hidden_field :ui_version, value: "2.0.0"
+          / Connection details
+          .mb-4
+            label.form-label.h6.mb-2
+              i.bi.bi-globe.text-success.me-2
+              | Server Connection
+              span.text-danger.ms-1 *
+            .row.g-3
+              .col-md-8
+                = f.text_field :server_ip,
+                    class: "form-control form-control-lg border-secondary",
+                    placeholder: "192.168.1.100",
+                    required: true
+              .col-md-4
+                = f.number_field :server_port,
+                    class: "form-control form-control-lg border-secondary",
+                    placeholder: "2302",
+                    required: true
+            .form-text.text-muted.mt-2
+              i.bi.bi-info-circle.me-1
+              | IP address and port where players connect to your server
 
-      / v2 Server Layout
-      .row.g-4.mb-4
-        .col-12.col-xl-6
-          = render "servers/server_info", f: f
-        .col-12.col-xl-6
-          = render "servers/server_settings", f: f
+          / Visibility toggle
+          .mb-4
+            label.form-label.h6.mb-2
+              i.bi.bi-eye-slash.text-warning.me-2
+              | Server Visibility
+            = f.select :server_visibility,
+                options_for_select([ \
+                  ["Public - Listed in server commands", "public"],
+                  ["Private - Hidden from server lists", "private"] \
+                ]),
+                {},
+                class: "form-select form-select-lg border-secondary"
+            .form-text.text-muted.mt-2
+              i.bi.bi-shield-check.me-1
+              | Private servers work normally but won't appear in public listings
 
-      = render "servers/server_config", f: f
-
-    - else
-      / v1 Server Layout
-      .row.g-4.mb-4
-        .col-12
-          = render "servers/server_info_v1", f: f
-        .col-12
-          = render "servers/server_settings_v1", f: f
-
-    / Action Buttons
-    .d-flex.justify-content-between.align-items-center.pt-4.border-top
-      .d-flex.gap-3
-        = link_to "Cancel", community_path(current_community), class: "btn btn-outline-secondary"
-        = f.submit "Register Server", class: "btn btn-primary"
-
-  / Modals for mod management
-  = render "servers/add_mod_modal"
-  = render "servers/edit_mod_modal"
+        / Action footer
+        .card-footer.py-4
+          .d-flex.gap-3.justify-content-center.align-items-center
+            = link_to community_path(current_community),
+                class: "btn btn-outline-secondary btn-lg px-4"
+              i.bi.bi-arrow-left.me-2
+              | Cancel
+            = f.submit "Register Server",
+                class: "btn btn-success btn-lg px-5"
+              i.bi.bi-plus-circle.me-2
+              | Register Server
