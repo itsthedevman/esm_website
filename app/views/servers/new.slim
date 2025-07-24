@@ -104,14 +104,14 @@
               | Server Visibility
             = f.select :server_visibility,
                 options_for_select([ \
-                  ["Public - Listed in server commands", "public"],
-                  ["Private - Hidden from server lists", "private"] \
+                  ["Public", "public"],
+                  ["Private", "private"] \
                 ]),
                 {},
                 class: "form-select form-select-lg border-secondary"
             .form-text.text-muted.mt-2
               i.bi.bi-shield-check.me-1
-              | Private servers work normally but won't appear in public listings
+              | Private servers work normally but won't appear when your servers are shown
 
         / Action footer
         .card-footer.py-4
