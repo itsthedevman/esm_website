@@ -949,6 +949,11 @@ jsonfile@^6.0.1:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
+just-validate@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/just-validate/-/just-validate-4.3.0.tgz#8e3e5d78e57fd7579540591498723900a1851503"
+  integrity sha512-9yS7ZnFk95vq+O7CAa7XZEJvZN5i6jTQWNhLwOjtgkSqiLxo7GZJhK8ViylP76fXPfHLs8tYWqi81XgxPF3OGA==
+
 lilconfig@^3.1.1:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/lilconfig/-/lilconfig-3.1.3.tgz#a1bcfd6257f9585bf5ae14ceeebb7b559025e4c4"

@@ -1,7 +1,5 @@
 = render "communities/container" do
-  div[
-    data-controller="new-server"
-  ]
+  div[data-controller="new-server" data-new-server-ids-value="#{existing_server_ids}"]
     / Hero section
     .text-center.mb-4
       h1.mb-3 Register Your Server
@@ -68,7 +66,8 @@
           | Enter your server's information
       = form_with model: ESM::Server.new,
         url: community_servers_path(current_community.public_id),
-        class: "needs-validation" do |f|
+        scope: "server",
+        data: {new_server_target: "form", turbo: false} do |f|
           = f.hidden_field :server_version, data: {new_server_target: "version"}
 
           .card-body.p-4
@@ -99,12 +98,13 @@
                 .col-md-8
                   = f.text_field :server_ip,
                       class: "form-control form-control-lg border-secondary",
-                      placeholder: "192.168.1.100",
+                      placeholder: "123.123.123.123",
                       required: true
                 .col-md-4
                   = f.number_field :server_port,
                       class: "form-control form-control-lg border-secondary",
                       placeholder: "2302",
+                      value: "2302",
                       required: true
               .form-text.text-muted.mt-2
                 i.bi.bi-info-circle.me-1

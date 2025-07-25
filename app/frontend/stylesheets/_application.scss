@@ -2,6 +2,7 @@
 
 @import "vendor/bootstrap";
 @import "vendor/choices";
+@import "vendor/just_validate";
 
 $nav-offset: calc(map-get($spacers, 5) + map-get($spacers, 4));
 

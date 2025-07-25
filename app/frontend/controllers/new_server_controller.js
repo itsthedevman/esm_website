@@ -1,26 +1,74 @@
 import { Controller } from "@hotwired/stimulus";
 import * as R from "ramda";
 import $ from "cash-dom";
+import JustValidate from "just-validate";
 
 // Connects to data-controller="new-server"
 export default class extends Controller {
-  static targets = ["v1Card", "v2Card", "version"];
+  static targets = ["form", "v1Card", "v2Card", "version"];
+  static values = { ids: Array };
 
   connect() {
+    this.validator = new JustValidate(this.formTarget, {
+      submitFormAutomatically: true,
+    });
+
     this.cards = {
       1: $(this.v1CardTarget),
       2: $(this.v2CardTarget),
     };
 
-    this.setActiveCard(2);
+    this.#initializeValidator();
+    this.#setActiveCard(2);
   }
 
   onVersionSelected(event) {
     const version = event.params.version;
-    this.setActiveCard(version);
+    this.#setActiveCard(version);
   }
 
-  setActiveCard(version) {
+  //////////////////////////////////////////////////////////////////////////////
+
+  #initializeValidator() {
+    this.validator
+      .addField("#server_server_id", [
+        { rule: "required" },
+        {
+          rule: "customRegexp",
+          value: /\S+/gi,
+          errorMessage: "Server ID cannot contain whitespace",
+        },
+        {
+          rule: "customRegexp",
+          value: /\w+/gi,
+          errorMessage: "Server ID cannot contain any symbols",
+        },
+        {
+          validator: (value, _context) => {
+            return !R.includes(value, this.idsValue);
+          },
+          errorMessage: "Server ID already exists",
+        },
+      ])
+      .addField("#server_server_ip", [
+        { rule: "required" },
+        {
+          rule: "customRegexp",
+          value: /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/i,
+          errorMessage: "Provide a valid public facing IPv4 address",
+        },
+      ])
+      .addField("#server_server_port", [
+        { rule: "required" },
+        {
+          rule: "customRegexp",
+          value: /\d+/,
+          errorMessage: "Provide a valid port",
+        },
+      ]);
+  }
+
+  #setActiveCard(version) {
     this.#resetCards();
     this.#setVersion(version);
 
@@ -31,8 +79,6 @@ export default class extends Controller {
     const button = selectedCard.find("button");
     button.html("SELECTED");
   }
-
-  //////////////////////////////////////////////////////////////////////////////
 
   #resetCards() {
     R.values(this.cards).map((card, _) => {
