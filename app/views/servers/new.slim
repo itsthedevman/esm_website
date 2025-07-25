@@ -68,7 +68,7 @@
         url: community_servers_path(current_community.public_id),
         scope: "server",
         data: {new_server_target: "form", turbo: false} do |f|
-          = f.hidden_field :server_version, data: {new_server_target: "version"}
+          = f.hidden_field :ui_version, data: {new_server_target: "version"}
 
           .card-body.p-4
             / Server ID - the key identifier
