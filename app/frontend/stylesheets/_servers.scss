@@ -1,0 +1,10 @@
+.version-card {
+    &.selected {
+        @extend .border-primary;
+        @extend .border-3;
+
+        button {
+            @extend .btn-primary;
+        }
+    }
+}

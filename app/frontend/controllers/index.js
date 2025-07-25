@@ -9,3 +9,6 @@ application.register("notifications", NotificationsController)
 
 import RoleSelectorController from "./role_selector_controller"
 application.register("role-selector", RoleSelectorController)
+
+import NewServerController from "./new_server_controller"
+application.register("new-server", NewServerController)
