@@ -100,10 +100,6 @@ code {
     top: calc($nav-offset + map-get($spacers, 5)) !important;
 }
 
-.table-of-contents {
-    @extend .sidebar;
-}
-
 /* Hide the icon by default */
 .anchor-link .bi-link-45deg {
     opacity: 0;
