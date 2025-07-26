@@ -47,9 +47,9 @@ class CommunitiesController < AuthenticatedController
     community_id = params.dig(:community, :community_id)
     community_id = community_id.downcase if community_id.present?
 
-    community_data = community_params
-    (community_data[:territory_admin_ids] ||= []).compact_blank!
-    (community_data[:dashboard_access_role_ids] ||= []).compact_blank!
+    community_params = permit_community_params
+    (community_params[:territory_admin_ids] ||= []).compact_blank!
+    (community_params[:dashboard_access_role_ids] ||= []).compact_blank!
 
     # The ID has changed, update the community and servers
     if community_id.present? && community_id != current_community.community_id
@@ -64,7 +64,7 @@ class CommunitiesController < AuthenticatedController
       current_community.update_community_id!(community_id)
     end
 
-    current_community.update!(community_data)
+    current_community.update!(community_params)
   end
 
   def destroy
@@ -89,7 +89,7 @@ class CommunitiesController < AuthenticatedController
     }
   end
 
-  def community_params
+  def permit_community_params
     # Purposely not including :community_id
     params.require(:community).permit(
       :logging_channel_id,

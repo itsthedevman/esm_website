@@ -69,7 +69,7 @@ module ESM
       @server_communities ||= ESM::Community.all
         .includes(:servers)
         .order("UPPER(community_id)")
-        .where(id: admin_community_ids)
+        .where(id: admin_community_ids, player_mode_enabled: false)
     end
 
     def player_communities
