@@ -11,8 +11,9 @@ export function allowTurbo(validator) {
   // https://github.com/horprogs/Just-validate/blob/master/src/main.ts#L1000
   validator.formSubmitHandler = function (event) {
     validator.isSubmitted = true;
-    validator.validateHandler(event);
-    if (!validator.isValid) event.preventDefault();
+    validator.validateHandler(event).finally(() => {
+      if (!validator.isValid) event.preventDefault();
+    });
   };
 
   validator.addListener("submit", validator.form, validator.formSubmitHandler);
