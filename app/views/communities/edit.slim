@@ -105,7 +105,8 @@
           .card-header.d-flex.align-items-center
             .form-check.form-switch.me-3
               = f.check_box :welcome_message_enabled,
-                  class: "form-check-input"
+                  class: "form-check-input",
+                  data: {action: "click->edit-community#onWelcomeMessageToggleClick"}
 
               = f.label :welcome_message_enabled, "Welcome Message", class: "form-check-label h5 mb-0"
           .card-body
@@ -115,7 +116,7 @@
               | You may add additional information below that will be included in this welcome message.
 
             .row
-              .col-lg-8
+              .col
                 = f.text_area :welcome_message,
                   class: "form-control",
                   rows: 5,

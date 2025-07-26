@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 import JustValidate from "just-validate";
 import { allowTurbo } from "../helpers/just_validate";
+import $ from "cash-dom";
 
 // Connects to data-controller="edit-community"
 export default class extends Controller {
@@ -11,6 +12,13 @@ export default class extends Controller {
 
     this.#initializeValidator();
     allowTurbo(this.validator);
+  }
+
+  onWelcomeMessageToggleClick(event) {
+    const toggleElem = $(event.currentTarget);
+    const messageBoxElem = $("#community_welcome_message");
+
+    messageBoxElem.prop("disabled", !toggleElem.is(":checked"));
   }
 
   //////////////////////////////////////////////////////////////////////////////
