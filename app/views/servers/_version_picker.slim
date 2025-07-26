@@ -1,15 +1,9 @@
-/ ESM Version Management Card
 .card.mb-4.border-2
-  .card-header.bg-info.bg-opacity-10.border-info
-    h4.mb-0
-      i.bi.bi-arrow-up-circle.text-info.me-2
-      | ESM Version Management
-
   .card-body
     - if server.ui_v2?
       / Currently on V2
       .row.g-4
-        .col-8
+        .col-9
           .d-flex.align-items-center.mb-3
             .me-3
               i.bi.bi-check-circle.text-success.fs-1
@@ -18,13 +12,7 @@
               p.text-muted.mb-0
                 | Cross-platform version with improved performance and easier configuration.
 
-          .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-0
-            small.mb-0
-              i.bi.bi-lightbulb.me-1
-              strong Having issues?
-              |< You can temporarily switch back to ESM Classic while troubleshooting.
-
-        .col-4.text-end
+        .col-3.text-end
           = button_to community_server_path(current_community, server, ui_version: "1.0.0"),
               method: :patch,
               class: "btn btn-outline-warning",
@@ -33,11 +21,18 @@
               }
             i.bi.bi-arrow-down-circle.me-2
             | Switch to Classic
+      .row
+        .col
+          .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-0
+            small.mb-0
+              i.bi.bi-lightbulb.me-1
+              strong Having issues?
+              |< You can temporarily switch back to ESM Classic while troubleshooting.
 
     - else
       / Currently on V1 - show upgrade option
       .row.g-4
-        .col-8
+        .col-9
           .d-flex.align-items-center.mb-3
             .me-3
               i.bi.bi-shield-check.text-primary.fs-1
@@ -46,12 +41,7 @@
               p.text-muted.mb-0
                 | Time-tested version with proven Windows server reliability.
 
-          .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-0
-            h6.text-info.mb-2 ESM v2 Available
-            p.small.mb-0
-              | Supports Linux servers, easier setup with automatic config files, enhanced log searching, and new transfer command for players.
-
-        .col-4.text-end
+        .col-3.text-end
           = button_to community_server_path(current_community, server, ui_version: "2.0.0"),
               method: :patch,
               class: "btn btn-success",
@@ -60,21 +50,9 @@
               }
             i.bi.bi-arrow-up-circle.me-2
             | Upgrade to v2
-
-    / Version comparison info
-    hr.my-4
-    .row.g-3.small.text-muted
-      .col-6
-        h6.text-light.mb-2 ESM Classic
-        ul.mb-0
-          li Windows servers only
-          li 7+ years of proven stability
-          li Established workflow
-
-      .col-6
-        h6.text-light.mb-2 ESM v2
-        ul.mb-0
-          li Windows + Linux servers
-          li Improved performance
-          li Enhanced log searching
-          li Player transfer command
+      .row
+        .col
+          .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-0
+            h6.text-info.mb-2 ESM v2 Available
+            p.small.mb-0
+              | Supports Linux servers, easier setup with automatic config files, enhanced log searching, and new transfer command for players.
