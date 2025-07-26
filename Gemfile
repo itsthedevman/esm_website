@@ -108,3 +108,5 @@ gem "omniauth-rails_csrf_protection", "~> 1.0"
 gem "http", "~> 5.3"
 
 gem "sass-embedded", "~> 1.89"
+
+gem "semantic", "~> 1.6"

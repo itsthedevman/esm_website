@@ -41,5 +41,9 @@ module ESM
     def connected?
       true
     end
+
+    def ui_v2?
+      @ui_v2 ||= Semantic::Version.new(ui_version || "2.0.0") >= Semantic::Version.new("2.0.0")
+    end
   end
 end
