@@ -47,6 +47,11 @@ class CommunitiesController < AuthenticatedController
     community_id = params.dig(:community, :community_id)
     community_id = community_id.downcase if community_id.present?
 
+    if community_id.size < 2
+      render turbo_stream: create_error_toast("Community ID must be at least 2 characters")
+      return
+    end
+
     community_params = permit_community_params
     (community_params[:territory_admin_ids] ||= []).compact_blank!
     (community_params[:dashboard_access_role_ids] ||= []).compact_blank!
