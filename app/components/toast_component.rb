@@ -32,7 +32,7 @@ class ToastComponent < ApplicationComponent
       :yellow
     when "error"
       :red
-    when "info"
+    when "info", "notice"
       :blue
     end
   end
