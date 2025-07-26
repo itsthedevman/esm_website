@@ -3,7 +3,10 @@
 
 = render "communities/container", **local_assigns do
   div[data-controller="edit-community"]
-    h1.mb-4 Modify Community
+    / Header section
+    .text-center.mb-4
+      h1.mb-2 Community Settings
+      p.lead.text-muted = "Configure #{current_community.community_name} (#{current_community.community_id})"
 
     = turbo_frame_tag "community_edit" do
       = form_with model: current_community,
@@ -15,69 +18,91 @@
         / Community ID Section
         .card.mb-4
           .card-header
-            h5.mb-0 Community ID
+            h4.mb-0
+              i.bi.bi-tag.me-2
+              | Community ID
           .card-body
             p.text-muted.small
-              | Your community's unique ID for ESM. This ID is used in commands that require referencing your community or servers.
+              | Your community's unique identifier for ESM commands. Players use this when referencing your community or servers.
 
             .row
               .col-md-6
                 = f.hidden_field :current_community_id, value: current_community.community_id
                 = f.text_field :community_id,
-                    placeholder: current_community.community_id,
+                    value: current_community.community_id,
                     class: "form-control"
-                small.form-text.text-muted Enter a new community ID if you want to change it
 
-        / Logging Channel Section
+        / Logging Configuration Section
         - if current_community.server_mode_enabled?
           .card.mb-4
             .card-header
-              h5.mb-0 Log Channel
+              h4.mb-0
+                i.bi.bi-journal-text.me-2
+                | Logging Configuration
             .card-body
-              p.text-muted.small
-                | Which channel should receive messages from your servers, plus notifications below.
-                br
-                span.text-danger.fw-bold We recommend creating a private channel for this, as it may contain sensitive information
+              / Log Channel Selection
+              .mb-4
+                h5.mb-2
+                  | Log Channel
+                p.text-muted.mb-3
+                  | Choose which channel receives server events and notifications.
+                  br
+                  .alert.alert-warning.border-warning.bg-warning.bg-opacity-10.mt-2.py-2
+                    i.bi.bi-shield-exclamation.text-warning.me-2
+                    strong.text-warning Recommended:
+                    |< Create a private channel - logs may contain sensitive information.
 
-              .row
-                .col-md-6
-                  = channel_select_tag \
-                    "community[logging_channel_id]",
-                    current_community.admin_channels,
-                    class: "form-control",
-                    selected: current_community.logging_channel_id
+                .row
+                  .col-md-8
+                    = channel_select_tag \
+                      "community[logging_channel_id]",
+                      current_community.admin_channels,
+                      class: "form-control",
+                      selected: current_community.logging_channel_id
 
+              / Log Events
+              hr.my-4
 
-          / Log Events Section
-          .card.mb-4
-            .card-header
-              h5.mb-0 Log Events
-            .card-body
-              p.text-muted.small What types of events do you want to receive to your logging channel?
+              h5.mb-3
+                | Event Types
+              p.text-muted.small.mb-3 Select which events to log to your channel
 
               .row.g-3
                 .col-md-6
-                  .form-check.form-switch
-                    = f.check_box :log_reconnect_event, class: "form-check-input"
-                    = f.label :log_reconnect_event, "Server Connect/Disconnect", class: "form-check-label"
-                    small.form-text.text-muted.d-block Logs whenever your server connects or disconnects to the bot
+                  .card.bg-dark.border-secondary.h-100
+                    .card-body
+                      .form-check.form-switch
+                        = f.check_box :log_reconnect_event, class: "form-check-input"
+                        = f.label :log_reconnect_event, class: "form-check-label fw-medium" do
+                          | Server Connect/Disconnect
+                      small.text-muted.mt-2.d-block
+                        | Logs when your servers connect or disconnect from ESM
 
                 .col-md-6
-                  .form-check.form-switch
-                    = f.check_box :log_discord_log_event, class: "form-check-input"
-                    = f.label :log_discord_log_event, "Arma 3 Discord Logs", class: "form-check-label"
-                    small.form-text.text-muted.d-block Logs any messages received from your servers
+                  .card.bg-dark.border-secondary.h-100
+                    .card-body
+                      .form-check.form-switch
+                        = f.check_box :log_discord_log_event, class: "form-check-input"
+                        = f.label :log_discord_log_event, class: "form-check-label fw-medium" do
+                          | Arma 3 Discord Logs
+                      small.text-muted.mt-2.d-block
+                        | All messages received from your servers
 
                 .col-md-6
-                  .form-check.form-switch
-                    = f.check_box :log_xm8_event, class: "form-check-input"
-                    = f.label :log_xm8_event, "XM8 Notifications", class: "form-check-label"
-                    small.form-text.text-muted.d-block Log XM8 Notification 'receipts' with delivery status
-
+                  .card.bg-dark.border-secondary.h-100
+                    .card-body
+                      .form-check.form-switch
+                        = f.check_box :log_xm8_event, class: "form-check-input"
+                        = f.label :log_xm8_event, class: "form-check-label fw-medium" do
+                          | XM8 Notifications
+                      small.text-muted.mt-2.d-block
+                        | Delivery receipts for player notifications
           / Territory Management Section
           .card.mb-4
             .card-header
-              h5.mb-0 Territory Management
+              h4.mb-0
+                i.bi.bi-shield-check.me-2
+                | Territory Management
             .card-body
               p.text-muted.small
                 | Users with these roles will be able to run territory based commands as the owner, regardless of them being a member of that territory.
@@ -90,7 +115,9 @@
         / Server Dashboard Management Section
         .card.mb-4
           .card-header
-            h5.mb-0 Server Dashboard Management
+            h4.mb-0
+              i.bi.bi-people.me-2
+              | Dashboard Access
           .card-body
             p.text-muted.small
               | Users with these roles will have full management access to this community's server dashboard. Useful for communities with non-admin developers
@@ -102,13 +129,11 @@
 
         / Welcome Message Section
         .card.mb-4
-          .card-header.d-flex.align-items-center
-            .form-check.form-switch.me-3
-              = f.check_box :welcome_message_enabled,
-                  class: "form-check-input",
-                  data: {action: "click->edit-community#onWelcomeMessageToggleClick"}
-
-              = f.label :welcome_message_enabled, "Welcome Message", class: "form-check-label h5 mb-0"
+          .card-header
+            h4
+              = f.label :welcome_message_enabled, class: "form-check-label mb-0" do
+                i.bi.bi-chat.me-2
+                | Welcome Message
           .card-body
             p.text-muted.small
               | When enabled, ESM will automatically greet new members of your Discord server to let them know about ESM and its features.
@@ -121,18 +146,18 @@
                   class: "form-control",
                   rows: 5,
                   disabled: !current_community.welcome_message_enabled,
-                  data: {action: "input->edit-community#onWelcomeMessageInput"}
+                  placeholder: "Add your custom welcome message here..."
 
                 .d-flex.justify-content-between.mt-2
-                  = link_to_tab discord_markdown_docs_url do
-                    small.form-text.text-muted Discord markdown supported
-                  small[
-                    class="text-muted"
-                  ]
+                  = link_to_tab discord_markdown_docs_url, class: "text-decoration-none" do
+                    small.text-info
+                      i.bi.bi-markdown.me-1
+                      | Discord markdown supported
+                  small.text-muted
                     span[data-edit-community-target="welcomeMessageLength"]
                       = current_community.welcome_message.length
                     | /
-                    span 1000
+                    span[] 1000
 
         / Action Buttons
         .d-flex.justify-content-between.align-items-center.pt-4.border-top
@@ -143,5 +168,5 @@
               data-bs-target="#destroy-community-modal"
             ] Delete Community
 
-          .d-flex
+          .d-flex.gap-3
             = f.submit "Save Changes", class: "btn btn-primary"
