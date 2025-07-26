@@ -43,8 +43,9 @@
               / Log Channel Selection
               .mb-4
                 h5.mb-2
+                  i.bi.bi-hash.text-info.me-2
                   | Log Channel
-                p.text-muted.mb-3
+                p.text-muted.small.mb-3
                   | Choose which channel receives server events and notifications.
                   br
                   .alert.alert-warning.border-warning.bg-warning.bg-opacity-10.mt-2.py-2
@@ -60,79 +61,88 @@
                       class: "form-control",
                       selected: current_community.logging_channel_id
 
+              hr.my-3
+
               / Log Events
-              hr.my-4
+              .mb-0
+                h5.mb-2
+                  i.bi.bi-toggles.text-success.me-2
+                  | Event Types
+                p.text-muted.small.mb-3 Select which events to log to your channel
 
-              h5.mb-3
-                | Event Types
-              p.text-muted.small.mb-3 Select which events to log to your channel
+                .row.g-3
+                  .col-md-6
+                    .card.bg-dark.border-secondary.h-100
+                      .card-body
+                        .form-check.form-switch
+                          = f.check_box :log_reconnect_event, class: "form-check-input"
+                          = f.label :log_reconnect_event, class: "form-check-label fw-medium" do
+                            | Server Connect/Disconnect
+                        small.text-muted.mt-2.d-block
+                          | Logs when your servers connect or disconnect from ESM
 
-              .row.g-3
-                .col-md-6
-                  .card.bg-dark.border-secondary.h-100
-                    .card-body
-                      .form-check.form-switch
-                        = f.check_box :log_reconnect_event, class: "form-check-input"
-                        = f.label :log_reconnect_event, class: "form-check-label fw-medium" do
-                          | Server Connect/Disconnect
-                      small.text-muted.mt-2.d-block
-                        | Logs when your servers connect or disconnect from ESM
+                  .col-md-6
+                    .card.bg-dark.border-secondary.h-100
+                      .card-body
+                        .form-check.form-switch
+                          = f.check_box :log_discord_log_event, class: "form-check-input"
+                          = f.label :log_discord_log_event, class: "form-check-label fw-medium" do
+                            | Arma 3 Discord Logs
+                        small.text-muted.mt-2.d-block
+                          | All messages received from your servers
 
-                .col-md-6
-                  .card.bg-dark.border-secondary.h-100
-                    .card-body
-                      .form-check.form-switch
-                        = f.check_box :log_discord_log_event, class: "form-check-input"
-                        = f.label :log_discord_log_event, class: "form-check-label fw-medium" do
-                          | Arma 3 Discord Logs
-                      small.text-muted.mt-2.d-block
-                        | All messages received from your servers
+                  .col-md-6
+                    .card.bg-dark.border-secondary.h-100
+                      .card-body
+                        .form-check.form-switch
+                          = f.check_box :log_xm8_event, class: "form-check-input"
+                          = f.label :log_xm8_event, class: "form-check-label fw-medium" do
+                            | XM8 Notifications
+                        small.text-muted.mt-2.d-block
+                          | Delivery receipts for player notifications
 
-                .col-md-6
-                  .card.bg-dark.border-secondary.h-100
-                    .card-body
-                      .form-check.form-switch
-                        = f.check_box :log_xm8_event, class: "form-check-input"
-                        = f.label :log_xm8_event, class: "form-check-label fw-medium" do
-                          | XM8 Notifications
-                      small.text-muted.mt-2.d-block
-                        | Delivery receipts for player notifications
-          / Territory Management Section
-          .card.mb-4
-            .card-header
-              h4.mb-0
-                i.bi.bi-shield-check.me-2
-                | Territory Management
-            .card-body
-              p.text-muted.small
-                | Users with these roles will be able to run territory based commands as the owner, regardless of them being a member of that territory.
-
-              div
-                = f.select :territory_admin_ids,
-                  [], {}, multiple: "",
-                  data: {roles: territory_admin_roles, controller: "role-selector"}
-
-        / Server Dashboard Management Section
+        / Access Management Section
         .card.mb-4
           .card-header
             h4.mb-0
-              i.bi.bi-people.me-2
-              | Dashboard Access
+              i.bi.bi-key.me-2
+              | Access Management
           .card-body
-            p.text-muted.small
-              | Users with these roles will have full management access to this community's server dashboard. Useful for communities with non-admin developers
+            / Territory Management
+            .mb-4
+              h5.mb-2
+                i.bi.bi-shield-check.text-warning.me-2
+                | Territory Admin Roles
+              p.text-muted.small.mb-3
+                | Users with these roles will be able to run territory based commands as the owner, regardless of them being a member of that territory.
 
-            div
+              = f.select :territory_admin_ids,
+                [], {}, multiple: "",
+                data: {roles: territory_admin_roles, controller: "role-selector"}
+
+            hr.my-3
+
+            / Dashboard Access
+            .mb-0
+              h5.mb-2
+                i.bi.bi-speedometer2.text-info.me-2
+                | Dashboard Admin Roles
+              p.text-muted.small.mb-3
+                | Users with these roles will have full management access to this community's server dashboard. Useful for communities with non-admin developers.
+
               = f.select :dashboard_access_role_ids,
                 [], {}, multiple: "",
                 data: {roles: access_roles, controller: "role-selector"}
 
         / Welcome Message Section
         .card.mb-4
-          .card-header
-            h4
-              = f.label :welcome_message_enabled, class: "form-check-label mb-0" do
-                i.bi.bi-chat.me-2
+          .card-header.d-flex.align-items-center
+            .form-check.form-switch.me-3
+              = f.check_box :welcome_message_enabled,
+                  class: "form-check-input mt-2",
+                  data: {action: "click->edit-community#onWelcomeMessageToggleClick"}
+
+              = f.label :welcome_message_enabled, class: "form-check-label h4 mb-0" do
                 | Welcome Message
           .card-body
             p.text-muted.small
@@ -146,7 +156,8 @@
                   class: "form-control",
                   rows: 5,
                   disabled: !current_community.welcome_message_enabled,
-                  placeholder: "Add your custom welcome message here..."
+                  placeholder: "Add your custom welcome message here...",
+                  data: {action: "input->edit-community#onWelcomeMessageInput"}
 
                 .d-flex.justify-content-between.mt-2
                   = link_to_tab discord_markdown_docs_url, class: "text-decoration-none" do
