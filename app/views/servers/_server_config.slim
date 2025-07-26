@@ -1,23 +1,34 @@
-hr.my-4
+/ Mid-Point Save - For users who don't need advanced config
+.d-flex.justify-content-between.align-items-center.py-4.my-4.border-top.border-bottom
+  div
+    h5.mb-1.text-success Most servers are configured!
+    small.text-muted The settings above cover 90% of server configurations. Advanced options are below if needed.
 
-/ Advanced Configuration Header
-.card.mb-4
-  .card-header
-    h4.mb-0
-      i.bi.bi-gear.text-secondary.me-2
-      | Advanced Configuration
-      span.badge.bg-warning.text-dark.ms-2 V2
+  .d-flex.gap-3
+    button.btn.btn-outline-secondary[type="button" onclick="window.location.reload()"]
+      | Cancel
 
-  .card-body
-    .alert.alert-warning.border-warning.bg-warning.bg-opacity-10
-      .d-flex.align-items-center
-        i.bi.bi-exclamation-triangle.text-warning.me-3.fs-4
-        div
-          h6.mb-1.text-warning Most servers don't need these settings
-          p.mb-0.small
-            | ESM works great with defaults! Only modify these if you have custom server configurations.
-            br
-            strong After saving, download and install your config.yml file.
+    = f.submit "Save Configuration",
+        class: "btn btn-success btn-lg px-4"
+      i.bi.bi-check-circle.me-2
+      | Save Configuration
+
+/ Advanced Configuration Section Header
+.text-center.mb-4
+  h3.mb-3
+    i.bi.bi-gear.text-secondary.me-2
+    | Advanced Configuration
+    span.badge.bg-warning.text-dark.ms-2 NEW
+
+  .alert.alert-warning.border-warning.bg-warning.bg-opacity-10
+    .d-flex.align-items-center
+      i.bi.bi-exclamation-triangle.text-warning.me-3.fs-4
+      .col-11
+        h6.mb-1.text-warning Most servers don't need these settings
+        p.mb-0.small
+          | ESM works great with defaults! Only modify these if you have custom server configurations.
+          br
+          strong After saving, download and install your config.yml file.
 
 / Database Configuration Card
 .card.mb-4
