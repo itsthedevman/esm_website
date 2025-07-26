@@ -7,6 +7,12 @@ Rails.application.routes.draw do
     delete :logout, to: "devise/sessions#destroy", as: :logout
   end
 
+  direct :discord_markdown_docs do
+    "https://support.discord.com/hc/en-us/articles/210298617-Markdown-Text-101-Chat-Formatting-Bold-Italic-Underline"
+  end
+
+  ##################################################################################################
+
   # /
   root "home#index"
 

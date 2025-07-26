@@ -6,8 +6,9 @@
   data-controller="notifications"
   data-notifications-target="toast"
 ]
-  .toast-header
+  .toast-header.pb-0
     strong.me-auto = sanitize title
-    small.text-body-secondary = sanitize subtitle
+    - if subtitle.present?
+      small.text-body-secondary = sanitize subtitle
     button.btn-close type="button" data-bs-dismiss="toast" aria-label="Close"
   .toast-body = sanitize body

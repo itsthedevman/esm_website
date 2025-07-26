@@ -2,13 +2,16 @@
 // Run that command whenever you add a new controller or create them with
 // ./bin/rails generate stimulus controllerName
 
-import { application } from "./application"
+import { application } from "./application";
 
-import NotificationsController from "./notifications_controller"
-application.register("notifications", NotificationsController)
+import EditCommunityController from "./edit_community_controller";
+application.register("edit-community", EditCommunityController);
 
-import RoleSelectorController from "./role_selector_controller"
-application.register("role-selector", RoleSelectorController)
+import NewServerController from "./new_server_controller";
+application.register("new-server", NewServerController);
 
-import NewServerController from "./new_server_controller"
-application.register("new-server", NewServerController)
+import NotificationsController from "./notifications_controller";
+application.register("notifications", NotificationsController);
+
+import RoleSelectorController from "./role_selector_controller";
+application.register("role-selector", RoleSelectorController);

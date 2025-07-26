@@ -55,8 +55,9 @@ class CommunitiesController < AuthenticatedController
     if community_id.present? && community_id != current_community.community_id
       # Check to see if it exists
       if ESM::Community.by_community_id(community_id).exists?
-        redirect_to edit_community_path(current_community),
-          alert: "<code>#{community_id}</code> is already in use, please provide a different ID"
+        render turbo_stream: create_error_toast(
+          "<code>#{community_id}</code> is already in use, please provide a different ID"
+        )
 
         return
       end
@@ -65,6 +66,8 @@ class CommunitiesController < AuthenticatedController
     end
 
     current_community.update!(community_params)
+
+    render turbo_stream: create_success_toast("<code>#{community_id}</code> has been updated")
   end
 
   def destroy

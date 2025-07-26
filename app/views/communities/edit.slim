@@ -2,135 +2,148 @@
 = render "communities/destroy_modal"
 
 = render "communities/container", **local_assigns do
-  h1.mb-4 Modify Community
+  div[data-controller="edit-community"]
+    h1.mb-4 Modify Community
 
-  = turbo_frame_tag "community_edit" do
-    = form_with model: current_community,
-        url: community_path(current_community.public_id),
-        scope: :community,
-        local: true do |f|
+    = turbo_frame_tag "community_edit" do
+      = form_with model: current_community,
+          url: community_path(current_community.public_id),
+          scope: :community,
+          method: :patch,
+          data: {edit_community_target: "form"} do |f|
 
-      / Community ID Section
-      .card.mb-4
-        .card-header
-          h5.mb-0 Community ID
-        .card-body
-          p.text-muted.small
-            | Your community's unique ID for ESM. This ID is used in commands that require referencing your community or servers.
-
-          .row
-            .col-md-6
-              = f.hidden_field :current_community_id, value: current_community.community_id
-              = f.text_field :community_id,
-                  placeholder: current_community.community_id,
-                  class: "form-control"
-              .invalid-feedback
-              small.form-text.text-muted Enter a new community ID if you want to change it
-
-      / Logging Channel Section
-      - if current_community.server_mode_enabled?
+        / Community ID Section
         .card.mb-4
           .card-header
-            h5.mb-0 Log Channel
+            h5.mb-0 Community ID
           .card-body
             p.text-muted.small
-              | Which channel should receive messages from your servers, plus notifications below.
-              br
-              span.text-danger.fw-bold We recommend creating a private channel for this, as it may contain sensitive information
+              | Your community's unique ID for ESM. This ID is used in commands that require referencing your community or servers.
 
             .row
               .col-md-6
-                = select_tag "community[logging_channel_id]", options_for_select([]), { class: "form-select", include_blank: "Select a channel..." }
+                = f.hidden_field :current_community_id, value: current_community.community_id
+                = f.text_field :community_id,
+                    placeholder: current_community.community_id,
+                    class: "form-control"
+                small.form-text.text-muted Enter a new community ID if you want to change it
 
-        / Log Events Section
+        / Logging Channel Section
+        - if current_community.server_mode_enabled?
+          .card.mb-4
+            .card-header
+              h5.mb-0 Log Channel
+            .card-body
+              p.text-muted.small
+                | Which channel should receive messages from your servers, plus notifications below.
+                br
+                span.text-danger.fw-bold We recommend creating a private channel for this, as it may contain sensitive information
+
+              .row
+                .col-md-6
+                  = channel_select_tag \
+                    "community[logging_channel_id]",
+                    current_community.admin_channels,
+                    class: "form-control",
+                    selected: current_community.logging_channel_id
+
+
+          / Log Events Section
+          .card.mb-4
+            .card-header
+              h5.mb-0 Log Events
+            .card-body
+              p.text-muted.small What types of events do you want to receive to your logging channel?
+
+              .row.g-3
+                .col-md-6
+                  .form-check.form-switch
+                    = f.check_box :log_reconnect_event, class: "form-check-input"
+                    = f.label :log_reconnect_event, "Server Connect/Disconnect", class: "form-check-label"
+                    small.form-text.text-muted.d-block Logs whenever your server connects or disconnects to the bot
+
+                .col-md-6
+                  .form-check.form-switch
+                    = f.check_box :log_discord_log_event, class: "form-check-input"
+                    = f.label :log_discord_log_event, "Arma 3 Discord Logs", class: "form-check-label"
+                    small.form-text.text-muted.d-block Logs any messages received from your servers
+
+                .col-md-6
+                  .form-check.form-switch
+                    = f.check_box :log_xm8_event, class: "form-check-input"
+                    = f.label :log_xm8_event, "XM8 Notifications", class: "form-check-label"
+                    small.form-text.text-muted.d-block Log XM8 Notification 'receipts' with delivery status
+
+          / Territory Management Section
+          .card.mb-4
+            .card-header
+              h5.mb-0 Territory Management
+            .card-body
+              p.text-muted.small
+                | Users with these roles will be able to run territory based commands as the owner, regardless of them being a member of that territory.
+
+              div
+                = f.select :territory_admin_ids,
+                  [], {}, multiple: "",
+                  data: {roles: territory_admin_roles, controller: "role-selector"}
+
+        / Server Dashboard Management Section
         .card.mb-4
           .card-header
-            h5.mb-0 Log Events
-          .card-body
-            p.text-muted.small What types of events do you want to receive to your logging channel?
-
-            .row.g-3
-              .col-md-6
-                .form-check.form-switch
-                  = f.check_box :log_reconnect_event, class: "form-check-input"
-                  = f.label :log_reconnect_event, "Server Connect/Disconnect", class: "form-check-label"
-                  small.form-text.text-muted.d-block Logs whenever your server connects or disconnects to the bot
-
-              .col-md-6
-                .form-check.form-switch
-                  = f.check_box :log_discord_log_event, class: "form-check-input"
-                  = f.label :log_discord_log_event, "Arma 3 Discord Logs", class: "form-check-label"
-                  small.form-text.text-muted.d-block Logs any messages received from your servers
-
-              .col-md-6
-                .form-check.form-switch
-                  = f.check_box :log_xm8_event, class: "form-check-input"
-                  = f.label :log_xm8_event, "XM8 Notifications", class: "form-check-label"
-                  small.form-text.text-muted.d-block Log XM8 Notification 'receipts' with delivery status
-
-        / Territory Management Section
-        .card.mb-4
-          .card-header
-            h5.mb-0 Territory Management
+            h5.mb-0 Server Dashboard Management
           .card-body
             p.text-muted.small
-              | Users with these roles will be able to run territory based commands as the owner, regardless of them being a member of that territory.
+              | Users with these roles will have full management access to this community's server dashboard. Useful for communities with non-admin developers
 
             div
-              = f.select :territory_admin_ids, [], {}, multiple: "", data: {roles: territory_admin_roles, controller: "role-selector"}
+              = f.select :dashboard_access_role_ids,
+                [], {}, multiple: "",
+                data: {roles: access_roles, controller: "role-selector"}
 
-      / Server Dashboard Management Section
-      .card.mb-4
-        .card-header
-          h5.mb-0 Server Dashboard Management
-        .card-body
-          p.text-muted.small
-            | Users with these roles will have full management access to this community's server dashboard. Useful for communities with non-admin developers
+        / Welcome Message Section
+        .card.mb-4
+          .card-header.d-flex.align-items-center
+            .form-check.form-switch.me-3
+              = f.check_box :welcome_message_enabled,
+                  class: "form-check-input"
 
-          div
-            = f.select :dashboard_access_role_ids, [], {}, multiple: "", data: {roles: access_roles, controller: "role-selector"}
+              = f.label :welcome_message_enabled, "Welcome Message", class: "form-check-label h5 mb-0"
+          .card-body
+            p.text-muted.small
+              | When enabled, ESM will automatically greet new members of your Discord server to let them know about ESM and its features.
+              br
+              | You may add additional information below that will be included in this welcome message.
 
-      / Welcome Message Section
-      .card.mb-4
-        .card-header.d-flex.align-items-center
-          .form-check.form-switch.me-3
-            = f.check_box :welcome_message_enabled,
-                class: "form-check-input",
-                data: { controller: "toggle", action: "change->toggle#toggle", toggle_target: "welcomeMessage" }
-            = f.label :welcome_message_enabled, "Welcome Message", class: "form-check-label h5 mb-0"
-        .card-body
-          p.text-muted.small
-            | When enabled, ESM will automatically greet new members of your Discord server to let them know about ESM and its features.
-            br
-            | You may add additional information below that will be included in this welcome message.
+            .row
+              .col-lg-8
+                = f.text_area :welcome_message,
+                  class: "form-control",
+                  rows: 5,
+                  disabled: !current_community.welcome_message_enabled,
+                  data: {}
 
-          .row
-            .col-lg-8
-              = f.text_area :welcome_message,
-                class: "form-control",
-                rows: 5,
-                disabled: !current_community.welcome_message_enabled,
-                data: { controller: "character-counter", "character-counter-max-value": 1000, action: "input->character-counter#updateCount" }
+                .d-flex.justify-content-between.mt-2
+                  = link_to_tab discord_markdown_docs_url do
+                    small.form-text.text-muted Discord markdown supported
+                  small[
+                    class="text-muted"
+                  ]
+                    span[] = current_community.welcome_message.length
+                    | /
+                    span[] 1000
 
-              .d-flex.justify-content-between.mt-2
-                small.form-text.text-muted Discord markdown supported
-                small[
-                  data-character-counter-target="counter"
-                  class="text-muted"
-                ]
-                  span[data-character-counter-target="current"] = current_community.welcome_message.length
-                  | /
-                  span[data-character-counter-target="max"] 1000
+        / Action Buttons
+        .d-flex.justify-content-between.align-items-center.pt-4.border-top
+          .d-flex.gap-3
+            button.btn.btn-danger[
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#destroy-community-modal"
+            ] Delete Community
 
-      / Action Buttons
-      .d-flex.justify-content-between.align-items-center.pt-4.border-top
-        .d-flex.gap-3
-          button.btn.btn-danger[
-            type="button"
-            data-bs-toggle="modal"
-            data-bs-target="#destroy-community-modal"
-          ] Delete Community
+          .d-flex.gap-3
+            = link_to "Cancel",
+              edit_community_path(current_community),
+              class: "btn btn-outline-secondary"
 
-        .d-flex.gap-3
-          = link_to "Cancel", edit_community_path(current_community), class: "btn btn-outline-secondary"
-          = f.submit "Save Changes", class: "btn btn-primary"
+            = f.submit "Save Changes", class: "btn btn-primary"
