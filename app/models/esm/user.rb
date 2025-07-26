@@ -89,8 +89,8 @@ module ESM
 
     def discord_server_ids
       @discord_server_ids ||= Rails.cache.fetch(
-        "user:#{id}:discord_server_ids",
-        expires_in: 5.minutes
+        "user:#{discord_id}:discord_server_ids",
+        expires_in: 1.minutes
       ) do
         response = Discord.client(discord_access_token).user_guilds
         raise HTTP::ConnectionError unless response.status.success?

@@ -25,7 +25,26 @@ nav.navbar.fixed-top.navbar-expand-lg.bg-body-tertiary
         = link_to "Support", invite_path, class: "nav-link"
       .navbar-nav.flex-row.flex-wrap.ms-md-auto.gap-3.gap-lg-2
         - if current_user
-          | My Account
+          li.nav-item.dropdown
+            a.nav-link.dropdown-toggle[
+              href="#" role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            ]
+              = image_tag current_user.avatar_url,
+                class: "border border-2 border-primary rounded-circle",
+                width: "50", height: "50"
+            ul.dropdown-menu
+              li
+                a.dropdown-item[href="#"]
+                  | My Account
+              li
+                = button_to "Logout",
+                  logout_path,
+                  class: "dropdown-item",
+                  method: :delete,
+                  data: {turbo: false}
+
         - else
           = button_to user_discord_omniauth_authorize_path, class: "btn btn-primary d-flex align-items-center gap-2", data: {turbo: false}
             i.bi.bi-discord
