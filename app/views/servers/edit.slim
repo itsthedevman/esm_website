@@ -30,27 +30,32 @@
 
   = form_with model: [current_community, server],
       url: community_servers_path(current_community, server),
-      scope: "server",
-      class: "needs-validation",
-      novalidate: true do |f|
+      scope: :server do |f|
 
     / V2 servers get the full modern layout
     - if server.ui_v2?
       = render "servers/server_info", f:, **local_assigns
+      = render "servers/server_mods", f:, **local_assigns
+      = render "servers/server_rewards", f:, **local_assigns
       = render "servers/server_settings", f:, **local_assigns
       = render "servers/server_config", f:, **local_assigns
 
     / V1 servers get the legacy layout
     - else
       = render "servers/server_info_v1", f:, **local_assigns
+      = render "servers/server_mods", f:, **local_assigns
+      = render "servers/server_rewards", f:, **local_assigns
       = render "servers/server_settings_v1", f:, **local_assigns
 
     / Final Action Footer - for power users who went through everything
     .d-flex.justify-content-between.align-items-center.pt-4.mt-4.border-top
-      div
-        small.text-muted
-          i.bi.bi-info-circle.me-1
-          | Download updated config files after saving
+      - if server.ui_v2?
+        div
+          small.text-muted
+            i.bi.bi-info-circle.me-1
+            | Download updated config files after saving
+      - else
+        div
 
       .d-flex.gap-3
         button.btn.btn-outline-secondary[type="button" onclick="window.location.reload()"]

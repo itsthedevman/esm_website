@@ -1,46 +1,62 @@
 #add-mod-modal.modal.fade[tabindex="-1" aria-labelledby="add-mod-modal-label" aria-hidden="true"]
   .modal-dialog.modal-lg
     .modal-content
-      .modal-header
-        h5#add-mod-modal-label.modal-title Add a New Mod
+      .modal-header.border-info.bg-info.bg-opacity-10
+        h5#add-mod-modal-label.modal-title
+          i.bi.bi-puzzle.text-info.me-2
+          | Add Server Mod
         button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
 
       .modal-body
+        p.text-muted.small.mb-4
+          | Help your players prepare the right modset by listing the mods your server uses. Required mods will be highlighted to players.
+
         form#add-mod-form
-          .row.g-3.mb-3
-            .col-lg-8
-              label.form-label Mod Name
+          .row.g-3.mb-4
+            .col-8
+              label.form-label.fw-medium
+                span.text-danger *
+                | Mod Name
               input.form-control[
                 type="text"
                 placeholder="@Exile"
                 id="mod-name"
                 required
               ]
-            .col-lg-4
-              label.form-label Version
+              small.form-text.text-muted Include the @ symbol if it's part of the mod name
+            .col-4
+              label.form-label.fw-medium Version
               input.form-control[
                 type="text"
                 placeholder="1.0.4"
                 id="mod-version"
               ]
+              small.form-text.text-muted Optional version info
 
-          .row.g-3.mb-3
-            .col-lg-8
-              label.form-label Download Link
-              input.form-control[
-                type="url"
-                placeholder="https://www.exilemod.com/downloads"
-                id="mod-link"
-              ]
-            .col-lg-4
-              label.form-label Options
-              .form-check.mt-2
-                input.form-check-input[type="checkbox" id="mod-required"]
-                label.form-check-label[for="mod-required"] Required Mod
+          .mb-4
+            label.form-label.fw-medium Download Link
+            input.form-control[
+              type="url"
+              placeholder="https://www.exilemod.com/downloads"
+              id="mod-link"
+            ]
+            small.form-text.text-muted Optional - where players can download this mod
 
-      .modal-footer.d-flex.justify-content-between
-        .text-muted.small
-          | You can always modify a mod later via the "Modify Server" section
+          .mb-0
+            .form-check.form-switch
+              input.form-check-input[type="checkbox" id="mod-required"]
+              label.form-check-label.fw-medium[for="mod-required"]
+                | Required Mod
+                span.badge.bg-warning.text-dark.ms-2 Important
+            small.form-text.text-muted.mt-1 Required mods will be prominently displayed to players
+
+      .modal-footer.border-top.d-flex.justify-content-between
         div
-          button.btn.btn-secondary[type="button" data-bs-dismiss="modal"] Cancel
-          button.btn.btn-primary.ms-2[type="button" id="add-mod-btn"] Add Mod
+          small.text-muted
+            i.bi.bi-info-circle.me-1
+            | You can modify mod details later if needed
+        div
+          button.btn.btn-outline-secondary[type="button" data-bs-dismiss="modal"] Cancel
+          button.btn.btn-success.ms-2[type="button" id="add-mod-btn"]
+            i.bi.bi-plus-circle.me-2
+            | Add Mod

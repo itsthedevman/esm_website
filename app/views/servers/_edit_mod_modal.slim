@@ -1,43 +1,62 @@
 #edit-mod-modal.modal.fade[tabindex="-1" aria-labelledby="edit-mod-modal-label" aria-hidden="true"]
   .modal-dialog.modal-lg
     .modal-content
-      .modal-header
-        h5#edit-mod-modal-label.modal-title Edit Mod
+      .modal-header.border-warning.bg-warning.bg-opacity-10
+        h5#edit-mod-modal-label.modal-title
+          i.bi.bi-pencil-square.text-warning.me-2
+          | Edit Server Mod
         button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
 
       .modal-body
+        p.text-muted.small.mb-4
+          | Update mod information to keep your players informed about modset changes.
+
         form#edit-mod-form
-          .row.g-3.mb-3
-            .col-lg-8
-              label.form-label Mod Name
+          .row.g-3.mb-4
+            .col-8
+              label.form-label.fw-medium
+                span.text-danger *
+                | Mod Name
               input.form-control[
                 type="text"
                 placeholder="@Exile"
                 id="edit-mod-name"
                 required
               ]
-            .col-lg-4
-              label.form-label Version
+              small.form-text.text-muted Include the @ symbol if it's part of the mod name
+            .col-4
+              label.form-label.fw-medium Version
               input.form-control[
                 type="text"
                 placeholder="1.0.4"
                 id="edit-mod-version"
               ]
+              small.form-text.text-muted Optional version info
 
-          .row.g-3.mb-3
-            .col-lg-8
-              label.form-label Download Link
-              input.form-control[
-                type="url"
-                placeholder="https://www.exilemod.com/downloads"
-                id="edit-mod-link"
-              ]
-            .col-lg-4
-              label.form-label Options
-              .form-check.mt-2
-                input.form-check-input[type="checkbox" id="edit-mod-required"]
-                label.form-check-label[for="edit-mod-required"] Required Mod
+          .mb-4
+            label.form-label.fw-medium Download Link
+            input.form-control[
+              type="url"
+              placeholder="https://www.exilemod.com/downloads"
+              id="edit-mod-link"
+            ]
+            small.form-text.text-muted Optional - where players can download this mod
 
-      .modal-footer
-        button.btn.btn-secondary[type="button" data-bs-dismiss="modal"] Cancel
-        button.btn.btn-primary[type="button" id="save-mod-btn"] Save Changes
+          .mb-0
+            .form-check.form-switch
+              input.form-check-input[type="checkbox" id="edit-mod-required"]
+              label.form-check-label.fw-medium[for="edit-mod-required"]
+                | Required Mod
+                span.badge.bg-warning.text-dark.ms-2 Important
+            small.form-text.text-muted.mt-1 Required mods will be prominently displayed to players
+
+      .modal-footer.border-top.d-flex.justify-content-between
+        div
+          small.text-muted
+            i.bi.bi-trash.me-1
+            | Changes are saved immediately
+        div
+          button.btn.btn-outline-secondary[type="button" data-bs-dismiss="modal"] Cancel
+          button.btn.btn-primary.ms-2[type="button" id="save-mod-btn"]
+            i.bi.bi-check-circle.me-2
+            | Save Changes

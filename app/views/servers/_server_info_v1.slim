@@ -1,41 +1,69 @@
-/ Server ID Card
+/ Server Identity Card
 .card.mb-4
   .card-header
-    h5.mb-0
-      span.text-danger *
-      | Server ID
+    h4.mb-0
+      i.bi.bi-server.text-primary.me-2
+      | Server Identity
+
   .card-body
-    p.text-muted.small.mb-3
-      | Your players will be typing this with every command, make sure to make it short and sweet
+    / Server ID Section
+    .mb-4
+      h5.mb-2
+        span.text-danger *
+        | Server ID
+      p.text-muted.small.mb-3
+        | Your players will be typing this with every command, make sure to make it short and sweet
 
-    .input-group
-      span.input-group-text.bg-secondary.border-secondary
-        = "#{current_community.community_id}_"
-      = f.text_field :server_id,
-          class: "form-control",
-          placeholder: "altis",
-          required: true,
-          data: { bs_toggle: "tooltip", bs_title: "Combined with your community ID, this server ID will be what your players use to access this server. It cannot contain spaces or symbols." }
-      .invalid-feedback Please enter a valid server ID
+      .input-group.input-group-lg
+        span.input-group-text.bg-secondary.border-secondary.fw-bold
+          = "#{current_community.community_id}_"
+        = f.text_field :server_id,
+            class: "form-control border-secondary",
+            placeholder: "altis",
+            required: true,
+            data: { \
+              bs_toggle: "tooltip",
+              bs_title: "Combined with your community ID, this server ID will be what your players use to access this server. It cannot contain spaces or symbols." \
+            }
+        .invalid-feedback Please enter a valid server ID
 
-/ Server Connection Card
+    / Server Name Display (read-only for v1 too)
+    .mb-0
+      h5.mb-2
+        | Server Name
+        small.text-muted.fw-normal.ms-2 (Auto-detected)
+      p.text-muted.small.mb-3
+        | This name is automatically set by your server and cannot be changed from the dashboard
+
+      .form-control.bg-dark.text-muted[readonly]
+        = server.server_name.presence || "Server name will appear here once connected"
+
+/ Connection Details Card
 .card.mb-4
   .card-header
-    h5.mb-0
-      span.text-danger *
-      | Server IP and Port
+    h4.mb-0
+      i.bi.bi-globe.text-success.me-2
+      | Server Connection
+
   .card-body
-    p.text-muted.small.mb-3
+    p.text-muted.small.mb-4
       | Important for new and returning players
 
-    .row
-      .col-md-8
+    .row.g-3.mb-4
+      .col-8
+        label.form-label.fw-medium
+          span.text-danger *
+          | IP Address
         = f.text_field :server_ip,
             class: "form-control",
             placeholder: "122.122.122.122",
             required: true
         .invalid-feedback Please enter a valid IP address
-      .col-md-4
+
+      .col-4
+        label.form-label.fw-medium
+          span.text-danger *
+          | Port
         = f.number_field :server_port,
             class: "form-control",
             placeholder: "2302",
@@ -44,103 +72,16 @@
             required: true
         .invalid-feedback Please enter a valid port number
 
-/ Server Mods Card
-.card.mb-4
-  .card-header
-    h5.mb-0 Server Mods
-  .card-body
-    p.text-muted.small.mb-3
-      | Let players know what cool mods you have on your server
+    / Server Visibility Section
+    .mb-0
+      h5.mb-2 Server Visibility
+      p.text-muted.small.mb-3
+        | Private servers will not be shown when someone joins your Discord, or when they execute the servers command. All other commands will still work on them. Useful for development/test servers.
 
-    .table-responsive
-      table.table.table-sm.table-striped.mb-3#server-mods-table
-        thead.table-dark
-          tr
-            th Mod Name & Version
-            th Actions
-        tbody
-          / Dynamic mod rows will be added here via JavaScript
-
-    button.btn.btn-outline-primary.btn-sm[
-      type="button"
-      data-bs-toggle="modal"
-      data-bs-target="#add-mod-modal"
-    ] Add Mod
-
-/ Rewards Card
-.card.mb-4
-  .card-header
-    h5.mb-0 Rewards
-  .card-body
-    p.text-muted.small.mb-3
-      | What rewards are given to a player when they run the reward command for your server.
-      br
-      | You can configure how often this command can be used in the Command Configuration section
-
-    .row.g-3.mb-3
-      .col-md-4
-        label.form-label Poptabs (Player)
-        = f.number_field :player_poptabs,
-            class: "form-control",
-            min: 0,
-            value: 0
-      .col-md-4
-        label.form-label Poptabs (Locker)
-        = f.number_field :locker_poptabs,
-            class: "form-control",
-            min: 0,
-            value: 0
-      .col-md-4
-        label.form-label Respect
-        = f.number_field :respect,
-            class: "form-control",
-            min: 0,
-            value: 0
-
-    h6.mb-2 Items
-    p.text-muted.small.mb-3
-      | The following items will only be able to be added if the player has room in their inventory, otherwise they will drop on the ground at the player's feet
-
-    .table-responsive
-      table.table.table-sm.table-striped.mb-3#reward-items-table
-        thead.table-dark
-          tr
-            th Quantity
-            th Item Classname
-            th Actions
-        tbody
-          / Dynamic reward items will be added here
-        tfoot
-          tr
-            td
-              input.form-control.form-control-sm[
-                type="number"
-                placeholder="1"
-                min="1"
-                id="reward-item-quantity"
-              ]
-            td
-              input.form-control.form-control-sm[
-                type="text"
-                placeholder="Exile_Item_EMRE"
-                id="reward-item-classname"
-                data-bs-toggle="tooltip"
-                data-bs-title="Ensure the classname is correct and is accessible on your server"
-              ]
-            td
-              button.btn.btn-outline-success.btn-sm[type="button" id="add-reward-item"]
-                i.bi.bi-plus
-                | Add
-
-/ Visibility Card
-.card.mb-4
-  .card-header
-    h5.mb-0 Visibility
-  .card-body
-    p.text-muted.small.mb-3
-      | Private servers will not be shown when someone joins your Discord, or when they execute the servers command. All other commands will still work on them. Useful for development/test servers.
-
-    = f.select :server_visibility,
-        options_for_select([["Public", "public"], ["Private", "private"]], "public"),
-        {},
-        class: "form-select w-auto"
+      = f.select :server_visibility,
+          options_for_select([ \
+            ["Public", "public"],
+            ["Private", "private"] \
+          ], server.server_visibility || "public"),
+          {},
+          class: "form-select"

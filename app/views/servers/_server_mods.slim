@@ -1,0 +1,28 @@
+/ Server Mods Card
+.card.mb-4
+  .card-header.d-flex.align-items-center.justify-content-between
+    h4.mb-0
+      i.bi.bi-puzzle.text-info.me-2
+      | Server Mods
+    button.btn.btn-outline-primary.btn-sm[
+      type="button"
+      data-bs-toggle="modal"
+      data-bs-target="#add-mod-modal"
+    ]
+      i.bi.bi-plus.me-1
+      | Add Mod
+
+  .card-body
+    p.text-muted.small.mb-4
+      | Help players prepare the right modset for your server
+
+    .table-responsive
+      table.table.table-hover#server-mods-table
+        thead.table-dark
+          tr
+            th Mod Name
+            th Version
+            th Required
+            th Actions
+        tbody
+          / Dynamic mod rows will be added here via JavaScript
