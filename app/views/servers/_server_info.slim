@@ -29,15 +29,16 @@
             }
         .invalid-feedback Please enter a valid server ID
 
-    / Server Name Section
+    / Server Name Display (read-only)
     .mb-0
-      h5.mb-2 Server Name
+      h5.mb-2
+        | Server Name
+        small.text-muted.fw-normal.ms-2 (Auto-detected)
       p.text-muted.small.mb-3
-        | A friendly display name shown to players when they view server information
+        | This name is automatically set by your server and cannot be changed from the dashboard
 
-      = f.text_field :server_name,
-          class: "form-control",
-          placeholder: "My Awesome Exile Server"
+      .form-control.bg-dark.text-muted[readonly]
+        = server.server_name.presence || "Server name will appear here once connected"
 
 / Connection Details Card
 .card.mb-4

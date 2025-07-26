@@ -1,4 +1,5 @@
 = render "communities/container" do
+  / Header with version toggle and download
   .d-flex.align-items-center.justify-content-between.mb-4
     div
       h1.mb-2
@@ -6,11 +7,17 @@
         | Edit #{server.server_id}
       p.text-muted.mb-0 Configure your server settings and download updated files
 
-    .d-flex.gap-2
-      = link_to community_path(current_community.public_id),
-          class: "btn btn-outline-secondary"
-        i.bi.bi-arrow-left.me-2
-        | Back
+    .d-flex.gap-2.align-items-center
+      / Version Toggle
+      .card.bg-dark.border-secondary
+        .card-body.py-2.px-3
+          .d-flex.align-items-center.gap-2
+            small.text-muted.fw-medium ESM Version:
+            .btn-group[role="group"]
+              input.btn-check[type="radio" name="ui_version" id="version-1" value="1.0.0" checked=(!server.ui_v2?)]
+              label.btn.btn-outline-secondary.btn-sm[for="version-1"] v1
+              input.btn-check[type="radio" name="ui_version" id="version-2" value="2.0.0" checked=(server.ui_v2?)]
+              label.btn.btn-outline-info.btn-sm[for="version-2"] v2
 
       - if server.ui_v2?
         .dropdown
@@ -31,45 +38,42 @@
                 | config.yml
 
   = form_with model: [current_community, server],
-      url: edit_community_server_path(current_community, server),
+      url: community_servers_path(current_community, server),
       scope: "server",
       class: "needs-validation",
       novalidate: true do |f|
 
     / V2 servers get the full modern layout
     - if server.ui_v2?
-      = render "servers/server_info", f: f
-      = render "servers/server_settings", f: f
-      = render "servers/server_config", f: f
+      = render "servers/server_info", f:, **local_assigns
+      = render "servers/server_settings", f:, **local_assigns
+      = render "servers/server_config", f:, **local_assigns
 
     / V1 servers get the legacy layout
     - else
-      = render "servers/server_info_v1", f: f
-      = render "servers/server_settings_v1", f: f
+      = render "servers/server_info_v1", f:, **local_assigns
+      = render "servers/server_settings_v1", f:, **local_assigns
 
-    / Action Footer
-    .card.border-success.bg-success.bg-opacity-5.mt-4
-      .card-body
-        .d-flex.justify-content-between.align-items-center
-          div
-            - if server.ui_v2?
-              small.text-muted
-                i.bi.bi-info-circle.me-1
-                | Download updated config files after saving
-            - else
-              small.text-muted
-                i.bi.bi-arrow-clockwise.me-1
-                | Server restart may be required
+    / Action Footer - much more subtle
+    .d-flex.justify-content-between.align-items-center.pt-4.mt-4.border-top
+      div
+        - if server.ui_v2?
+          small.text-muted
+            i.bi.bi-info-circle.me-1
+            | Download updated config files after saving
+        - else
+          small.text-muted
+            i.bi.bi-arrow-clockwise.me-1
+            | Server restart may be required
 
-          .d-flex.gap-3
-            = link_to community_path(current_community.public_id),
-                class: "btn btn-outline-secondary"
-              | Cancel
+      .d-flex.gap-3
+        button.btn.btn-outline-secondary[type="button" onclick="window.location.reload()"]
+          | Cancel
 
-            = f.submit "Save Configuration",
-                class: "btn btn-success btn-lg px-4"
-              i.bi.bi-check-circle.me-2
-              | Save Configuration
+        = f.submit "Save Configuration",
+            class: "btn btn-success px-4"
+          i.bi.bi-check-circle.me-2
+          | Save Configuration
 
   / Include modals for add/edit functionality
   = render "servers/add_mod_modal"
