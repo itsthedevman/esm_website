@@ -8,17 +8,6 @@
       p.text-muted.mb-0 Configure your server settings and download updated files
 
     .d-flex.gap-2.align-items-center
-      / Version Toggle
-      .card.bg-dark.border-secondary
-        .card-body.py-2.px-3
-          .d-flex.align-items-center.gap-2
-            small.text-muted.fw-medium ESM Version:
-            .btn-group[role="group"]
-              input.btn-check[type="radio" name="ui_version" id="version-1" value="1.0.0" checked=(!server.ui_v2?)]
-              label.btn.btn-outline-secondary.btn-sm[for="version-1"] v1
-              input.btn-check[type="radio" name="ui_version" id="version-2" value="2.0.0" checked=(server.ui_v2?)]
-              label.btn.btn-outline-info.btn-sm[for="version-2"] v2
-
       - if server.ui_v2?
         .dropdown
           button.btn.btn-info.dropdown-toggle[
@@ -36,6 +25,8 @@
               = link_to "#", class: "dropdown-item"
                 i.bi.bi-file-code.text-info.me-2
                 | config.yml
+
+  = render "servers/version_picker", **local_assigns
 
   = form_with model: [current_community, server],
       url: community_servers_path(current_community, server),
