@@ -1,0 +1,115 @@
+// =============================================================================
+// NOTIFICATIONS CONFIGURATION
+// =============================================================================
+
+.notification-list {
+    .notification-item {
+        transition: background-color 0.2s ease;
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgba($esm-warm-gray-100, 0.05);
+        }
+
+        &:last-child {
+            border-bottom: none !important;
+        }
+
+        // Color-coded left borders for different categories
+        &.xm8 {
+            border-left-color: $esm-ui-success !important;
+        }
+
+        &.gambling {
+            border-left-color: $esm-ui-warning !important;
+        }
+
+        &.player {
+            border-left-color: $esm-ui-info !important;
+        }
+    }
+}
+
+// Discord embed preview styling
+.discord-embed {
+    background: #2f3136 !important;
+    color: #dcddde;
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.375;
+
+    .text-light {
+        color: #ffffff !important;
+        font-weight: 500;
+    }
+
+    .text-muted {
+        color: #b9bbbe !important;
+    }
+
+    // Embed border styling
+    &[style*="border-left"] {
+        border-left-width: 4px !important;
+        border-left-style: solid !important;
+    }
+}
+
+// Variable dropdown styling
+.dropdown-menu {
+    .dropdown-header {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: $esm-ui-primary;
+        font-weight: 600;
+    }
+
+    .dropdown-item-text {
+        white-space: normal;
+
+        code {
+            background: rgba($esm-ui-primary, 0.1);
+            color: $esm-ui-primary;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 0.8em;
+        }
+    }
+}
+
+// Color picker enhancement
+input[type="color"] {
+    border: 1px solid $esm-warm-gray-600;
+    border-radius: $border-radius;
+    padding: 2px;
+
+    &::-webkit-color-swatch-wrapper {
+        padding: 0;
+    }
+
+    &::-webkit-color-swatch {
+        border: none;
+        border-radius: calc(#{$border-radius} - 2px);
+    }
+}
+
+// Character count styling
+.text-danger {
+    color: $esm-ui-danger !important;
+}
+
+// Badge color customization for notification types
+.badge {
+    &.bg-success {
+        background-color: $esm-ui-success !important;
+    }
+
+    &.bg-info {
+        background-color: $esm-ui-info !important;
+    }
+
+    &.bg-warning {
+        background-color: $esm-ui-warning !important;
+        color: $esm-warm-gray-900 !important;
+    }
+}

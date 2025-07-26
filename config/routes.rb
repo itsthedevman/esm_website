@@ -21,14 +21,17 @@ Rails.application.routes.draw do
     # /communities/:community_id/commands
     resources :commands, only: %i[index update], param: :name
 
+    # /communities/:community_id/notifications
+    resources :notifications
+
     # /communities/:community_id/servers
     resources :servers, param: :server_id do
       member do
-        get "key" # V1
-        get "server_token"
-        get "server_config"
-        patch :enable_v2
+        get :key # V1
+        get :server_config
+        get :server_token
         patch :disable_v2
+        patch :enable_v2
       end
     end
   end

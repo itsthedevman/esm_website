@@ -8,6 +8,7 @@ $nav-offset: calc(map-get($spacers, 5) + map-get($spacers, 4));
 
 @import "color_classes";
 @import "dashboard";
+@import "notifications";
 @import "toast";
 @import "servers";
 

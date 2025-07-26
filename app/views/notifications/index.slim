@@ -1,0 +1,330 @@
+= render "communities/container" do
+  .text-center.mb-4
+    h1.mb-2 Notification Configuration
+    p.lead.text-muted Customize Discord notifications for your community
+
+  .row.g-4
+    / Notifications List
+    .col-lg-5
+      .card.h-100
+        .card-header.d-flex.align-items-center.justify-content-between
+          h4.mb-0
+            i.bi.bi-bell.text-warning.me-2
+            | Notifications
+          = link_to new_community_notification_path(current_community),
+              class: "btn btn-outline-primary btn-sm"
+            i.bi.bi-plus.me-1
+            | Create New
+
+        .card-body.p-0
+          / Filter dropdown
+          .p-3.border-bottom
+            label.form-label.small.text-muted.mb-2 Filter by Category
+            = form_with url: community_notifications_path(current_community),
+                method: :get, local: true, class: "d-block" do |f|
+              = f.select :filter,
+                  options_for_select([ \
+                    ["All Notifications", "all"],
+                    ["XM8 (All)", "xm8_all"],
+                    ["Gambling (All)", "gambling_all"],
+                    ["Player (All)", "player_all"],
+                    ["─────────", "", { disabled: true }],
+                    ["XM8: Base Raid", "xm8_base-raid"],
+                    ["XM8: Flag Stolen", "xm8_flag-stolen"],
+                    ["XM8: Flag Restored", "xm8_flag-restored"],
+                    ["XM8: Protection Money Due", "xm8_protection-money-due"],
+                    ["XM8: Protection Money Paid", "xm8_protection-money-paid"],
+                    ["XM8: Charge Plant Started", "xm8_charge-plant-started"],
+                    ["XM8: Grind Started", "xm8_grind-started"],
+                    ["XM8: Hack Started", "xm8_hack-started"],
+                    ["XM8: Flag Steal Started", "xm8_flag-steal-started"],
+                    ["XM8: MarXet Item Sold", "xm8_marxet-item-sold"],
+                    ["─────────", "", { disabled: true }],
+                    ["Gambling: Won", "gambling_won"],
+                    ["Gambling: Loss", "gambling_loss"],
+                    ["─────────", "", { disabled: true }],
+                    ["Player: Money", "player_money"],
+                    ["Player: Locker", "player_locker"],
+                    ["Player: Respect", "player_respect"],
+                    ["Player: Heal", "player_heal"],
+                    ["Player: Kill", "player_kill"] \
+                  ], params[:filter] || "all"),
+                  {},
+                  { class: "form-select", onchange: "this.form.submit();" }
+
+          / Notifications list
+          .notification-list style="max-height: 600px; overflow-y: auto;"
+            - if @notifications.any?
+              - @notifications.each do |notification|
+                .notification-item.p-3.border-bottom.position-relative style="border-left: 3px solid #{notification.notification_color};"
+                  .d-flex.align-items-start.justify-content-between
+                    div
+                      .d-flex.align-items-center.gap-2.mb-1
+                        span.badge class="bg-#{notification_category_color(notification.notification_category)}"
+                          = notification.notification_category.humanize
+                        span.text-muted.small = notification.notification_type.humanize
+                      h6.mb-1.fw-medium = notification.notification_title
+                      p.text-muted.small.mb-0 = truncate(notification.notification_description, length: 100)
+                    .dropdown
+                      button.btn.btn-sm.btn-outline-secondary.dropdown-toggle data-bs-toggle="dropdown"
+                        i.bi.bi-three-dots
+                      ul.dropdown-menu
+                        li
+                          = link_to edit_community_notification_path(current_community, notification),
+                              class: "dropdown-item"
+                            i.bi.bi-pencil.me-2
+                            | Edit
+                        li
+                          = link_to community_notification_path(current_community, notification),
+                              method: :delete,
+                              class: "dropdown-item text-danger",
+                              data: { \
+                                confirm: "Are you sure you want to delete this notification? This action cannot be undone.",
+                                turbo_method: :delete \
+                              }
+                            i.bi.bi-trash.me-2
+                            | Delete
+            - else
+              .p-4.text-center.text-muted
+                i.bi.bi-bell-slash.fs-1.mb-3.d-block
+                h6 No notifications found
+                p.mb-0.small Create your first notification to get started
+
+    / Preview & Editor
+    .col-lg-7
+      / Preview Card
+      .card.mb-4
+        .card-header
+          h5.mb-0
+            i.bi.bi-eye.text-info.me-2
+            | Live Preview
+        .card-body
+          - if current_notification
+            .discord-embed.p-3.rounded style="background: #2f3136; border-left: 4px solid #{current_notification.notification_color};"
+              .d-flex.align-items-center.mb-2
+                = image_tag "/icon.png", width: 20, height: 20, class: "rounded-circle me-2"
+                small.text-muted
+                  | [#{sample_server_id}] #{sample_server_name}
+              .text-light.fw-medium.mb-1 = preview_title(current_notification)
+              .text-muted.small = preview_description(current_notification)
+          - else
+            .text-center.py-4.text-muted
+              i.bi.bi-eye-slash.fs-1.mb-2.d-block
+              p.mb-0 Select or create a notification to see preview
+
+      / Editor Card (shown when creating/editing)
+      - if editing_notification?
+        .card
+          .card-header.d-flex.align-items-center.justify-content-between
+            h5.mb-0
+              i.bi.bi-pencil.text-primary.me-2
+              = current_notification.persisted? ? "Edit Notification" : "Create Notification"
+            = link_to community_notifications_path(current_community),
+                class: "btn btn-outline-secondary btn-sm"
+              i.bi.bi-x
+              | Cancel
+
+          = form_with model: [current_community, current_notification],
+              local: true,
+              class: "notification-form" do |f|
+
+            .card-body
+              / Type Selection
+              .mb-4
+                = f.label :notification_type, "Notification Type", class: "form-label fw-medium"
+                = f.select :notification_type,
+                    grouped_options_for_select([ \
+                      ["XM8 Notifications", [ \
+                        ["Base Raid", "base-raid"],
+                        ["Flag Stolen", "flag-stolen"],
+                        ["Flag Restored", "flag-restored"],
+                        ["Protection Money Due", "protection-money-due"],
+                        ["Protection Money Paid", "protection-money-paid"],
+                        ["Charge Plant Started", "charge-plant-started"],
+                        ["Grind Started", "grind-started"],
+                        ["Hack Started", "hack-started"],
+                        ["Flag Steal Started", "flag-steal-started"],
+                        ["MarXet Item Sold", "marxet-item-sold"] \
+                      ]],
+                      ["Gambling Notifications", [ \
+                        ["Won", "won"],
+                        ["Loss", "loss"] \
+                      ]],
+                      ["Player Notifications", [ \
+                        ["Money", "money"],
+                        ["Locker", "locker"],
+                        ["Respect", "respect"],
+                        ["Heal", "heal"],
+                        ["Kill", "kill"] \
+                      ]] \
+                    ], current_notification.notification_type),
+                    {},
+                    { class: "form-select" }
+
+              / Color Selection
+              .mb-4
+                = f.label :notification_color, "Embed Color", class: "form-label fw-medium"
+                .row.g-2
+                  .col-4
+                    = f.select :color_preset,
+                        options_for_select([ \
+                          ["Red", "#C62551"],
+                          ["Blue", "#3ED3FB"],
+                          ["Green", "#9FDE3A"],
+                          ["Yellow", "#DECA39"],
+                          ["Purple", "#793ADE"],
+                          ["Pink", "#DE3A9F"],
+                          ["Orange", "#DE7839"],
+                          ["White", "#FFFFFF"],
+                          ["Random", "random"],
+                          ["Custom", "custom"] \
+                        ], current_notification.notification_color),
+                        { include_blank: false },
+                        { class: "form-select" }
+                  .col-8
+                    = f.color_field :notification_color,
+                        class: "form-control",
+                        style: "height: 38px;"
+
+              / Title Input
+              .mb-4
+                .d-flex.align-items-center.justify-content-between.mb-2
+                  = f.label :notification_title, "Title", class: "form-label fw-medium mb-0"
+                  .dropdown
+                    button.btn.btn-sm.btn-outline-info.dropdown-toggle type="button" data-bs-toggle="dropdown"
+                      i.bi.bi-info-circle.me-1
+                      | Variables
+                    ul.dropdown-menu.dropdown-menu-end style="min-width: 350px;"
+                      li
+                        h6.dropdown-header Global Variables
+                      li
+                        .dropdown-item-text.small
+                          strong Available for all types:
+                          br
+                          code
+                            | {{ serverID }}
+                          |  - Server ID
+                          br
+                          code
+                            | {{ serverName }}
+                          |  - Server name
+                          br
+                          code
+                            | {{ communityID }}
+                          |  - Community ID
+                          br
+                          code
+                            | {{ userName }}
+                          |  - Player name
+                          br
+                          code
+                            | {{ userTag }}
+                          |  - Player @mention
+                      li
+                        hr.dropdown-divider
+                      - case current_notification.notification_category
+                      - when "xm8"
+                        li
+                          h6.dropdown-header XM8 Variables
+                        li
+                          .dropdown-item-text.small
+                            code
+                              | {{ territoryID }}
+                            |  - Territory ID
+                            br
+                            code
+                              | {{ territoryName }}
+                            |  - Territory name
+                      - when "gambling"
+                        li
+                          h6.dropdown-header Gambling Variables
+                        li
+                          .dropdown-item-text.small
+                            code
+                              | {{ amountChanged }}
+                            |  - Amount won/lost
+                            br
+                            code
+                              | {{ amountGambled }}
+                            |  - Amount gambled
+                            br
+                            code
+                              | {{ lockerBefore }}
+                            |  - Locker before
+                            br
+                            code
+                              | {{ lockerAfter }}
+                            |  - Locker after
+                      - when "player"
+                        li
+                          h6.dropdown-header Player Variables
+                        li
+                          .dropdown-item-text.small
+                            code
+                              | {{ targetUID }}
+                            |  - Target player UID
+                            - if ["money", "locker", "respect"].include?(current_notification.notification_type)
+                              br
+                              code
+                                | {{ modifiedAmount }}
+                              |  - Amount modified
+                              br
+                              code
+                                | {{ previousAmount }}
+                              |  - Previous amount
+                              br
+                              code
+                                | {{ newAmount }}
+                              |  - New amount
+
+                = f.text_field :notification_title,
+                    class: "form-control",
+                    placeholder: "Your notification title here"
+                .d-flex.justify-content-between.mt-1
+                  small.text-muted Discord markdown supported
+                  small.text-muted
+                    span = current_notification.notification_title&.length || 0
+                    | /256
+
+              / Message Input
+              .mb-4
+                .d-flex.align-items-center.justify-content-between.mb-2
+                  = f.label :notification_description, "Message", class: "form-label fw-medium mb-0"
+                  .dropdown
+                    button.btn.btn-sm.btn-outline-info.dropdown-toggle type="button" data-bs-toggle="dropdown"
+                      i.bi.bi-info-circle.me-1
+                      | Variables
+                    ul.dropdown-menu.dropdown-menu-end style="min-width: 350px;"
+                      li
+                        .dropdown-item-text.small Same variables as title
+
+                = f.text_area :notification_description,
+                    class: "form-control",
+                    rows: 3,
+                    placeholder: "Your notification message here"
+                .d-flex.justify-content-between.mt-1
+                  small.text-muted
+                    = link_to "Discord Markdown Guide",
+                        "https://support.discord.com/hc/en-us/articles/210298617",
+                        target: "_blank",
+                        class: "text-decoration-none"
+                  small.text-muted
+                    span = current_notification.notification_description&.length || 0
+                    | /2048
+
+            .card-footer.d-flex.justify-content-end.gap-2
+              = link_to community_notifications_path(current_community),
+                  class: "btn btn-outline-secondary"
+                | Cancel
+              = f.submit (current_notification.persisted? ? "Save Notification" : "Create Notification"),
+                  class: "btn btn-success"
+      - else
+        .card
+          .card-body.text-center.py-5.text-muted
+            i.bi.bi-plus-circle.fs-1.mb-3.d-block
+            h5 Create Your First Notification
+            p.mb-3 Get started by creating a custom notification template
+            = link_to new_community_notification_path(current_community),
+                class: "btn btn-primary"
+              i.bi.bi-plus.me-1
+              | Create Notification
