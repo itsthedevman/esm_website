@@ -1,6 +1,9 @@
+/ Server Identity Card
 .card.mb-4
   .card-header
-    h4.mb-0 Server Info
+    h4.mb-0
+      i.bi.bi-server.text-primary.me-2
+      | Server Identity
 
   .card-body
     / Server ID Section
@@ -9,144 +12,77 @@
         span.text-danger *
         | Server ID
       p.text-muted.small.mb-3
-        | A unique identifier used in all ESM commands for this server.
+        | The unique identifier players use in Discord commands. Keep it short and memorable!
         br
-        em Keep it short and memorable - players will type this frequently! (Example: 'exile_1' or 'tanoa')
+        em Examples: 'altis', 'tanoa', 'exile_1'
 
-      .input-group
-        span.input-group-text.bg-secondary.border-secondary
+      .input-group.input-group-lg
+        span.input-group-text.bg-secondary.border-secondary.fw-bold
           = "#{current_community.community_id}_"
         = f.text_field :server_id,
-            class: "form-control",
+            class: "form-control border-secondary",
             placeholder: "altis",
             required: true,
-            data: { bs_toggle: "tooltip", bs_title: "Combined with your community ID, this will be what players use to access this server. No spaces or symbols allowed." }
+            data: { \
+              bs_toggle: "tooltip",
+              bs_title: "Players will type this in every command - make it memorable!" \
+            }
         .invalid-feedback Please enter a valid server ID
 
-    / Server IP and Port Section
-    .mb-4
-      h5.mb-2
-        span.text-danger *
-        | Server IP and Port
-      p.text-muted.small.mb-3
-        | The connection details for your server. This information is displayed to players to help them connect to your server, especially useful for bookmarking or sharing with friends.
-
-      .row
-        .col-md-8
-          = f.text_field :server_ip,
-              class: "form-control",
-              placeholder: "122.122.122.122",
-              required: true
-          .invalid-feedback Please enter a valid IP address
-        .col-md-4
-          = f.number_field :server_port,
-              class: "form-control",
-              placeholder: "2302",
-              min: 1,
-              max: 65535,
-              required: true
-          .invalid-feedback Please enter a valid port number
-
     / Server Name Section
-    .mb-4
+    .mb-0
       h5.mb-2 Server Name
       p.text-muted.small.mb-3
-        | A friendly name for your server that will be displayed to players.
+        | A friendly display name shown to players when they view server information
 
       = f.text_field :server_name,
           class: "form-control",
           placeholder: "My Awesome Exile Server"
 
-    / Server Mods Section
-    .mb-4
-      h5.mb-2 Server Mods
-      p.text-muted.small.mb-3
-        | List the mods running on your server. This helps players prepare the correct modset before joining and showcases your server's unique features.
+/ Connection Details Card
+.card.mb-4
+  .card-header
+    h4.mb-0
+      i.bi.bi-globe.text-success.me-2
+      | Connection Details
 
-      .table-responsive
-        table.table.table-sm.table-striped.mb-3#server-mods-table
-          thead.table-dark
-            tr
-              th Mod Name
-              th Version
-              th Required?
-              th Actions
-          tbody
-            / Dynamic mod rows will be added here via JavaScript
+  .card-body
+    p.text-muted.small.mb-4
+      | The IP address and port where players connect to your server. This information helps players bookmark and share your server.
 
-      button.btn.btn-outline-primary.btn-sm[
-        type="button"
-        data-bs-toggle="modal"
-        data-bs-target="#add-mod-modal"
-      ] Add Mod
+    .row.g-3.mb-4
+      .col-8
+        label.form-label.fw-medium
+          span.text-danger *
+          | IP Address
+        = f.text_field :server_ip,
+            class: "form-control",
+            placeholder: "123.123.123.123",
+            required: true
+        .invalid-feedback Please enter a valid IP address
 
-    / Rewards Section
-    .mb-4
-      h5.mb-2 Player Rewards
-      p.text-muted.small.mb-3
-        | Configure the items and currency given to players when they use the reward command. The command cooldown can be adjusted in Command Configuration settings.
+      .col-4
+        label.form-label.fw-medium
+          span.text-danger *
+          | Port
+        = f.number_field :server_port,
+            class: "form-control",
+            placeholder: "2302",
+            min: 1,
+            max: 65535,
+            required: true
+        .invalid-feedback Please enter a valid port number
 
-      .row.g-3.mb-3
-        .col-md-4
-          label.form-label Poptabs (Player)
-          = f.number_field :player_poptabs,
-              class: "form-control",
-              min: 0,
-              value: 0
-        .col-md-4
-          label.form-label Poptabs (Locker)
-          = f.number_field :locker_poptabs,
-              class: "form-control",
-              min: 0,
-              value: 0
-        .col-md-4
-          label.form-label Respect
-          = f.number_field :respect,
-              class: "form-control",
-              min: 0,
-              value: 0
-
-      h6.mb-2 Reward Items
-      p.text-muted.small.mb-3
-        | Items granted through rewards will be added to the player's inventory if space is available. If the player's inventory is full, items will be dropped at their feet in-game.
-
-      .table-responsive
-        table.table.table-sm.table-striped.mb-3#reward-items-table
-          thead.table-dark
-            tr
-              th Quantity
-              th Item Classname
-              th Actions
-          tbody
-            / Dynamic reward items will be added here
-          tfoot
-            tr
-              td
-                input.form-control.form-control-sm[
-                  type="number"
-                  placeholder="1"
-                  min="1"
-                  id="reward-item-quantity"
-                ]
-              td
-                input.form-control.form-control-sm[
-                  type="text"
-                  placeholder="Exile_Item_EMRE"
-                  id="reward-item-classname"
-                ]
-              td
-                button.btn.btn-outline-success.btn-sm[type="button" id="add-reward-item"]
-                  i.bi.bi-plus
-                  | Add
-
-    / Visibility Section
+    / Server Visibility Section
     .mb-0
       h5.mb-2 Server Visibility
       p.text-muted.small.mb-3
-        | When set to private, servers are hidden from the servers command and Discord join messages. The server remains fully functional but won't be publicly listed.
-        em< Ideal for testing environments or whitelisted servers.
+        | Control whether your server appears in public listings. Private servers work normally but won't be shown to new players.
 
       = f.select :server_visibility,
-          options_for_select([["Public", "public"], ["Private", "private"]], "public"),
+          options_for_select([ \
+            ["Public - Show in server lists and join messages", "public"],
+            ["Private - Hidden from public listings", "private"] \
+          ], f.object.server_visibility),
           {},
-          class: "form-select w-auto"
+          class: "form-select"
