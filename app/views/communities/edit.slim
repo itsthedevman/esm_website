@@ -121,7 +121,7 @@
                   class: "form-control",
                   rows: 5,
                   disabled: !current_community.welcome_message_enabled,
-                  data: {}
+                  data: {action: "input->edit-community#onWelcomeMessageInput"}
 
                 .d-flex.justify-content-between.mt-2
                   = link_to_tab discord_markdown_docs_url do
@@ -129,9 +129,10 @@
                   small[
                     class="text-muted"
                   ]
-                    span[] = current_community.welcome_message.length
+                    span[data-edit-community-target="welcomeMessageLength"]
+                      = current_community.welcome_message.length
                     | /
-                    span[] 1000
+                    span 1000
 
         / Action Buttons
         .d-flex.justify-content-between.align-items-center.pt-4.border-top
@@ -142,9 +143,5 @@
               data-bs-target="#destroy-community-modal"
             ] Delete Community
 
-          .d-flex.gap-3
-            = link_to "Cancel",
-              edit_community_path(current_community),
-              class: "btn btn-outline-secondary"
-
+          .d-flex
             = f.submit "Save Changes", class: "btn btn-primary"

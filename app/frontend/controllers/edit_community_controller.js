@@ -5,7 +5,7 @@ import $ from "cash-dom";
 
 // Connects to data-controller="edit-community"
 export default class extends Controller {
-  static targets = ["form"];
+  static targets = ["form", "welcomeMessageLength"];
 
   connect() {
     this.validator = new JustValidate(this.formTarget);
@@ -15,10 +15,20 @@ export default class extends Controller {
   }
 
   onWelcomeMessageToggleClick(event) {
+    // Disable the message box element when the toggle is off
     const toggleElem = $(event.currentTarget);
     const messageBoxElem = $("#community_welcome_message");
 
     messageBoxElem.prop("disabled", !toggleElem.is(":checked"));
+  }
+
+  onWelcomeMessageInput(event) {
+    // Set the message length in the UI
+    const messageBoxElem = $(event.currentTarget);
+    const lengthElem = $(this.welcomeMessageLengthTarget);
+
+    const textLength = messageBoxElem.val().length;
+    lengthElem.html(textLength);
   }
 
   //////////////////////////////////////////////////////////////////////////////
