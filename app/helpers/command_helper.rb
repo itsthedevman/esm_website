@@ -22,6 +22,16 @@ module CommandHelper
     end
   end
 
+  def allowlist_roles(command)
+    current_community.roles.map do |role|
+      {
+        value: role.id,
+        label: role.name,
+        selected: command.configuration.allowlisted_role_ids.include?(role.id)
+      }
+    end.to_json
+  end
+
   private
 
   def build_custom_arguments(command, provided_arguments)

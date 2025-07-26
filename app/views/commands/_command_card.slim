@@ -1,0 +1,93 @@
+.card.h-100
+  = form_with model: command.configuration,
+      url: community_command_path(current_community, command.name),
+      method: :patch,
+      class: "d-flex flex-column h-100" do |f|
+
+    / Header
+    .card-header.py-3.flex-grow-1
+      .d-flex.align-items-center.mb-2
+        - if command.admin?
+          i.bi.bi-shield-lock.text-warning.me-2[
+            data-bs-toggle="tooltip"
+            title="Admin command"
+          ]
+        .font-monospace.text-primary.fw-medium
+          = command_usage(command.name.to_sym, show_arguments: false)
+
+      small.text-muted = Markdown.to_html(command.description).html_safe
+
+    / Command configuration body
+    .card-body.flex-grow-0
+      / Cooldown section
+      - if command.attributes["cooldown_time"]["modifiable"]
+        .mb-4
+          h6.mb-3
+            i.bi.bi-clock.text-info.me-2
+            | Cooldown
+          .row.g-2
+            .col-6
+              = f.number_field :cooldown_quantity,
+                  class: "form-control",
+                  min: 1,
+                  placeholder: "2"
+            .col-6
+              = f.select :cooldown_type,
+                  options_for_select(cooldown_types, command.configuration.cooldown_type),
+                  {},
+                  class: "form-select"
+
+      / Options section
+      h6.mb-3
+        i.bi.bi-gear.text-secondary.me-2
+        | Options
+
+      / Enabled toggle - moved here with other options
+      - if command.attributes["enabled"]["modifiable"]
+        .form-check.form-switch.mb-3
+          = f.check_box :enabled, class: "form-check-input"
+          = f.label :enabled, class: "form-check-label" do
+            | Enabled
+            i.bi.bi-info-circle.text-muted.ms-1[
+              data-bs-toggle="tooltip"
+              title="Enable or disable this command for your community"
+            ]
+
+      / Notify when disabled
+      - if command.attributes["enabled"]["modifiable"]
+        .form-check.form-switch.mb-3
+          = f.check_box :notify_when_disabled, class: "form-check-input"
+          = f.label :notify_when_disabled, class: "form-check-label" do
+            | Notify when disabled
+            i.bi.bi-info-circle.text-muted.ms-1[
+              data-bs-toggle="tooltip"
+              title="Tell users the command is disabled instead of ignoring it"
+            ]
+
+      / Text channels allowed
+      - if command.attributes["allowed_in_text_channels"]["modifiable"]
+        .form-check.form-switch.mb-3
+          = f.check_box :allowed_in_text_channels, class: "form-check-input"
+          = f.label :allowed_in_text_channels, class: "form-check-label" do
+            | Allow in text channels
+
+      / Allowlist section
+      - if command.attributes["allowlist_enabled"]["modifiable"]
+        .form-check.form-switch.mb-3
+          = f.check_box :allowlist_enabled, class: "form-check-input"
+          = f.label :allowlist_enabled, class: "form-check-label" do
+            | Use role allowlist
+
+        - if command.attributes["allowlisted_role_ids"]["modifiable"]
+          .mt-3
+            label.form-label.mb-2 Allowed Roles
+            = f.select :allowlisted_role_ids,
+                [], {},
+                multiple: "",
+                class: "form-control",
+                data: {roles: allowlist_roles(command), controller: "role-selector"}
+
+    / Save button - simplified footer
+    .card-footer.border-top.bg-transparent
+      .text-end
+        = f.submit "Save Changes", class: "btn btn-primary btn-sm"

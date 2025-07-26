@@ -8,7 +8,7 @@ class Command
       .symbolize_keys!
   end
 
-  attr_reader :domain, :scope, :action
+  attr_reader :domain, :scope, :action, :configuration
 
   attr_predicate :admin
 
@@ -48,10 +48,22 @@ class Command
     @details.command_usage
   end
 
+  def attributes
+    @details.command_attributes
+  end
+
   def operation
     operation = ""
     operation += "#{scope} " if scope
     operation + action.to_s
+  end
+
+  def preload_configuration(community)
+    @configuration = community.command_configurations.find_by(command_name: name)
+  end
+
+  def modifiable?
+    attributes.any? { |_key, attrs| attrs["modifiable"] }
   end
 
   private
