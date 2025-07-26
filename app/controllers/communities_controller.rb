@@ -19,7 +19,7 @@ class CommunitiesController < AuthenticatedController
 
   def edit
     # Array<id="", name="", color="", disabled=false>
-    community_roles = current_community.roles
+    community_roles = current_community.roles.sort_by(&:name)
 
     territory_admin_roles = community_roles.map do |role|
       selected = current_community.territory_admin_ids.include?(role.id)
