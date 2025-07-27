@@ -19,12 +19,13 @@ class ServersController < AuthenticatedController
   end
 
   def edit
-    server = current_community.servers.find_by(public_id: params[:server_id])
+    server = find_server
     not_found! if server.nil?
 
     render locals: {server:}
   end
 
+  # V1
   def key
     server = find_server
     not_found! if server.nil?
@@ -44,7 +45,7 @@ class ServersController < AuthenticatedController
     not_found! if server.nil?
 
     config = render_to_string(
-      template: "servers/config.yml.erb",
+      template: "servers/config",
       locals: {settings: server.server_setting.attributes},
       layout: false
     )
