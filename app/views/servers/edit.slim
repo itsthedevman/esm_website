@@ -34,15 +34,12 @@
     = render "servers/server_info", f:, **local_assigns
     = render "servers/server_mods", f:, **local_assigns
     = render "servers/server_rewards", f:, **local_assigns
+    = render "servers/server_settings", f:, **local_assigns
 
-    / V2 servers get the full modern layout
     - if server.ui_v2?
-      = render "servers/server_settings", f:, **local_assigns
       = render "servers/server_config", f:, **local_assigns
-
-    / V1 servers get the legacy layout
     - else
-      = render "servers/server_settings_v1", f:, **local_assigns
+      = render "servers/server_config_v1", f:, **local_assigns
 
     / Final Action Footer - for power users who went through everything
     .d-flex.justify-content-between.align-items-center.pt-4.mt-4.border-top

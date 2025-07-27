@@ -75,15 +75,16 @@
             span.input-group-text %
           small.form-text.text-muted Default: 35%
 
-        .col-6
-          .form-check.form-switch.mt-4
-            = f.check_box :gambling_locker_limit_enabled,
-                class: "form-check-input",
-                checked: server.server_setting&.gambling_locker_limit_enabled != false
-            = f.label :gambling_locker_limit_enabled, class: "form-check-label fw-medium" do
-              | Enforce Locker Capacity Limits
-              span.badge.bg-info.ms-2 NEW
-          small.form-text.text-muted.mt-1 Prevents gambling when player's locker is near full
+        - if f.object.ui_v2?
+          .col-6
+            .form-check.form-switch.mt-4
+              = f.check_box :gambling_locker_limit_enabled,
+                  class: "form-check-input",
+                  checked: server.server_setting&.gambling_locker_limit_enabled != false
+              = f.label :gambling_locker_limit_enabled, class: "form-check-label fw-medium" do
+                | Enforce Locker Capacity Limits
+                span.badge.bg-info.ms-2 NEW
+            small.form-text.text-muted.mt-1 Prevents gambling when player's locker is near full
 
     / Advanced Payout Configuration
     .border.border-secondary.rounded.p-3.bg-body-secondary.bg-opacity-25
