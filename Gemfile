@@ -40,6 +40,8 @@ group :development do
   # SSH and encryption dependencies for Capistrano
   gem "ed25519", require: false
   gem "bcrypt_pbkdf", require: false
+
+  gem "benchmark-ips", "~> 2.14"
 end
 
 ####################################################################################################
