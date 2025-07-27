@@ -1,26 +1,25 @@
 = render "communities/container" do
-  / Header with version toggle and download
-  .d-flex.align-items-center.justify-content-between.mb-4
-    div
-      h1.mb-2
-        i.bi.bi-pencil-square.text-primary.me-3
-        | Edit #{server.server_id}
-      p.text-muted.mb-0 Configure your server settings and download updated files
+  / Centered header like other pages
+  .text-center.mb-4
+    h1.mb-2
+      | Edit #{server.server_id}
+    p.lead.text-muted Configure your server settings and download updated files
 
-    .d-flex.gap-2.align-items-center
-      - if server.ui_v2?
-        .dropdown
-          button.btn.btn-info.dropdown-toggle[
-            type="button"
-            data-bs-toggle="dropdown"
-          ]
-            i.bi.bi-download.me-2
-            | Download Files
-          ul.dropdown-menu
-            li
-              = link_to "#", class: "dropdown-item"
-                i.bi.bi-key.text-warning.me-2
-                | esm.key
+    / Download dropdown - available for both versions
+    .d-flex.justify-content-center.mt-3
+      .dropdown
+        button.btn.btn-info.dropdown-toggle[
+          type="button"
+          data-bs-toggle="dropdown"
+        ]
+          i.bi.bi-download.me-2
+          | Download Files
+        ul.dropdown-menu
+          li
+            = link_to "#", class: "dropdown-item"
+              i.bi.bi-key.text-warning.me-2
+              | esm.key
+          - if server.ui_v2?
             li
               = link_to "#", class: "dropdown-item"
                 i.bi.bi-file-code.text-info.me-2
