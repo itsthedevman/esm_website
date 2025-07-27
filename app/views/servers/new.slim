@@ -74,9 +74,8 @@
             / Server ID - the key identifier
             .mb-4
               label.form-label.h6.mb-2
-                i.bi.bi-tag.text-primary.me-2
-                | Server ID
                 span.text-danger.ms-1 *
+                |< Server ID
               .input-group.input-group-lg
                 span.input-group-text.bg-secondary.border-secondary.fw-bold
                   = "#{current_community.community_id}_"
@@ -91,9 +90,8 @@
             / Connection details
             .mb-4
               label.form-label.h6.mb-2
-                i.bi.bi-globe.text-success.me-2
-                | Server Connection
                 span.text-danger.ms-1 *
+                |< Server Connection
               .row.g-3
                 .col-md-8
                   = f.text_field :server_ip,
@@ -113,7 +111,6 @@
             / Visibility toggle
             .mb-4
               label.form-label.h6.mb-2
-                i.bi.bi-eye-slash.text-warning.me-2
                 | Server Visibility
               = f.select :server_visibility,
                   options_for_select([ \
