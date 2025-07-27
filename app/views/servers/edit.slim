@@ -18,18 +18,21 @@
           - if server.ui_v2?
             li
               = link_to server_token_community_server_path(current_community, server),
-                class: "dropdown-item"
+                class: "dropdown-item",
+                data: {turbo: false}
                 i.bi.bi-key.text-warning.me-2
                 | esm.key
             li
               = link_to server_config_community_server_path(current_community, server, format: :yml),
-                class: "dropdown-item"
+                class: "dropdown-item",
+                data: {turbo: false}
                 i.bi.bi-file-code.text-info.me-2
                 | config.yml
           - else
             li
               = link_to key_community_server_path(current_community, server),
-                class: "dropdown-item"
+                class: "dropdown-item",
+                data: {turbo: false}
                 i.bi.bi-key.text-warning.me-2
                 | esm.key
 
