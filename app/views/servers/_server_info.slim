@@ -23,18 +23,14 @@
             class: "form-control border-secondary",
             placeholder: "altis",
             required: true,
-            value: f.object.local_id,
-            data: { \
-              bs_toggle: "tooltip",
-              bs_title: "Players will type this in every command - make it memorable!" \
-            }
-        .invalid-feedback Please enter a valid server ID
+            value: f.object.local_id
 
     / Server Name Display (read-only)
     .mb-0
       h5.mb-2
         | Server Name
-        small.text-muted.fw-normal.ms-2 (Auto-detected)
+        small.text-muted.fw-normal.ms-2
+          | (Auto-detected)
       p.text-muted.small.mb-3
         | This name is automatically set by your server on connection and cannot be changed from the dashboard
 
