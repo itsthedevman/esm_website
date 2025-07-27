@@ -16,11 +16,13 @@ class ApplicationController < ActionController::Base
 
   def render_not_found(exception = nil)
     respond_to do |format|
-      format.html do
-        render partial: "errors/404", status: :not_found, layout: "application"
-      end
+      format.html { render "errors/not_found_404" }
 
       format.json { render json: {error: "Not found"}, status: :not_found }
+
+      format.turbo_stream do
+        render turbo_stream: create_error_toast("The request item was not found")
+      end
     end
   end
 

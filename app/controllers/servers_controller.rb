@@ -20,6 +20,7 @@ class ServersController < AuthenticatedController
 
   def edit
     server = current_community.servers.find_by(public_id: params[:server_id])
+    not_found! if server.nil?
 
     render locals: {server:}
   end
