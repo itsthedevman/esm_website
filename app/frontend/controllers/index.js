@@ -4,8 +4,8 @@
 
 import { application } from "./application";
 
-import EditCommunityController from "./edit_community_controller";
-application.register("edit-community", EditCommunityController);
+import CommunityEditController from "./community_edit_controller";
+application.register("community-edit", CommunityEditController);
 
 import ServerEditController from "./server_edit_controller";
 application.register("server-edit", ServerEditController);

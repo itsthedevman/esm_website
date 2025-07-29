@@ -2,7 +2,7 @@
 = render "communities/destroy_modal"
 
 = render "communities/container", **local_assigns do
-  div[data-controller="edit-community"]
+  div[data-controller="community-edit"]
     / Header section
     .text-center.mb-4
       h1.mb-2 Community Settings
@@ -13,7 +13,7 @@
           url: community_path(current_community.public_id),
           scope: :community,
           method: :patch,
-          data: {edit_community_target: "form"} do |f|
+          data: {community_edit_target: "form"} do |f|
 
         / Community ID Section
         .card.mb-4
@@ -140,7 +140,7 @@
             .form-check.form-switch.me-3
               = f.check_box :welcome_message_enabled,
                   class: "form-check-input mt-2",
-                  data: {action: "click->edit-community#onWelcomeMessageToggleClick"}
+                  data: {action: "click->community-edit#onWelcomeMessageToggleClick"}
 
               = f.label :welcome_message_enabled, class: "form-check-label h4 mb-0" do
                 | Welcome Message
@@ -157,7 +157,7 @@
                   rows: 5,
                   disabled: !current_community.welcome_message_enabled,
                   placeholder: "Add your custom welcome message here...",
-                  data: {action: "input->edit-community#onWelcomeMessageInput"}
+                  data: {action: "input->community-edit#onWelcomeMessageInput"}
 
                 .d-flex.justify-content-between.mt-2
                   = link_to_tab discord_markdown_docs_url, class: "text-decoration-none" do
@@ -165,7 +165,7 @@
                       i.bi.bi-markdown.me-1
                       | Discord markdown supported
                   small.text-muted
-                    span[data-edit-community-target="welcomeMessageLength"]
+                    span[data-community-edit-target="welcomeMessageLength"]
                       = current_community.welcome_message.length
                     | /
                     span[] 1000

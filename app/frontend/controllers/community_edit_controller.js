@@ -3,7 +3,7 @@ import JustValidate from "just-validate";
 import { allowTurbo } from "../helpers/just_validate";
 import $ from "cash-dom";
 
-// Connects to data-controller="edit-community"
+// Connects to data-controller="community-edit"
 export default class extends Controller {
   static targets = ["form", "welcomeMessageLength"];
 
