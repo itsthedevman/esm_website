@@ -116,7 +116,12 @@ export default class extends Controller {
       });
   }
 
-  deleteMod(_event) {}
+  deleteMod(event) {
+    const id = $(event.currentTarget).data("modId");
+    delete this.mods[id];
+
+    this.#renderMods();
+  }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -224,15 +229,16 @@ export default class extends Controller {
     const emptyStateElem = $(this.emptyStateTarget);
     const modsListElem = $(this.modsListTarget);
     const modCountElem = $(this.modCountTarget);
+    const modLength = R.keys(this.mods).length;
 
-    if (this.mods.length === 0) {
+    if (modLength === 0) {
       emptyStateElem.show();
       modsListElem.hide();
       modCountElem.text("0");
     } else {
       emptyStateElem.hide();
       modsListElem.show().html("");
-      modCountElem.text(this.mods.length);
+      modCountElem.text(modLength);
 
       R.forEachObjIndexed((mod, id) => {
         const modCard = this.#createModCard(mod, id);
