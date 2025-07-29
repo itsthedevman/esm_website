@@ -38,11 +38,11 @@
 
   = render "servers/version_picker", **local_assigns
 
-  div[data-controller="edit-server"]
+  div[data-controller="server-edit"]
     = form_with model: [current_community, server],
       url: community_servers_path(current_community, server),
       scope: :server,
-      data: {edit_server_target: "form"} do |f|
+      data: {server_edit_target: "form"} do |f|
 
       = render "servers/server_info", f:, **local_assigns
       = render "servers/server_mods", f:, **local_assigns

@@ -5,7 +5,7 @@
       | Edit Server Mod
     button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
 
-  = form_with scope: :edit, data: { edit_server_target: "editModForm" } do |f|
+  = form_with scope: :edit, data: { server_edit_target: "editModForm" } do |f|
     .modal-body
       p.text-muted.small.mb-4
         | Update mod information to keep your players informed about modset changes.
@@ -47,6 +47,6 @@
         = f.button type: "button",
             class: "btn btn-primary ms-2",
             id: "edit-mod-save",
-            data: { action: "click->edit-server#updateMod", mod_id: "" } do
+            data: { action: "click->server-edit#updateMod", mod_id: "" } do
           i.bi.bi-check-circle.me-2
           | Save Changes

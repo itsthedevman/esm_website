@@ -5,7 +5,7 @@ import JustValidate from "just-validate";
 import { allowTurbo } from "../helpers/just_validate";
 import * as bootstrap from "bootstrap";
 
-// Connects to data-controller="edit-server"
+// Connects to data-controller="server-edit"
 export default class extends Controller {
   static targets = [
     "form",
@@ -205,7 +205,7 @@ export default class extends Controller {
               <button
                 class="btn btn-outline-primary btn-sm flex-fill"
                 type="button"
-                data-action="click->edit-server#editMod"
+                data-action="click->server-edit#editMod"
                 data-mod-id="${id}"
               >
                 <i class="bi bi-pencil me-1"></i>Edit
@@ -213,7 +213,7 @@ export default class extends Controller {
               <button
                 class="btn btn-outline-danger btn-sm"
                 type="button"
-                data-action="click->edit-server#deleteMod"
+                data-action="click->server-edit#deleteMod"
                 data-mod-id="${id}"
               >
                 <i class="bi bi-trash"></i>

@@ -7,8 +7,8 @@ import { application } from "./application";
 import EditCommunityController from "./edit_community_controller";
 application.register("edit-community", EditCommunityController);
 
-import EditServerController from "./edit_server_controller";
-application.register("edit-server", EditServerController);
+import ServerEditController from "./server_edit_controller";
+application.register("server-edit", ServerEditController);
 
 import NewServerController from "./new_server_controller";
 application.register("new-server", NewServerController);

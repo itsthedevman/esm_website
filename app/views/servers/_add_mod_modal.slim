@@ -5,7 +5,7 @@
       | Add Server Mod
     button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
 
-  = form_with scope: :add, data: { edit_server_target: "addModForm" } do |f|
+  = form_with scope: :add, data: { server_edit_target: "addModForm" } do |f|
     .modal-body
       p.text-muted.small.mb-4
         | Help your players prepare the right modset by listing the mods your server uses.
@@ -48,6 +48,6 @@
         button.btn.btn-outline-secondary[type="button" data-bs-dismiss="modal"] Cancel
         = f.button type: "button",
             class: "btn btn-success ms-2",
-            data: { action: "click->edit-server#addMod" } do
+            data: { action: "click->server-edit#addMod" } do
           i.bi.bi-plus-circle.me-2
           | Add Mod

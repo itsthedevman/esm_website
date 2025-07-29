@@ -40,7 +40,7 @@
         h5.mb-0 Reward Items
         button.btn.btn-outline-primary.btn-sm[
           type="button"
-          id="add-reward-item-btn"
+          data-action="click->server-edit#addRewardItem"
         ]
           i.bi.bi-plus.me-1
           | Add Item
@@ -51,10 +51,10 @@
           | Items are added to player inventory if space allows, otherwise dropped at their feet
 
       .table-responsive
-        table.table.table-sm.table-striped#reward-items-table
+        table.table.table-sm.table-striped
           thead.table-dark
             tr
               th Quantity
               th Item Classname
               th Actions
-          tbody#reward-items-tbody
+          tbody[data-server-edit-target="rewardTableBody"]
