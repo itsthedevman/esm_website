@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 import * as R from "ramda";
 import $ from "cash-dom";
-import JustValidate from "just-validate";
+import Validate from "../helpers/validator";
 import * as bootstrap from "bootstrap";
 
 // Connects to data-controller="server-mods"
@@ -15,8 +15,9 @@ export default class extends Controller {
   ];
 
   connect() {
-    this.addValidator = new JustValidate(this.addFormTarget);
-    this.editValidator = new JustValidate(this.editFormTarget);
+    this.addValidator = new Validate();
+    this.editValidator = new Validate();
+
     this.mods = {};
 
     this.#initializeModValidators();
@@ -33,8 +34,8 @@ export default class extends Controller {
     this.#renderMods();
   }
 
-  addMod(_event) {
-    this.validators.addMod.revalidateField("#add_mod_name").then((isValid) => {
+  create(_event) {
+    this.addValidator.validate().then((isValid) => {
       if (!isValid) return;
 
       const nameElem = $("#add_mod_name");
@@ -62,7 +63,7 @@ export default class extends Controller {
     });
   }
 
-  editMod(event) {
+  edit(event) {
     const id = $(event.currentTarget).data("modId");
     const mod = this.mods[id];
 
@@ -75,41 +76,39 @@ export default class extends Controller {
     bootstrap.Modal.getOrCreateInstance("#edit_mod_modal").show();
   }
 
-  updateMod(event) {
-    this.validators.editMod
-      .revalidateField("#edit_mod_name")
-      .then((isValid) => {
-        if (!isValid) return;
+  update(event) {
+    this.editValidator.validate().then((isValid) => {
+      if (!isValid) return;
 
-        const id = $(event.currentTarget).data("modId");
-        const nameElem = $("#edit_mod_name");
-        const versionElem = $("#edit_mod_version");
-        const linkElem = $("#edit_mod_link");
-        const requiredElem = $("#edit_mod_required");
-        const saveElem = $("#edit-mod-save");
+      const id = $(event.currentTarget).data("modId");
+      const nameElem = $("#edit_mod_name");
+      const versionElem = $("#edit_mod_version");
+      const linkElem = $("#edit_mod_link");
+      const requiredElem = $("#edit_mod_required");
+      const saveElem = $("#edit-mod-save");
 
-        this.#setMod({
-          id,
-          name: nameElem.val(),
-          version: versionElem.val(),
-          link: linkElem.val(),
-          required: requiredElem.is(":checked"),
-        });
-
-        this.#renderMods();
-
-        bootstrap.Modal.getOrCreateInstance("#edit_mod_modal").hide();
-
-        // Reset the form
-        nameElem.val("");
-        versionElem.val("");
-        linkElem.val("");
-        requiredElem.prop("checked", false);
-        saveElem.data("modId", "");
+      this.#setMod({
+        id,
+        name: nameElem.val(),
+        version: versionElem.val(),
+        link: linkElem.val(),
+        required: requiredElem.is(":checked"),
       });
+
+      this.#renderMods();
+
+      bootstrap.Modal.getOrCreateInstance("#edit_mod_modal").hide();
+
+      // Reset the form
+      nameElem.val("");
+      versionElem.val("");
+      linkElem.val("");
+      requiredElem.prop("checked", false);
+      saveElem.data("modId", "");
+    });
   }
 
-  deleteMod(event) {
+  delete(event) {
     const id = $(event.currentTarget).data("modId");
     delete this.mods[id];
 
@@ -157,7 +156,7 @@ export default class extends Controller {
               <button
                 class="btn btn-outline-primary btn-sm flex-fill"
                 type="button"
-                data-action="click->server-edit#editMod"
+                data-action="click->server-mods#edit"
                 data-mod-id="${id}"
               >
                 <i class="bi bi-pencil me-1"></i>Edit
@@ -165,7 +164,7 @@ export default class extends Controller {
               <button
                 class="btn btn-outline-danger btn-sm"
                 type="button"
-                data-action="click->server-edit#deleteMod"
+                data-action="click->server-mods#delete"
                 data-mod-id="${id}"
               >
                 <i class="bi bi-trash"></i>

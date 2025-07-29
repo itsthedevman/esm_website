@@ -5,49 +5,48 @@
       | Add Server Mod
     button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
 
-  = form_with scope: :add, data: { server_mods_target: "addForm" } do |f|
-    .modal-body
-      p.text-muted.small.mb-4
-        | Help your players prepare the right modset by listing the mods your server uses.
+  .modal-body
+    p.text-muted.small.mb-4
+      | Help your players prepare the right modset by listing the mods your server uses.
 
-        .row.g-3.mb-4
-          .col-8
-            = f.label :mod_name, class: "form-label fw-medium" do
-              span.text-danger *
-              | Mod Name
-            = f.text_field :mod_name,
-                class: "form-control",
-                placeholder: "@Exile",
-                required: true
-          .col-4
-            = f.label :mod_version, "Version", class: "form-label fw-medium"
-            = f.text_field :mod_version,
-                class: "form-control",
-                placeholder: "1.0.4"
+    .row.g-3.mb-4
+      .col-8
+        = label_tag "add_mod_name", class: "form-label fw-medium" do
+          span.text-danger *
+          | Mod Name
+        = text_field_tag "add_mod_name", nil,
+            class: "form-control",
+            placeholder: "@Exile",
+            required: true
+      .col-4
+        = label_tag "add_mod_version", "Version", class: "form-label fw-medium"
+        = text_field_tag "add_mod_version", nil,
+            class: "form-control",
+            placeholder: "1.0.4"
 
-        .mb-4
-          = f.label :mod_link, "Download Link", class: "form-label fw-medium"
-          = f.url_field :mod_link,
-              class: "form-control",
-              placeholder: "https://steamcommunity.com/workshop"
+    .mb-4
+      = label_tag "add_mod_link", "Download Link", class: "form-label fw-medium"
+      = url_field_tag "add_mod_link", nil,
+          class: "form-control",
+          placeholder: "https://steamcommunity.com/workshop"
 
-        .mb-0
-          .form-check.form-switch
-            = f.check_box :mod_required, class: "form-check-input"
-            = f.label :mod_required, class: "form-check-label fw-medium" do
-              | Required Mod
-              span.badge.bg-warning.text-dark.ms-2 Important
-          small.form-text.text-muted.mt-1 Show players which mods they need to join
+    .mb-0
+      .form-check.form-switch
+        = check_box_tag "add_mod_required", "1", false, class: "form-check-input"
+        = label_tag "add_mod_required", class: "form-check-label fw-medium" do
+          | Required Mod
+          span.badge.bg-warning.text-dark.ms-2 Important
+      small.form-text.text-muted.mt-1 Show players which mods they need to join
 
-    .modal-footer.border-top.d-flex.justify-content-between
-      div
-        small.text-muted
-          i.bi.bi-info-circle.me-1
-          | You can modify mod details later if needed
-      div
-        button.btn.btn-outline-secondary[type="button" data-bs-dismiss="modal"] Cancel
-        = f.button type: "button",
-            class: "btn btn-success ms-2",
-            data: { action: "click->server-mods#add" } do
-          i.bi.bi-plus-circle.me-2
-          | Add Mod
+  .modal-footer.border-top.d-flex.justify-content-between
+    div
+      small.text-muted
+        i.bi.bi-info-circle.me-1
+        | You can modify mod details later if needed
+    div
+      button.btn.btn-outline-secondary[type="button" data-bs-dismiss="modal"] Cancel
+      = button_tag type: "button",
+          class: "btn btn-success ms-2",
+          data: { action: "click->server-mods#add" } do
+        i.bi.bi-plus-circle.me-2
+        | Add Mod
