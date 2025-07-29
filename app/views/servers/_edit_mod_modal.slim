@@ -1,62 +1,52 @@
-#edit-mod-modal.modal.fade[tabindex="-1" aria-labelledby="edit-mod-modal-label" aria-hidden="true"]
-  .modal-dialog.modal-lg
-    .modal-content
-      .modal-header.border-warning.bg-warning.bg-opacity-10
-        h5#edit-mod-modal-label.modal-title
-          i.bi.bi-pencil-square.text-warning.me-2
-          | Edit Server Mod
-        button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
+= render "shared/modal", id: "edit_mod_modal", class: "modal-lg" do
+  .modal-header.border-warning.bg-warning.bg-opacity-10
+    h5.modal-title
+      i.bi.bi-pencil-square.text-warning.me-2
+      | Edit Server Mod
+    button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
 
-      .modal-body
-        p.text-muted.small.mb-4
-          | Update mod information to keep your players informed about modset changes.
+  = form_with scope: :edit, data: { edit_server_target: "editModForm" } do |f|
+    .modal-body
+      p.text-muted.small.mb-4
+        | Update mod information to keep your players informed about modset changes.
 
-        form#edit-mod-form
-          .row.g-3.mb-4
-            .col-8
-              label.form-label.fw-medium
-                span.text-danger *
-                | Mod Name
-              input.form-control[
-                type="text"
-                placeholder="@Exile"
-                id="edit-mod-name"
-                required
-              ]
-              small.form-text.text-muted Include the @ symbol if it's part of the mod name
-            .col-4
-              label.form-label.fw-medium Version
-              input.form-control[
-                type="text"
-                placeholder="1.0.4"
-                id="edit-mod-version"
-              ]
-              small.form-text.text-muted Optional version info
+        .row.g-3.mb-4
+          .col-8
+            = f.label :mod_name, class: "form-label fw-medium" do
+              span.text-danger *
+              | Mod Name
+            = f.text_field :mod_name,
+                class: "form-control",
+                placeholder: "@Exile",
+                required: true
 
-          .mb-4
-            label.form-label.fw-medium Download Link
-            input.form-control[
-              type="url"
-              placeholder="https://www.exilemod.com/downloads"
-              id="edit-mod-link"
-            ]
-            small.form-text.text-muted Optional - where players can download this mod
+          .col-4
+            = f.label :mod_version, "Version", class: "form-label fw-medium"
+            = f.text_field :mod_version,
+                class: "form-control",
+                placeholder: "1.0.4"
 
-          .mb-0
-            .form-check.form-switch
-              input.form-check-input[type="checkbox" id="edit-mod-required"]
-              label.form-check-label.fw-medium[for="edit-mod-required"]
-                | Required Mod
-                span.badge.bg-warning.text-dark.ms-2 Important
-            small.form-text.text-muted.mt-1 Required mods will be prominently displayed to players
+        .mb-4
+          = f.label :mod_link, "Download Link", class: "form-label fw-medium"
+          = f.url_field :mod_link,
+              class: "form-control",
+              placeholder: "https://steamcommunity.com/workshop"
 
-      .modal-footer.border-top.d-flex.justify-content-between
-        div
-          small.text-muted
-            i.bi.bi-trash.me-1
-            | Changes are saved immediately
-        div
-          button.btn.btn-outline-secondary[type="button" data-bs-dismiss="modal"] Cancel
-          button.btn.btn-primary.ms-2[type="button" id="save-mod-btn"]
-            i.bi.bi-check-circle.me-2
-            | Save Changes
+        .mb-0
+          .form-check.form-switch
+            = f.check_box :mod_required, class: "form-check-input"
+            = f.label :mod_required, class: "form-check-label fw-medium" do
+              | Required Mod
+              span.badge.bg-warning.text-dark.ms-2 Important
+          small.form-text.text-muted.mt-1 Show players which mods they need to join
+
+    .modal-footer.border-top.d-flex.justify-content-between
+      div
+      div
+        button.btn.btn-outline-secondary[type="button" data-bs-dismiss="modal"] Cancel
+        = f.button type: "button",
+            class: "btn btn-primary ms-2",
+            id: "edit-mod-save",
+            data: { action: "click->edit-server#updateMod", mod_id: "" } do
+          i.bi.bi-check-circle.me-2
+          | Save Changes
