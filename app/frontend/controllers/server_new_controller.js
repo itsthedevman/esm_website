@@ -3,7 +3,7 @@ import * as R from "ramda";
 import $ from "cash-dom";
 import JustValidate from "just-validate";
 
-// Connects to data-controller="new-server"
+// Connects to data-controller="server-new"
 export default class extends Controller {
   static targets = ["form", "v1Card", "v2Card", "version"];
   static values = { ids: Array };
@@ -23,7 +23,7 @@ export default class extends Controller {
   }
 
   onVersionSelected(event) {
-    const version = event.params.version;
+    const version = $(event.currentTarget).data("version");
     this.#setActiveCard(version);
   }
 
@@ -85,7 +85,7 @@ export default class extends Controller {
       card.removeClass("selected");
 
       const button = card.find("button");
-      const version = button.data("newServerVersionParam");
+      const version = button.data("version");
 
       button.html(`Choose v${version}`);
     });

@@ -1,5 +1,5 @@
 = render "communities/container" do
-  div[data-controller="new-server" data-new-server-ids-value="#{existing_server_ids}"]
+  div[data-controller="server-new" data-server-new-ids-value="#{existing_server_ids}"]
     / Hero section
     .text-center.mb-4
       h1.mb-3 Register Your Server
@@ -8,7 +8,7 @@
     / Version selection cards
     .row.g-4.mb-5
       .col-md-6
-        .card.h-100.border-2.version-card[data-new-server-target="v1Card"]
+        .card.h-100.border-2.version-card[data-server-new-target="v1Card"]
           .card-header.text-center
             h4.mb-0.text-primary
               | Version 1
@@ -27,12 +27,12 @@
             .mt-auto
               button.btn.btn-outline-primary.w-100[
                 type="button"
-                data-action="click->new-server#onVersionSelected"
-                data-new-server-version-param="1"
+                data-action="click->server-new#onVersionSelected"
+                data-version="1"
               ]
 
       .col-md-6
-        .card.h-100.border-2.version-card[data-new-server-target="v2Card"]
+        .card.h-100.border-2.version-card[data-server-new-target="v2Card"]
           .card-header.text-center
             h4.mb-0.text-info
               | Version 2
@@ -54,8 +54,8 @@
             .mt-auto
               button.btn.btn-outline-info.w-100[
                 type="button"
-                data-action="click->new-server#onVersionSelected"
-                data-new-server-version-param="2"
+                data-action="click->server-new#onVersionSelected"
+                data-version="2"
               ]
 
     / Server details form
@@ -67,8 +67,8 @@
       = form_with model: ESM::Server.new,
         url: community_servers_path(current_community.public_id),
         scope: "server",
-        data: {new_server_target: "form", turbo: false} do |f|
-          = f.hidden_field :ui_version, data: {new_server_target: "version"}
+        data: {server_new_target: "form", turbo: false} do |f|
+          = f.hidden_field :ui_version, data: {server_new_target: "version"}
 
           .card-body.p-4
             / Server ID - the key identifier

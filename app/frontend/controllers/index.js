@@ -10,8 +10,8 @@ application.register("edit-community", EditCommunityController);
 import ServerEditController from "./server_edit_controller";
 application.register("server-edit", ServerEditController);
 
-import NewServerController from "./new_server_controller";
-application.register("new-server", NewServerController);
+import ServerNewController from "./server_new_controller";
+application.register("server-new", ServerNewController);
 
 import NotificationsController from "./notifications_controller";
 application.register("notifications", NotificationsController);
