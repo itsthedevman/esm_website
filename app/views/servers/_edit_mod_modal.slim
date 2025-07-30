@@ -18,23 +18,26 @@
           = text_field_tag "edit_mod_name", nil,
               class: "form-control",
               placeholder: "@Exile",
+              name: nil,
               required: true
 
         .col-4
           = label_tag "edit_mod_version", "Version", class: "form-label fw-medium"
           = text_field_tag "edit_mod_version", nil,
               class: "form-control",
+              name: nil,
               placeholder: "1.0.4"
 
       .mb-4
         = label_tag "edit_mod_link", "Download Link", class: "form-label fw-medium"
         = url_field_tag "edit_mod_link", nil,
             class: "form-control",
+            name: nil,
             placeholder: "https://steamcommunity.com/workshop"
 
       .mb-0
         .form-check.form-switch
-          = check_box_tag "edit_mod_required", "1", false, class: "form-check-input"
+          = check_box_tag "edit_mod_required", "1", false, class: "form-check-input", name: nil
           = label_tag "edit_mod_required", class: "form-check-label fw-medium" do
             | Required Mod
             span.badge.bg-warning.text-dark.ms-2 Important

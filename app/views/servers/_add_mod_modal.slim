@@ -15,24 +15,27 @@
           span.text-danger *
           | Mod Name
         = text_field_tag "add_mod_name", nil,
+            name: nil,
             class: "form-control",
             placeholder: "@Exile",
             required: true
       .col-4
         = label_tag "add_mod_version", "Version", class: "form-label fw-medium"
         = text_field_tag "add_mod_version", nil,
+            name: nil,
             class: "form-control",
             placeholder: "1.0.4"
 
     .mb-4
       = label_tag "add_mod_link", "Download Link", class: "form-label fw-medium"
       = url_field_tag "add_mod_link", nil,
+          name: nil,
           class: "form-control",
           placeholder: "https://steamcommunity.com/workshop"
 
     .mb-0
       .form-check.form-switch
-        = check_box_tag "add_mod_required", "1", false, class: "form-check-input"
+        = check_box_tag "add_mod_required", "1", false, class: "form-check-input", name: nil
         = label_tag "add_mod_required", class: "form-check-label fw-medium" do
           | Required Mod
           span.badge.bg-warning.text-dark.ms-2 Important
