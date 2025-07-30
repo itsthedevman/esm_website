@@ -8,13 +8,6 @@ class ServersController < AuthenticatedController
   end
 
   def new
-    existing_server_ids = current_community.servers
-      .pluck(:server_id)
-      .map { |id| id.split("_").second }
-      .sort_by
-      .insensitive
-      .sort
-
     render locals: {existing_server_ids:}
   end
 
@@ -22,7 +15,19 @@ class ServersController < AuthenticatedController
     server = find_server
     not_found! if server.nil?
 
-    render locals: {server:}
+    existing_server_mods = server.server_mods
+      .select(:mod_name, :mod_link, :mod_version, :mod_required)
+      .map do |mod|
+        mod.attributes
+          .except("id")
+          .transform_keys { |k| k.to_s.split("_").second } # Remove "mod_"
+      end
+
+    render locals: {
+      server:,
+      existing_server_mods:,
+      existing_server_ids: existing_server_ids - [server.local_id]
+    }
   end
 
   # V1
@@ -57,6 +62,14 @@ class ServersController < AuthenticatedController
     server_params = permit_create_params
 
     server = current_community.servers.create!(server_params)
+
+    # Add the default @Exile mod
+    server.server_mods.create!(
+      mod_name: "@ExileMod",
+      mod_version: "1.0.4",
+      mod_link: "https://steamcommunity.com/workshop/filedetails/?id=1487484880",
+      mod_required: true
+    )
 
     flash[:success] = "Server #{server.server_id} has been created"
     redirect_to edit_community_server_path(current_community, server)
@@ -147,6 +160,15 @@ class ServersController < AuthenticatedController
 
   def find_server
     current_community.servers.find_by(public_id: params[:server_id])
+  end
+
+  def existing_server_ids
+    current_community.servers
+      .select(:server_id)
+      .map(&:local_id)
+      .sort_by
+      .insensitive
+      .sort
   end
 
   def permit_create_params
