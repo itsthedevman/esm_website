@@ -3,6 +3,7 @@ import * as R from "ramda";
 import $ from "cash-dom";
 import Validate from "../helpers/validator";
 import * as bootstrap from "bootstrap";
+import { Serializer } from "../helpers/forms";
 
 // Connects to data-controller="server-mods"
 export default class extends Controller {
@@ -12,16 +13,21 @@ export default class extends Controller {
     "emptyState",
     "modsList",
     "modCount",
-    "save",
   ];
+
+  static values = { mods: Array };
 
   connect() {
     this.addValidator = new Validate();
     this.editValidator = new Validate();
+    this.serializer = new Serializer(
+      "form[data-server-edit-target]",
+      "server[server_mods]"
+    );
 
     this.#initializeValidators();
 
-    this.mods = R.pipe($, R.invoker(0, "val"), JSON.parse)(this.saveTarget);
+    this.mods = this.modsValue;
     this.#renderMods();
 
     // Cash's #on method wasn't firing...
@@ -172,19 +178,21 @@ export default class extends Controller {
     const emptyStateElem = $(this.emptyStateTarget);
     const modsListElem = $(this.modsListTarget);
     const modCountElem = $(this.modCountTarget);
-    const saveElem = $(this.saveTarget);
-    const modLength = R.keys(this.mods).length;
+
+    const mods = R.values(this.mods);
+    const modLength = mods.length;
+
+    // Write the mods to the form
+    this.serializer.serialize(mods);
 
     if (modLength === 0) {
       emptyStateElem.show();
       modsListElem.hide();
       modCountElem.text("0");
-      saveElem.val("");
     } else {
       emptyStateElem.hide();
       modsListElem.show().html("");
       modCountElem.text(modLength);
-      saveElem.val(R.pipe(R.values, JSON.stringify)(this.mods));
 
       R.forEachObjIndexed((mod, id) => {
         const modCard = this.#createModCard(mod, id);

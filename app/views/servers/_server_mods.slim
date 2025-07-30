@@ -1,8 +1,4 @@
-div[data-controller="server-mods"]
-  = hidden_field_tag "server[server_mods]",
-    existing_server_mods.to_json,
-    data: {server_mods_target: "save"}
-
+= content_tag :div, data: {controller: "server-mods", server_mods_mods_value: existing_server_mods}
   .card.mb-4
     .card-header.d-flex.align-items-center.justify-content-between
       h4.mb-0

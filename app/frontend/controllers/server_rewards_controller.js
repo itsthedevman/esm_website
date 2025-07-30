@@ -46,7 +46,7 @@ export default class extends Controller {
           <input
             type="number"
             class="form-control form-control-sm"
-            name="server[reward_items][][quantity]"
+            name="server[server_rewards][items][][quantity]"
             placeholder="1"
             min="1"
             value="${item.quantity}"
@@ -59,7 +59,7 @@ export default class extends Controller {
           <input
           type="text"
           class="form-control form-control-sm font-monospace"
-          name="server[reward_items][][class_name]"
+          name="server[server_rewards][items][][classname]"
           placeholder="Exile_Item_PowerDrink"
           value="${item.classname}"
           data-action="input->server-rewards#update"

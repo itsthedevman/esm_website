@@ -38,7 +38,6 @@
 
   = render "servers/version_picker", **local_assigns
 
-  div[data-controller="server-edit" data-server-edit-ids-value="#{existing_server_ids}"]
   = content_tag :div, data: { controller: "server-edit",
     server_edit_ids_value: existing_server_ids,
     server_mods_mods_value: existing_server_mods,

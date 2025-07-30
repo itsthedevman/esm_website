@@ -76,9 +76,10 @@ class ServersController < AuthenticatedController
   end
 
   def update
-    # @server = current_community.servers.where(public_id: params[:id]).first
-    # redirect_to community_servers_path(current_community.public_id) if @server.nil?
+    server = find_server
+    not_found! if server.nil?
 
+    permit_update_params
     # server_attributes, mod_attributes, reward_attributes, setting_attributes = sanitize_params
 
     # # Update the actual server
@@ -177,20 +178,34 @@ class ServersController < AuthenticatedController
       :server_visibility, :ui_version
     )
 
-    sanitize_params(permitted_params)
+    sanitize_info_params(permitted_params)
   end
 
   def permit_update_params
     permitted_params = params.require(:server).permit(
       :server_id, :server_ip, :server_port,
       :server_visibility, :ui_version,
-      server_setting: {}, server_reward: {}
+      server_rewards: [
+        :player_poptabs,
+        :locker_poptabs,
+        :respect,
+        items: [:classname, :quantity]
+      ],
+      server_mods: [:name, :version, :link, :required],
+      server_settings: {}
     )
 
-    sanitize_params(permitted_params)
+    info_params = permitted_params.except(:server_mods, :server_settings, :server_rewards)
+
+    [
+      sanitize_info_params(info_params),
+      sanitize_mod_params(permitted_params[:server_mods]),
+      sanitize_reward_params(permitted_params[:server_rewards]),
+      sanitize_setting_params(permitted_params[:server_settings])
+    ]
   end
 
-  def sanitize_params(permitted_params)
+  def sanitize_info_params(permitted_params)
     permitted_params[:server_id] =
       "#{current_community.community_id}_#{permitted_params[:server_id]}"
 
@@ -201,64 +216,47 @@ class ServersController < AuthenticatedController
         :public
       end
 
+    permitted_params[:server_name] ||= ""
+
     version = permitted_params.delete(:ui_version)
     permitted_params[:ui_version] = "#{version}.0.0" if [1, 2].include?(version)
 
     permitted_params
   end
+
+  def sanitize_mod_params(permitted_params)
+    return [] if permitted_params.blank?
+
+    permitted_params.map! { |mod| mod.transform_keys! { |k| "mod_#{k}" } } # Add back "mod_"
+  end
+
+  def sanitize_reward_params(permitted_params)
+    return {} if permitted_params.blank?
+
+    # Need to group items by their classnames and sum the values
+    permitted_params[:reward_items] ||= {}
+    permitted_params[:player_poptabs] ||= 0
+    permitted_params[:locker_poptabs] ||= 0
+    permitted_params[:respect] ||= 0
+
+    permitted_params
+  end
+
+  def sanitize_setting_params(permitted_params)
+    #     setting_attributes[:additional_logs] = JSON.parse(
+    #       setting_attributes[:additional_logs] || "[]"
+    #     )
+
+    #     # Reset extdb_path and logging_path to nil if they are ""
+    #     ServerSetting::CONFIG_DEFAULTS.each do |key, default_value|
+    #       next unless setting_attributes.key?(key)
+
+    #       value = setting_attributes[key]
+
+    #       # Set value to nil unless the user has selected something and it is different than default
+    #       unless value.present? && value != default_value
+    #         setting_attributes[key] = nil
+    #       end
+    #     end
+  end
 end
-
-#  server_attributes = server_params.reject { |k, _v| k.in?(%w[server_mods server_setting server_reward]) }
-#     mod_attributes = JSON.parse(server_params[:server_mods])
-
-#     if mod_attributes.present?
-#       mod_attributes.each do |mod|
-#         mod.except!("_previous_name")
-#         mod["mod_required"] || false
-#       end
-#     end
-
-#     reward_attributes = server_params[:server_reward]
-#     setting_attributes = server_params[:server_setting]
-
-#     # Append the community ID to the server ID
-#     server_attributes[:server_id] = "#{current_community.community_id}_#{server_attributes[:server_id]}"
-
-#     # Make sure the value is what we want
-#     server_attributes[:server_visibility] =
-#       if server_attributes[:server_visibility] == "0"
-#         :private
-#       else
-#         :public
-#       end
-
-#     # Disallow setting the ui_version to v2
-#     server_attributes.delete(:ui_version) unless current_community.allow_v2_servers?
-
-#     # Convert reward_items to a hash
-#     reward_attributes[:reward_items] = JSON.parse(reward_attributes[:reward_items])
-#     reward_attributes[:player_poptabs] ||= 0
-#     reward_attributes[:locker_poptabs] ||= 0
-#     reward_attributes[:respect] ||= 0
-
-#     setting_attributes[:additional_logs] = JSON.parse(
-#       setting_attributes[:additional_logs] || "[]"
-#     )
-
-#     # Reset extdb_path and logging_path to nil if they are ""
-#     ServerSetting::CONFIG_DEFAULTS.each do |key, default_value|
-#       next unless setting_attributes.key?(key)
-
-#       value = setting_attributes[key]
-
-#       # Set value to nil unless the user has selected something and it is different than default
-#       unless value.present? && value != default_value
-#         setting_attributes[key] = nil
-#       end
-#     end
-
-#     # Set the server name to an empty string as that nil is not allowed
-#     server_attributes[:server_name] ||= ""
-
-#     # Return the separated attributes
-#     [server_attributes, mod_attributes, reward_attributes, setting_attributes]
