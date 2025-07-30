@@ -29,7 +29,7 @@ class Validator {
       // Prevent form submission and validate instead
       $(this.form).on("submit", (e) => {
         e.preventDefault();
-        this.validateForm();
+        this.validate();
       });
     }
   }
@@ -172,13 +172,15 @@ class Validator {
     $(el).parent().find(".invalid-feedback").hide();
   }
 
-  // Revalidate a specific field (useful for async validation)
-  async revalidateField(selector) {
-    const field = this.fields.find((f) => f.selector === selector);
-    if (field) {
-      return await this.validateField(field);
-    }
-    return true;
+  clearAllErrors() {
+    // Clear all field errors and reset validation state
+    this.fields.forEach((field) => {
+      this.clearFieldError(field.selector);
+      field.validated = false;
+    });
+
+    // Clear the errors object
+    this.errors = {};
   }
 
   onSuccess(callback) {
