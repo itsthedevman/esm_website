@@ -12,6 +12,7 @@ export default class extends Controller {
     "emptyState",
     "modsList",
     "modCount",
+    "save",
   ];
 
   connect() {
@@ -181,16 +182,19 @@ export default class extends Controller {
     const emptyStateElem = $(this.emptyStateTarget);
     const modsListElem = $(this.modsListTarget);
     const modCountElem = $(this.modCountTarget);
+    const saveElem = $(this.saveTarget);
     const modLength = R.keys(this.mods).length;
 
     if (modLength === 0) {
       emptyStateElem.show();
       modsListElem.hide();
       modCountElem.text("0");
+      saveElem.val("");
     } else {
       emptyStateElem.hide();
       modsListElem.show().html("");
       modCountElem.text(modLength);
+      saveElem.val(R.pipe(R.values, JSON.stringify)(this.mods));
 
       R.forEachObjIndexed((mod, id) => {
         const modCard = this.#createModCard(mod, id);
