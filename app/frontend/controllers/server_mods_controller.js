@@ -19,19 +19,9 @@ export default class extends Controller {
     this.addValidator = new Validate();
     this.editValidator = new Validate();
 
-    this.mods = {};
-
     this.#initializeValidators();
 
-    // Add Exile as a required default mod
-    this.#setMod({
-      id: crypto.randomUUID(),
-      name: "@ExileMod",
-      version: "1.0.4",
-      link: "https://steamcommunity.com/workshop/filedetails/?id=1487484880",
-      required: true,
-    });
-
+    this.mods = R.pipe($, R.invoker(0, "val"), JSON.parse)(this.saveTarget);
     this.#renderMods();
 
     // Cash's #on method wasn't firing...

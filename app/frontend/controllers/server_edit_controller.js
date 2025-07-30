@@ -7,6 +7,7 @@ import { disableSubmitOnEnter } from "../helpers/forms";
 // Connects to data-controller="server-edit"
 export default class extends Controller {
   static targets = ["form"];
+  static values = { ids: Array };
 
   connect() {
     this.validator = new JustValidate(this.formTarget);
