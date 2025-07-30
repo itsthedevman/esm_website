@@ -1,40 +1,41 @@
 / Server Operations Card
-.card.mb-4
-  .card-header
-    h4.mb-0
-      i.bi.bi-clock.text-info.me-2
-      | Server Operations
-      span.badge.bg-info.ms-2 NEW
+- if server.ui_v2?
+  .card.mb-4
+    .card-header
+      h4.mb-0
+        i.bi.bi-clock.text-info.me-2
+        | Server Operations
+        span.badge.bg-info.ms-2 NEW
 
-  .card-body
-    / Restart Configuration
-    .mb-0
-      h5.mb-3
-        i.bi.bi-arrow-clockwise.text-success.me-2
-        | Restart Schedule
-      p.text-muted.small.mb-4
-        | Configure when your server restarts. ESM uses this to calculate and display remaining time until the next restart for players.
+    .card-body
+      / Restart Configuration
+      .mb-0
+        h5.mb-3
+          i.bi.bi-arrow-clockwise.text-success.me-2
+          | Restart Schedule
+        p.text-muted.small.mb-4
+          | Configure when your server restarts. ESM uses this to calculate and display remaining time until the next restart for players.
 
-      .row.g-3
-        .col-6
-          label.form-label.fw-medium Restart Hour (24-hour format)
-          = f.number_field :server_restart_hour,
-              class: "form-control",
-              placeholder: "3",
-              min: 0,
-              max: 23,
-              value: server.server_setting&.server_restart_hour || 3
-          small.form-text.text-muted
-            | 0 = midnight, 15 = 3 PM
+        .row.g-3
+          .col-6
+            label.form-label.fw-medium Restart Hour (24-hour format)
+            = f.number_field :server_restart_hour,
+                class: "form-control",
+                placeholder: "3",
+                min: 0,
+                max: 23,
+                value: server.server_setting&.server_restart_hour || 3
+            small.form-text.text-muted
+              | 0 = midnight, 15 = 3 PM
 
-        .col-6
-          label.form-label.fw-medium Restart Minutes
-          = f.number_field :server_restart_min,
-              class: "form-control",
-              placeholder: "0",
-              min: 0,
-              max: 59,
-              value: server.server_setting&.server_restart_min || 0
+          .col-6
+            label.form-label.fw-medium Restart Minutes
+            = f.number_field :server_restart_min,
+                class: "form-control",
+                placeholder: "0",
+                min: 0,
+                max: 59,
+                value: server.server_setting&.server_restart_min || 0
 
 / Player Economy Card
 .card.mb-4

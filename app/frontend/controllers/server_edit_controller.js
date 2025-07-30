@@ -8,9 +8,9 @@ export default class extends Controller {
   static targets = ["form"];
 
   connect() {
-    this.validator = new JustValidate(this.formTarget);
+    // this.validator = new JustValidate(this.formTarget);
 
-    this.#initializeValidator();
+    // this.#initializeValidator();
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////

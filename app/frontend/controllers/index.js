@@ -21,3 +21,6 @@ application.register("server-mods", ServerModsController);
 
 import ServerNewController from "./server_new_controller";
 application.register("server-new", ServerNewController);
+
+import ServerRewardsController from "./server_rewards_controller";
+application.register("server-rewards", ServerRewardsController);
