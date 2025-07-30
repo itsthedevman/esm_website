@@ -20,7 +20,7 @@ export default class extends Controller {
 
     this.mods = {};
 
-    this.#initializeModValidators();
+    this.#initializeValidators();
 
     // Add Exile as a required default mod
     this.#setMod({
@@ -32,34 +32,31 @@ export default class extends Controller {
     });
 
     this.#renderMods();
+
+    // Cash's #on method wasn't firing...
+    $("#add_mod_modal")[0].addEventListener("hidden.bs.modal", (_event) =>
+      this.#clearAddModal()
+    );
+
+    $("#edit_mod_modal")[0].addEventListener("hidden.bs.modal", (_event) =>
+      this.#clearEditModal()
+    );
   }
 
   create(_event) {
     this.addValidator.validate().then((isValid) => {
       if (!isValid) return;
 
-      const nameElem = $("#add_mod_name");
-      const versionElem = $("#add_mod_version");
-      const linkElem = $("#add_mod_link");
-      const requiredElem = $("#add_mod_required");
+      const id = crypto.randomUUID();
+      const name = $("#add_mod_name").val();
+      const version = $("#add_mod_version").val();
+      const link = $("#add_mod_link").val();
+      const required = $("#add_mod_required").is(":checked");
 
-      this.#setMod({
-        id: crypto.randomUUID(),
-        name: nameElem.val(),
-        version: versionElem.val(),
-        link: linkElem.val(),
-        required: requiredElem.is(":checked"),
-      });
-
+      this.#setMod({ id, name, version, link, required });
       this.#renderMods();
 
       bootstrap.Modal.getOrCreateInstance("#add_mod_modal").hide();
-
-      // Reset the form
-      nameElem.val("");
-      versionElem.val("");
-      linkElem.val("");
-      requiredElem.prop("checked", false);
     });
   }
 
@@ -67,7 +64,7 @@ export default class extends Controller {
     const id = $(event.currentTarget).data("modId");
     const mod = this.mods[id];
 
-    $("#edit-mod-save").data("modId", id);
+    $("#edit_mod_save").data("modId", id);
     $("#edit_mod_name").val(mod.name);
     $("#edit_mod_version").val(mod.version);
     $("#edit_mod_link").val(mod.link);
@@ -81,30 +78,15 @@ export default class extends Controller {
       if (!isValid) return;
 
       const id = $(event.currentTarget).data("modId");
-      const nameElem = $("#edit_mod_name");
-      const versionElem = $("#edit_mod_version");
-      const linkElem = $("#edit_mod_link");
-      const requiredElem = $("#edit_mod_required");
-      const saveElem = $("#edit-mod-save");
+      const name = $("#edit_mod_name").val();
+      const version = $("#edit_mod_version").val();
+      const link = $("#edit_mod_link").val();
+      const required = $("#edit_mod_required").is(":checked");
 
-      this.#setMod({
-        id,
-        name: nameElem.val(),
-        version: versionElem.val(),
-        link: linkElem.val(),
-        required: requiredElem.is(":checked"),
-      });
-
+      this.#setMod({ id, name, version, link, required });
       this.#renderMods();
 
       bootstrap.Modal.getOrCreateInstance("#edit_mod_modal").hide();
-
-      // Reset the form
-      nameElem.val("");
-      versionElem.val("");
-      linkElem.val("");
-      requiredElem.prop("checked", false);
-      saveElem.data("modId", "");
     });
   }
 
@@ -117,13 +99,32 @@ export default class extends Controller {
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
-  #initializeModValidators() {
+  #initializeValidators() {
     this.addValidator.addField("#add_mod_name", [{ rule: "required" }]);
     this.editValidator.addField("#edit_mod_name", [{ rule: "required" }]);
   }
 
   #setMod({ id, name, version, link, required }) {
     this.mods[id] = { name, version, link, required };
+  }
+
+  #clearAddModal() {
+    $("#add_mod_name").val("");
+    $("#add_mod_version").val("");
+    $("#add_mod_link").val("");
+    $("#add_mod_required").prop("checked", false);
+
+    this.addValidator.clearAllErrors();
+  }
+
+  #clearEditModal() {
+    $("#edit_mod_save").data("modId", "");
+    $("#edit_mod_name").val("");
+    $("#edit_mod_version").val("");
+    $("#edit_mod_link").val("");
+    $("#edit_mod_required").prop("checked", false);
+
+    this.editValidator.clearAllErrors();
   }
 
   #createModCard(mod, id) {

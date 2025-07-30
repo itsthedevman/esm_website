@@ -44,9 +44,8 @@
       div
       div
         button.btn.btn-outline-secondary[type="button" data-bs-dismiss="modal"] Cancel
-        = button_tag type: "button",
+        = button_tag "edit_mod_save",
             class: "btn btn-primary ms-2",
-            id: "edit-mod-save",
             data: { action: "click->server-mods#update", mod_id: "" } do
           i.bi.bi-check-circle.me-2
           | Save Changes
