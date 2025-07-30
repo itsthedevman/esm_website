@@ -2,15 +2,16 @@ import { Controller } from "@hotwired/stimulus";
 import * as R from "ramda";
 import JustValidate from "just-validate";
 import { allowTurbo } from "../helpers/just_validate";
+import { disableSubmitOnEnter } from "../helpers/forms";
 
 // Connects to data-controller="server-edit"
 export default class extends Controller {
   static targets = ["form"];
 
   connect() {
-    // this.validator = new JustValidate(this.formTarget);
+    this.validator = new JustValidate(this.formTarget);
 
-    // this.#initializeValidator();
+    this.#initializeValidator();
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,6 +54,7 @@ export default class extends Controller {
         },
       ]);
 
+    disableSubmitOnEnter();
     allowTurbo(this.validator);
   }
 }
