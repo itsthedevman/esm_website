@@ -76,7 +76,7 @@
             span.input-group-text %
           small.form-text.text-muted Default: 35%
 
-        - if f.object.ui_v2?
+        - if server.ui_v2?
           .col-6
             .form-check.form-switch.mt-4
               = f.check_box :gambling_locker_limit_enabled,
