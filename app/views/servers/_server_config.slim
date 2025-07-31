@@ -37,25 +37,6 @@
       | Database Configuration
 
   .card-body
-    / Database URI Override
-    .mb-4
-      h5.mb-3
-        i.bi.bi-link.text-success.me-2
-        | Direct Database Connection
-      p.text-muted.small.mb-4
-        | Override ExtDB with a direct database connection. When set, this takes priority over ExtDB configuration below.
-
-      .mb-3
-        label.form-label.fw-medium Database URI
-        = f.text_field :database_uri,
-            class: "form-control font-monospace",
-            placeholder: "mysql://username:password@localhost:3306/exile",
-            value: server.server_setting&.database_uri
-        small.form-text.text-muted
-          | Format: mysql://user:password@host:port/database_name
-
-    hr.my-4
-
     / ExtDB Configuration
     .mb-0
       h5.mb-3
@@ -69,16 +50,14 @@
           label.form-label.fw-medium Config File Path
           = f.text_field :extdb_conf_path,
               class: "form-control font-monospace",
-              placeholder: "Leave blank for auto-detection",
-              value: server.server_setting&.extdb_conf_path
+              placeholder: "Leave blank for auto-detection"
           small.form-text.text-muted Path to your extdb3-conf.ini file
 
         .col-6
           label.form-label.fw-medium Database Section
           = f.text_field :extdb_conf_header_name,
               class: "form-control font-monospace",
-              placeholder: "exile",
-              value: server.server_setting&.extdb_conf_header_name || "exile"
+              placeholder: "exile"
           small.form-text.text-muted Section name in your ExtDB config
 
       .row.g-3
@@ -89,10 +68,26 @@
                 ["Auto-detect", ""],
                 ["Version 2", 2],
                 ["Version 3", 3] \
-              ], server.server_setting&.extdb_version),
+              ], server.server_setting.extdb_version),
               {},
               class: "form-select"
           small.form-text.text-muted Only set if auto-detection fails
+
+    hr.my-4
+
+    / Database URI Override
+    h5.mb-3
+      i.bi.bi-link.text-success.me-2
+      | Direct Database Connection
+    p.text-muted.small.mb-4
+      | Override ExtDB with a direct database connection. When set, this takes priority over ExtDB configuration below.
+
+    label.form-label.fw-medium Database URI
+    = f.text_field :database_uri,
+        class: "form-control font-monospace",
+        placeholder: "Leave blank for auto-detection"
+    small.form-text.text-muted
+      | Format: mysql://user:password@host:port/database_name
 
 / Server Environment Card
 .card.mb-4
@@ -107,8 +102,7 @@
         label.form-label.fw-medium Number Format
         = f.text_field :number_locale,
             class: "form-control font-monospace",
-            placeholder: "en",
-            value: server.server_setting&.number_locale
+            placeholder: "en"
         small.form-text.text-muted
           |> Controls number display:
           code en
@@ -120,8 +114,7 @@
         label.form-label.fw-medium Server Mod Directory
         = f.text_field :server_mod_name,
             class: "form-control font-monospace",
-            placeholder: "@ExileServer",
-            value: server.server_setting&.server_mod_name
+            placeholder: "@ExileServer"
         small.form-text.text-muted Directory containing Exile server files
 
 / Log Management Card
@@ -149,7 +142,7 @@
                 ["RPT file only", "rpt"],
                 ["Extension log only", "extension"],
                 ["Both RPT and Extension", "both"] \
-              ], server.server_setting&.log_output),
+              ], server.server_setting.log_output),
               {},
               class: "form-select"
           small.form-text.text-muted Where ESM sends log messages
@@ -158,8 +151,7 @@
           label.form-label.fw-medium ESM Log File Path
           = f.text_field :logging_path,
               class: "form-control font-monospace",
-              placeholder: "Leave blank for default (@esm/log/esm.log)",
-              value: server.server_setting&.logging_path
+              placeholder: "Leave blank for default (@esm/log/esm.log)"
           small.form-text.text-muted
             | Custom path for ESM extension logs. Use full path like
             br

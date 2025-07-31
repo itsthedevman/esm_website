@@ -245,6 +245,9 @@ class ServersController < AuthenticatedController
   end
 
   def sanitize_setting_params(permitted_params)
+    # Remove any empty strings
+    permitted_params.transform_values!(&:presence)
+
     permitted_params[:additional_logs] =
       if (paths = permitted_params[:additional_logs]) && paths.present?
         paths.uniq.compact_blank
