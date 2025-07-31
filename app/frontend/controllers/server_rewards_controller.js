@@ -6,8 +6,11 @@ import $ from "cash-dom";
 export default class extends Controller {
   static targets = ["emptyState", "itemContainer", "itemList", "itemCount"];
 
+  static values = { items: Object };
+
   connect() {
-    this.items = {};
+    this.items = this.itemsValue;
+    this.#renderItems();
   }
 
   add(_event) {
@@ -46,7 +49,7 @@ export default class extends Controller {
           <input
             type="number"
             class="form-control form-control-sm"
-            name="server[server_rewards][items][][quantity]"
+            name="server[server_rewards][reward_items][][quantity]"
             placeholder="1"
             min="1"
             value="${item.quantity}"
@@ -59,7 +62,7 @@ export default class extends Controller {
           <input
           type="text"
           class="form-control form-control-sm font-monospace"
-          name="server[server_rewards][items][][classname]"
+          name="server[server_rewards][reward_items][][classname]"
           placeholder="Exile_Item_PowerDrink"
           value="${item.classname}"
           data-action="input->server-rewards#update"
@@ -93,7 +96,7 @@ export default class extends Controller {
     if (itemLength === 0) {
       emptyStateElem.show();
       containerElem.hide();
-      itemListElem.hide();
+      itemListElem.hide().html("");
       itemCountElem.text("0");
     } else {
       emptyStateElem.hide();

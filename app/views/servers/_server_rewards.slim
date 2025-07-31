@@ -1,4 +1,7 @@
-.card.mb-4[data-controller="server-rewards"]
+= content_tag :div, class: "card mb-4", data: { \
+    controller: "server-rewards",
+    server_rewards_items_value: existing_reward_items \
+  }
   .card-header
     h4.mb-0
       i.bi.bi-gift.text-warning.me-2

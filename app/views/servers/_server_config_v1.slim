@@ -46,7 +46,7 @@
       .col-6
         label.form-label.fw-medium Request Thread Type
         = f.select :request_thread_type,
-            options_for_select([["Exile", "exile"], ["SQF", "sqf"]], "exile"),
+            options_for_select([["Exile", "exile"], ["SQF", "sqf"]], f.object.request_thread_type),
             {},
             class: "form-select"
         small.form-text.text-muted
