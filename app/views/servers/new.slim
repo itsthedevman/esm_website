@@ -1,4 +1,4 @@
-= render "communities/container" do
+= render "communities/container", **local_assigns do
   div[data-controller="server-new" data-server-new-ids-value="#{existing_server_ids}"]
     / Hero section
     .text-center.mb-4
