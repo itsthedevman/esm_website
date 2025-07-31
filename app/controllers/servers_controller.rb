@@ -245,19 +245,13 @@ class ServersController < AuthenticatedController
   end
 
   def sanitize_setting_params(permitted_params)
-    # Reset extdb_path and logging_path to nil if they are ""
-    ESM::ServerSetting::CONFIG_DEFAULTS.each do |key, default_value|
-      next unless permitted_params.key?(key)
+    permitted_params[:additional_logs] =
+      if (paths = permitted_params[:additional_logs]) && paths.present?
+        paths.uniq.compact_blank
+      else
+        []
+      end
 
-      value = permitted_params[key]
-
-      # Set value to nil unless the user has selected something and it is different than default
-      next if value.present? && value != default_value
-
-      permitted_params[key] = nil
-    end
-
-    permitted_params[:additional_logs] ||= []
     permitted_params
   end
 end

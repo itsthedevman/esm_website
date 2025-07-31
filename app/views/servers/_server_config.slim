@@ -17,7 +17,7 @@
 .text-center.pt-5
   h3.mb-3
     | Advanced Configuration
-    span.badge.bg-info.text-dark.ms-2 NEW
+    span.badge.bg-info.ms-2 NEW
 
   .alert.alert-warning.border-warning.bg-warning.bg-opacity-10
     .d-flex.align-items-center
@@ -110,9 +110,9 @@
             placeholder: "en",
             value: server.server_setting&.number_locale
         small.form-text.text-muted
-          | Controls number display:
+          |> Controls number display:
           code en
-          |  (12,345.67),
+          |>  (12,345.67),
           code de_DE
           |  (12.345,67)
 
@@ -132,26 +132,15 @@
       | Log Management
 
   .card-body
-    / Log Processing
+    / ESM Log Configuration - moved to top
     .mb-4
       h5.mb-3
-        i.bi.bi-search.text-info.me-2
-        | Log Search Configuration
+        i.bi.bi-journal-code.text-warning.me-2
+        | ESM Log Configuration
       p.text-muted.small.mb-4
-        | Configure how ESM searches through your server logs when using #{command_usage(:logs, show_arguments: false)}
+        | Configure where ESM writes its own diagnostic and debug information
 
-      .row.g-3.mb-4
-        .col-6
-          label.form-label.fw-medium Search Time Range
-          .input-group
-            = f.number_field :exile_logs_search_days,
-                class: "form-control",
-                min: 1,
-                placeholder: "14",
-                value: server.server_setting&.exile_logs_search_days
-            span.input-group-text days
-          small.form-text.text-muted How many days of logs to search
-
+      .row.g-3
         .col-6
           label.form-label.fw-medium Log Output Destination
           = f.select :log_output,
@@ -165,63 +154,85 @@
               class: "form-select"
           small.form-text.text-muted Where ESM sends log messages
 
-      / Additional Log Files
-      .mb-0
-        .d-flex.align-items-center.justify-content-between.mb-3
-          h6.mb-0.fw-medium Additional Log Files
-          button.btn.btn-outline-primary.btn-sm[
-            type="button"
-            id="add-log-path"
-          ]
-            i.bi.bi-plus.me-1
-            | Add Path
-
-        p.text-muted.small.mb-3
-          | Include extra log files in search results. Useful for custom mods or external logging.
-
-        .table-responsive
-          table.table.table-sm.table-hover#additional-logs-table
-            thead.table-dark
-              tr
-                th.w-75 Log File Path
-                th Actions
-            tbody
-              / Dynamic log paths will be added here via JS
-            tfoot
-              tr
-                td
-                  input.form-control.form-control-sm.font-monospace[
-                    type="text"
-                    placeholder="logs/custom.log or /full/path/to/log.log"
-                    id="additional-log-path"
-                  ]
-                td
-                  button.btn.btn-outline-success.btn-sm[
-                    type="button"
-                    id="add-log-path-btn"
-                  ]
-                    i.bi.bi-plus
+        .col-6
+          label.form-label.fw-medium ESM Log File Path
+          = f.text_field :logging_path,
+              class: "form-control font-monospace",
+              placeholder: "Leave blank for default (@esm/log/esm.log)",
+              value: server.server_setting&.logging_path
+          small.form-text.text-muted
+            | Custom path for ESM extension logs. Use full path like
+            br
+            code
+              | /home/steam/logs/esm.log
+            |<> or
+            code
+              | C:\ArmaServer\logs\esm.log
 
     hr.my-4
 
-    / ESM Log Configuration
+    / Log Search Configuration
     .mb-0
       h5.mb-3
-        i.bi.bi-journal-code.text-warning.me-2
-        | ESM Log Configuration
+        i.bi.bi-search.text-info.me-2
+        | Log Search Configuration
       p.text-muted.small.mb-4
-        | Configure where ESM writes its own diagnostic and debug information
+        | Configure how ESM searches through your server logs when using #{command_usage(:logs, show_arguments: false)}
 
-      .mb-0
-        label.form-label.fw-medium ESM Log File Path
-        = f.text_field :logging_path,
-            class: "form-control font-monospace",
-            placeholder: "Leave blank for default (@esm/log/esm.log)",
-            value: server.server_setting&.logging_path
-        small.form-text.text-muted
-          | Custom path for ESM extension logs. Use full path like
-          code
-            | /home/steam/logs/esm.log
+      .row.g-3.mb-4
+        .col-6
+          label.form-label.fw-medium Search Time Range
+          .input-group
+            = f.number_field :exile_logs_search_days,
+                class: "form-control",
+                min: 1,
+                placeholder: 14
+            span.input-group-text days
+          small.form-text.text-muted How many days of logs to search
+
+      / Additional Log Files
+      = content_tag :div, data: { \
+        controller: "additional-logs",
+        additional_logs_paths_value: server.server_setting.additional_logs  \
+      }
+        .mb-0
+          .d-flex.align-items-center.justify-content-between.mb-3
+            h6.mb-0.fw-medium
+              | Additional Log Files
+              span.badge.bg-secondary.ms-2[data-additional-logs-target="pathCount"] 0
+            button.btn.btn-outline-primary.btn-sm[
+              type="button"
+              data-action="click->additional-logs#add"
+            ]
+              i.bi.bi-plus.me-1
+              | Add Path
+
+          p.text-muted.small.mb-3
+            | Include extra log files in search results. Useful for custom mods or external logging.
+
+          / Empty state
+          .text-center.py-4[data-additional-logs-target="emptyState"]
+            i.bi.bi-file-text.display-4.text-muted.mb-3.d-block
+            h5.text-muted.mb-3 No Additional Log Files
+            p.text-muted.mb-4
+              | Add custom log files to include them in your log searches.
+              br
+              | Perfect for mod-specific logs or external logging systems!
+            button.btn.btn-primary[
+              type="button"
+              data-action="click->additional-logs#add"
+            ]
+              i.bi.bi-plus.me-2
+              | Add Your First Log Path
+
+          / Log paths table
+          .table-responsive[data-additional-logs-target="pathsContainer" style="display: none;"]
+            table.table.table-sm.table-hover
+              thead.table-dark
+                tr
+                  th Log File Path
+                  th.w-auto Actions
+              tbody[data-additional-logs-target="pathsList"]
 
 / Configuration Download Notice
 .alert.alert-info.border-info.bg-info.bg-opacity-10.mt-4

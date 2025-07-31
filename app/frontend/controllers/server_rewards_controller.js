@@ -9,7 +9,7 @@ export default class extends Controller {
   static values = { items: Object };
 
   connect() {
-    this.items = this.itemsValue;
+    this.items = R.clone(this.itemsValue);
     this.#renderItems();
   }
 
@@ -96,12 +96,12 @@ export default class extends Controller {
     if (itemLength === 0) {
       emptyStateElem.show();
       containerElem.hide();
-      itemListElem.hide().html("");
+      itemListElem.html("");
       itemCountElem.text("0");
     } else {
       emptyStateElem.hide();
       containerElem.show();
-      itemListElem.show().html("");
+      itemListElem.html("");
       itemCountElem.text(itemLength);
 
       R.forEachObjIndexed((item, id) => {

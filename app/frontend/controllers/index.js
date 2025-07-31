@@ -4,6 +4,9 @@
 
 import { application } from "./application";
 
+import AdditionalLogsController from "./additional_logs_controller";
+application.register("additional-logs", AdditionalLogsController);
+
 import CommunityEditController from "./community_edit_controller";
 application.register("community-edit", CommunityEditController);
 

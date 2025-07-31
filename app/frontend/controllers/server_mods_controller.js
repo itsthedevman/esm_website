@@ -27,7 +27,7 @@ export default class extends Controller {
 
     this.#initializeValidators();
 
-    this.mods = this.modsValue;
+    this.mods = R.clone(this.modsValue);
     this.#renderMods();
 
     // Cash's #on method wasn't firing...
