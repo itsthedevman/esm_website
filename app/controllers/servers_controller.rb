@@ -30,34 +30,6 @@ class ServersController < AuthenticatedController
     }
   end
 
-  # V1
-  def key
-    server = find_server
-    not_found! if server.nil?
-
-    send_data(server.server_key, filename: "esm.key")
-  end
-
-  def server_token
-    server = find_server
-    not_found! if server.nil?
-
-    send_data(server.token.to_json, filename: "esm.key")
-  end
-
-  def server_config
-    server = find_server
-    not_found! if server.nil?
-
-    config = render_to_string(
-      template: "servers/config",
-      locals: {settings: server.server_setting.attributes},
-      layout: false
-    )
-
-    send_data(config, filename: "config.yml")
-  end
-
   def create
     server_params = permit_create_params
 
@@ -153,6 +125,34 @@ class ServersController < AuthenticatedController
     server.update!(ui_version: "1.0.0")
 
     render turbo_stream: turbo_stream.refresh(request_id: nil)
+  end
+
+  # V1
+  def key
+    server = find_server
+    not_found! if server.nil?
+
+    send_data(server.server_key, filename: "esm.key")
+  end
+
+  def server_token
+    server = find_server
+    not_found! if server.nil?
+
+    send_data(server.token.to_json, filename: "esm.key")
+  end
+
+  def server_config
+    server = find_server
+    not_found! if server.nil?
+
+    config = render_to_string(
+      template: "servers/config",
+      locals: {settings: server.server_setting.attributes},
+      layout: false
+    )
+
+    send_data(config, filename: "config.yml")
   end
 
   private
