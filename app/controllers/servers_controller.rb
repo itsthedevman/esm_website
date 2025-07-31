@@ -131,12 +131,10 @@ class ServersController < AuthenticatedController
     server = find_server
     not_found! if server.nil?
 
-    if server.destroy
-      flash[:success] = "#{server.server_id} has been deleted"
-      redirect_to community_servers_path(current_community)
-    else
-      redirect_to edit_community_server_path(current_community, server), alert: "Failed to delete server<br><span class='esm-text-color-red'>Please log out and log back in again</span><br>If this error persists, please join our Discord and let us know."
-    end
+    server.destroy!
+
+    flash[:success] = "#{server.server_id} has been deleted"
+    redirect_to community_path(current_community)
   end
 
   def enable_v2
@@ -219,7 +217,7 @@ class ServersController < AuthenticatedController
     permitted_params[:server_name] ||= ""
 
     version = permitted_params.delete(:ui_version)
-    permitted_params[:ui_version] = "#{version}.0.0" if [1, 2].include?(version)
+    permitted_params[:ui_version] = "#{version}.0.0" if ["1", "2"].include?(version)
 
     permitted_params
   end
