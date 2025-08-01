@@ -13,6 +13,9 @@ class DocsController < ApplicationController
   end
 
   def getting_started
+    command_count = ESM::CommandDetail.all.size
+
+    render locals: {command_count:}
   end
 
   def player_setup

@@ -1,215 +1,332 @@
 .container.window
-  h1.mb-4.text-primary Server Setup Guide
-  p.lead Install ESM on your Arma 3 server for Discord integration and management tools.
+  / Hero Section
+  .text-center.mb-5
+    h1.mb-3.text-primary Server Setup Guide
+    p.lead.mb-4 Install ESM on your Arma 3 server for Discord integration and management tools
 
-  .alert.alert-info
-    strong Setup time:
-    |< 10-20 minutes for fresh installs
+    .d-flex.justify-content-center.gap-4.mb-4
+      .d-flex.align-items-center
+        .badge.bg-info.rounded-circle.me-2 i
+        small.text-muted Setup time: 10-20 minutes
+      .d-flex.align-items-center
+        .badge.bg-success.rounded-circle.me-2 ✓
+        small.text-muted Works on Windows & Linux
 
-  / Upgrade Notice
-  .alert.alert-warning.border-warning.bg-warning.bg-opacity-10.mb-4
-    .d-flex.align-items-center.mb-2
-      .text-warning.fs-3.me-2 ⚠️
-      h5.mb-0.text-warning Upgrading from v1?
-    p.mb-2 ESM v2 uses a completely different architecture. Follow the upgrade steps below before proceeding.
-    .collapse#upgradeSteps
-      ol
-        li Remove your existing <code>@ESM</code> directory completely
-        li Update dashboard settings to v2 and download new <code>esm.key</code>
-        li Execute <code>02.sql</code> on your MySQL server (this adds new tables)
-        li Follow the fresh installation steps below with the new <code>@esm</code> mod
-    = link_to "#upgradeSteps", class: "btn btn-outline-warning btn-sm", "data-bs-toggle": "collapse"
-      | Show Upgrade Steps
+  / Overview Cards
+  .row.g-3.justify-content-center.mb-5
+    .col-lg-2.col-md-3.col-6
+      .text-center.py-3
+        i.bi.bi-discord.text-primary.fs-2.mb-2
+        h6.text-primary Discord
+        small.text-muted 2 min
+    .col-lg-2.col-md-3.col-6
+      .text-center.py-3
+        i.bi.bi-speedometer2.text-success.fs-2.mb-2
+        h6.text-success Dashboard
+        small.text-muted 5 min
+    .col-lg-2.col-md-3.col-6
+      .text-center.py-3
+        i.bi.bi-server.text-warning.fs-2.mb-2
+        h6.text-warning Installation
+        small.text-muted 8 min
+    .col-lg-2.col-md-3.col-6
+      .text-center.py-3
+        i.bi.bi-check-circle.text-info.fs-2.mb-2
+        h6.text-info Testing
+        small.text-muted 2 min
 
-  .row.mb-5
+  .row.g-5
+    / Main Content
     .col-lg-8
-      .accordion#serverSetupAccordion
-        .accordion-item
-          h2.accordion-header#step1Heading
-            button.accordion-button[
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#step1Collapse"
-              aria-expanded="true"
-              aria-controls="step1Collapse"
-            ]
-              | Step 1: Discord Setup
-          #step1Collapse.accordion-collapse.collapse.show[
-            aria-labelledby="step1Heading"
-            data-bs-parent="#serverSetupAccordion"
-          ]
-            .accordion-body
-              p Get ESM connected to your Discord server:
+      / Upgrade Warning Card
+      .card.border-warning.bg-warning.bg-opacity-10.mb-5
+        .card-body
+          .d-flex.align-items-start
+            .text-warning.fs-1.me-3 ⚠️
+            div
+              h4.mb-2.text-warning Upgrading from v1?
+              p.mb-3 ESM v2 uses a completely different architecture. You'll need to follow specific upgrade steps.
 
-              ol
-                li
-                  = link_to invite_path, target: "_blank", class: "btn btn-outline-primary btn-sm me-2"
-                    | Invite ESM Bot
-                  span Add the bot to your Discord server
-                li Read the welcome message - it contains your Community ID
-                li
-                  | Disable Player Mode: #{command_usage(:mode, arguments: {community_id: "your_id", player_mode_enabled: false})}
-                  br
-                  small.text-muted Replace "your_id" with the Community ID from the welcome message
-                li
-                  = link_to register_path, target: "_blank", class: "btn btn-outline-primary btn-sm me-2"
-                    | Register with ESM
-                  span Link your Steam and Discord accounts
+              .collapse#upgradeSteps
+                .card.bg-dark.border-secondary.mb-3
+                  .card-body
+                    h6.text-warning.mb-3 Migration Steps
+                    ol.mb-0.text-muted
+                      li Remove your existing <code>@ESM</code> directory completely
+                      li Update dashboard settings to v2 and download new <code>esm.key</code>
+                      li Execute <code>02.sql</code> on your MySQL server
+                      li Follow the fresh installation steps below
 
-              .alert.alert-info.mt-3
-                strong Pro tip:
-                |< You can always get the registration link again with the #{command_usage(:register, show_arguments: false)} command.
+              button.btn.btn-outline-warning.btn-sm[
+                data-bs-toggle="collapse"
+                data-bs-target="#upgradeSteps"
+                data-controller="collapse-toggle"
+                data-action="click->collapse-toggle#toggle"
+                data-collapse-toggle-default-text-value="Show Migration Guide"
+                data-collapse-toggle-active-text-value="Hide Migration Guide"
+              ]
+                | Show Migration Guide
 
-        .accordion-item
-          h2.accordion-header#step2Heading
-            button.accordion-button.collapsed[
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#step2Collapse"
-              aria-expanded="false"
-              aria-controls="step2Collapse"
-            ]
-              | Step 2: Dashboard Configuration
-          #step2Collapse.accordion-collapse.collapse[
-            aria-labelledby="step2Heading"
-            data-bs-parent="#serverSetupAccordion"
-          ]
-            .accordion-body
-              p Configure your server through the web dashboard:
+      / Step 1: Discord Setup
+      .card.mb-5.border-start.border-primary.border-4
+        .card-header.bg-primary.bg-opacity-10
+          h3.mb-0.text-primary
+            i.bi.bi-discord.me-2
+            | Discord Setup
 
-              ol
-                li
-                  | Open the
-                  =< link_to "Web Dashboard", communities_path, target: "_blank", class: "link-primary"
-                  |  and log in
-                li Select your Discord server from the dropdown
-                li Click "Add Server" and fill in your server details (IP, port, name)
-                li Download the generated <code>esm.key</code> file
-                li
-                  | Optional: If you need custom settings, download <code>config.yml</code>
-                  br
-                  small.text-muted Most servers don't need this - only for advanced configurations
+        .card-body
+          p.mb-4 Get ESM connected to your Discord server and register your accounts.
 
-        .accordion-item
-          h2.accordion-header#step3Heading
-            button.accordion-button.collapsed[
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#step3Collapse"
-              aria-expanded="false"
-              aria-controls="step3Collapse"
-            ]
-              | Step 3: Server Installation
-          #step3Collapse.accordion-collapse.collapse[
-            aria-labelledby="step3Heading"
-            data-bs-parent="#serverSetupAccordion"
-          ]
-            .accordion-body
-              p Install the new @esm mod on your server:
+          .row.g-4
+            .col-md-6
+              .card.bg-dark.border-secondary.h-100
+                .card-body.text-center.py-4
+                  i.bi.bi-discord.text-primary.fs-1.mb-3
+                  h5.text-primary.mb-3 Invite ESM Bot
+                  p.small.text-muted.mb-3 Add the bot to your Discord server
+                  = link_to invite_path, target: "_blank", class: "btn btn-primary w-100"
+                    i.bi.bi-plus-circle.me-2
+                    | Invite Bot
 
-              ol
-                li
-                  = link_to latest_download_path, target: "_blank", class: "btn btn-outline-success btn-sm me-2"
+            .col-md-6
+              .card.bg-dark.border-secondary.h-100
+                .card-body.text-center.py-4
+                  i.bi.bi-person-check.text-success.fs-1.mb-3
+                  h5.text-success.mb-3 Link Accounts
+                  p.small.text-muted.mb-3 Connect Steam and Discord
+                  = link_to register_path, target: "_blank", class: "btn btn-success w-100"
+                    i.bi.bi-link.me-2
+                    | Register
+
+          .alert.alert-info.border-info.bg-info.bg-opacity-10.mt-4
+            h6.text-info.mb-2 What happens next?
+            ul.small.mb-0
+              li ESM will send a welcome message with your <strong>Community ID</strong>
+              li Disable Player Mode: #{command_usage(:mode, arguments: {community_id: "YOUR_ID", player_mode_enabled: false})}
+              li You can always get the registration link with #{command_usage(:register, show_arguments: false)}
+
+      / Step 2: Dashboard Configuration
+      .card.mb-5.border-start.border-success.border-4
+        .card-header.bg-success.bg-opacity-10
+          h3.mb-0.text-success
+            i.bi.bi-speedometer2.me-2
+            | Dashboard Configuration
+
+        .card-body
+          p.mb-4 Set up your server details and download the required authentication files.
+
+          .row.g-4.mb-4
+            .col-lg-8
+              h6.text-success.mb-3
+                i.bi.bi-list-ol.me-2
+                | Setup Steps
+              .list-group.list-group-flush.bg-transparent
+                .list-group-item.bg-transparent.border-success.border-opacity-25.py-3
+                  .d-flex.align-items-center
+                    .badge.bg-success.rounded-circle.me-3 1
+                    div
+                      h6.text-light.mb-1 Open Web Dashboard
+                      p.small.text-muted.mb-0 Log in and select your Discord community
+                .list-group-item.bg-transparent.border-success.border-opacity-25.py-3
+                  .d-flex.align-items-center
+                    .badge.bg-success.rounded-circle.me-3 2
+                    div
+                      h6.text-light.mb-1 Add Your Server
+                      p.small.text-muted.mb-0 Fill in server IP, port, and display name
+                .list-group-item.bg-transparent.border-success.border-opacity-25.py-3
+                  .d-flex.align-items-center
+                    .badge.bg-success.rounded-circle.me-3 3
+                    div
+                      h6.text-light.mb-1 Download Authentication File
+                      p.small.text-muted.mb-0 Save the <code>esm.key</code> file for installation
+
+            .col-lg-4.d-flex.align-items-center.justify-content-center
+              = link_to communities_path, target: "_blank", class: "btn btn-success btn-lg"
+                i.bi.bi-speedometer2.me-2
+                | Open Dashboard
+
+      / Step 3: Server Installation
+      .card.mb-5.border-start.border-warning.border-4
+        .card-header.bg-warning.bg-opacity-10
+          h3.mb-0.text-warning
+            i.bi.bi-server.me-2
+            | Server Installation
+
+        .card-body
+          p.mb-4 Install the @esm mod and configure your server to connect to ESM.
+
+          / Download Section
+          .card.bg-primary.bg-opacity-10.border-primary.mb-4
+            .card-body
+              .d-flex.align-items-center.justify-content-between
+                div
+                  h6.text-primary.mb-1
+                    i.bi.bi-download.me-2
                     | Download @esm v2
-                  span Get the latest version
-                li
-                  | Extract <code>@esm</code> to your server directory (alongside <code>@Exile</code>)
-                  br
-                  small.text-muted.fw-bold Linux users: Use lowercase directory names (<code>@exile</code>, <code>@exileserver</code>)
-                li Place your <code>esm.key</code> file inside the <code>@esm</code> directory
-                li Update your startup parameter to use <code>@esm</code> (note the lowercase)
-                li Execute both <code>01.sql</code> and <code>02.sql</code> on your MySQL server
+                  p.small.text-muted.mb-0 Get the latest cross-platform version
+                = link_to latest_download_path, target: "_blank", class: "btn btn-primary"
+                  i.bi.bi-download.me-2
+                  | Download
 
-              .alert.alert-secondary.mt-3
-                h6 Example startup parameter:
-                code
-                  | -servermod="@ExileServer;@infiSTAR;@esm"
+          / Installation Steps
+          .row.g-3
+            .col-md-6
+              .card.bg-dark.border-secondary.h-100
+                .card-body
+                  h6.text-light.mb-3
+                    i.bi.bi-folder.text-info.me-2
+                    | Extract & Place Files
+                  ul.small.text-muted.mb-0
+                    li Extract <code>@esm</code> to your server directory
+                    li Place alongside <code>@Exile</code> or <code>@ExileServer</code>
+                    li Place your <code>esm.key</code> file inside <code>@esm</code> directory
+                    li.text-warning
+                      strong Linux servers:
+                      |< Use lowercase directory names
 
-        .accordion-item
-          h2.accordion-header#step4Heading
-            button.accordion-button.collapsed[
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#step4Collapse"
-              aria-expanded="false"
-              aria-controls="step4Collapse"
-            ]
-              | Step 4: Test Everything
-          #step4Collapse.accordion-collapse.collapse[
-            aria-labelledby="step4Heading"
-            data-bs-parent="#serverSetupAccordion"
-          ]
-            .accordion-body
-              p Verify your installation is working:
+            .col-md-6
+              .card.bg-dark.border-secondary.h-100
+                .card-body
+                  h6.text-light.mb-3
+                    i.bi.bi-gear.text-warning.me-2
+                    | Configure Server
+                  ul.small.text-muted.mb-0
+                    li Add <code>@esm</code> to your startup parameters
+                    li Execute <code>01.sql</code> on your MySQL database
+                    li Execute <code>02.sql</code> on your MySQL database
+                    li Start your server
 
-              ol
-                li Start your Arma server
-                li
-                  | Send #{command_usage(:servers, show_arguments: false)} to ESM - your server should show as "online"
-                li
-                  | Test command execution: #{command_usage(:sqf, arguments: {execute: "systemTime"}, show_arguments: false)}
-                li If either fails, check <code>@esm/log/esm.log</code> for errors
+          .card.bg-dark.border-secondary.mt-4
+            .card-body
+              h6.text-light.mb-2
+                i.bi.bi-terminal.me-2
+                | Example Startup Parameter
+              code.d-block.text-info.bg-body.p-2.rounded -servermod="@ExileServer;@infiSTAR;@esm"
 
-              .alert.alert-success.mt-3
-                strong All green?
-                |< Your server is now connected to ESM! Players can start using Discord commands.
+      / Step 4: Test Everything
+      .card.mb-5.border-start.border-info.border-4
+        .card-header.bg-info.bg-opacity-10
+          h3.mb-0.text-info
+            i.bi.bi-check-circle.me-2
+            | Test Everything
 
+        .card-body
+          p.mb-4 Verify your installation is working correctly.
+
+          .card.bg-dark.border-info.mb-4
+            .card-body
+              h6.text-info.mb-3
+                i.bi.bi-list-check.me-2
+                | Server Status Check
+              p.small.text-muted.mb-3
+                | Send #{command_usage(:servers, show_arguments: false)} to ESM in Discord
+              .alert.alert-success.border-success.bg-success.bg-opacity-10.mb-0
+                .d-flex.align-items-center
+                  i.bi.bi-check-circle.text-success.me-2
+                  strong.text-success Expected Result:
+                  span.text-muted.ms-2 Your server should show as "online"
+
+          .card.bg-dark.border-info.mb-4
+            .card-body
+              h6.text-info.mb-3
+                i.bi.bi-code.me-2
+                | Command Execution Test
+              p.small.text-muted.mb-3
+                | Try #{command_usage(:sqf, arguments: {execute: "systemTime"})} in Discord
+              .alert.alert-success.border-success.bg-success.bg-opacity-10.mb-0
+                .d-flex.align-items-center
+                  i.bi.bi-check-circle.text-success.me-2
+                  strong.text-success Expected Result:
+                  span.text-muted.ms-2 Should return the current server time
+
+          .alert.alert-warning.border-warning.bg-warning.bg-opacity-10.mt-4
+            h6.text-warning.mb-2
+              i.bi.bi-exclamation-triangle.me-2
+              | Troubleshooting
+            p.small.mb-0
+              | If either test fails, check <code>@esm/log/esm.log</code> for errors.
+              |< Join our
+              = link_to "Discord support", join_path, class: "text-warning"
+              |  for help.
+
+      / Success Section
+      .card.border-success.bg-success.bg-opacity-10
+        .card-body.text-center.py-5
+          i.bi.bi-check-circle.text-success.display-3.mb-4
+          h2.text-success.mb-3 You're All Set!
+          p.lead.mb-4 ESM is now running on your server. Your players can use Discord commands, get notifications, and manage territories remotely.
+
+          .row.g-3.justify-content-center
+            .col-auto
+              = link_to commands_docs_path, class: "btn btn-success"
+                i.bi.bi-book.me-2
+                | Browse Commands
+            .col-auto
+              = link_to communities_path, class: "btn btn-outline-success", target: "_blank"
+                i.bi.bi-speedometer2.me-2
+                | Web Dashboard
+
+    / Sidebar
     .col-lg-4
-      .card.bg-info.bg-opacity-10.border-info.mb-4
-        .card-header.border-info
-          h6.mb-0.text-info 🆕 What's New in v2?
-        .card-body
-          ul.small.mb-0
-            li Better performance and stability
-            li Streamlined installation process
-            li New <code>esm.key</code> authentication system
-            li Improved error logging and diagnostics
+      .sidebar
+        / What's New Card
+        .card.bg-info.bg-opacity-10.border-info.mb-4
+          .card-header.border-info
+            h6.mb-0.text-info
+              i.bi.bi-stars.me-2
+              | What's New in v2?
+          .card-body
+            ul.small.mb-0
+              li Cross-platform Windows & Linux support
+              li Rust-based architecture for better performance
+              li New <code>esm.key</code> authentication system
+              li Enhanced log searching with regex patterns
+              li Improved XM8 notification system
+              li Player transfer command for poptabs
 
-      .card.bg-warning.bg-opacity-10.border-warning.mb-4
-        .card-header.border-warning
-          h6.mb-0.text-warning 🔧 Need Help?
-        .card-body
-          p.small
-            | Having issues? Check <code>@esm/log/esm.log</code> first, then join our
-            = link_to "Discord support server", join_path, class: "link-warning"
-            |  for assistance.
+        / Requirements Card
+        .card.bg-secondary.bg-opacity-10.border-secondary.mb-4
+          .card-header.border-secondary
+            h6.mb-0.text-light
+              i.bi.bi-list-check.me-2
+              | Requirements
+          .card-body
+            ul.small.mb-0
+              li Arma 3 Dedicated Server
+              li MySQL Database (ExtDB2/3)
+              li Discord server with admin permissions
+              li Ability to upload server mods and extensions
 
-      .card.bg-secondary.bg-opacity-10.border-secondary
-        .card-header.border-secondary
-          h6.mb-0.text-secondary 📝 Quick Reference
-        .card-body
-          p.small.mb-2 <strong>Key Files:</strong>
-          ul.small.mb-2
-            li <code>@esm/esm.key</code> - Authentication
-            li <code>@esm/config.yml</code> - Optional settings
-            li <code>@esm/log/esm.log</code> - Debug info
-          p.small.mb-0 <strong>SQL Files:</strong> Run both 01.sql and 02.sql
+        / File Reference Card
+        .card.bg-info.bg-opacity-10.border-info.mb-4
+          .card-header.border-info
+            h6.mb-0.text-info
+              i.bi.bi-files.me-2
+              | Important Files
+          .card-body
+            h6.text-info.mb-2 Download from Dashboard:
+            ul.small.mb-3
+              li <code>esm.key</code> - Server authentication
+              li <code>config.yml</code> - Advanced settings (optional)
 
-  .card.bg-success.bg-opacity-10.border-success.mt-5
-    .card-header.border-success
-      h4.mb-0.text-success ✅ You're All Set!
-    .card-body
-      p <strong>ESM v2 is now running on your server.</strong> Your players can use Discord commands, get notifications, and manage territories remotely.
+            h6.text-info.mb-2 Run on MySQL:
+            ul.small.mb-0
+              li <code>01.sql</code> - Core database structure
+              li <code>02.sql</code> - V2 compatibility updates
 
-      h6 What's Next:
-      ul.mb-3
-        li
-          | Explore the
-          =< link_to "commands guide", commands_docs_path, class: "link-success"
-          |  to see what's available
-        li
-          | Configure advanced settings in the
-          =< link_to "web dashboard", communities_path, class: "link-success"
-        li Let your players know ESM is ready to use!
+        / Need Help Card
+        .card.bg-warning.bg-opacity-10.border-warning
+          .card-header.border-warning
+            h6.mb-0.text-warning
+              i.bi.bi-question-circle.me-2
+              | Need Help?
+          .card-body
+            p.small.mb-3
+              | Having issues? Check <code>@esm/log/esm.log</code> first, then join our
+              = link_to "Discord support server", join_path, class: "text-warning"
+              |  for assistance.
 
-      .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-0
-        strong Recommended:
-        |< Read through the documentation below and bookmark the Commands page. Most player questions can be answered by pointing them to the right command.
-
-  .mt-5.text-center
-    = link_to getting_started_docs_path, class: "btn btn-outline-secondary"
-      | ← Back to Getting Started
-    = link_to commands_docs_path, class: "btn btn-primary ms-2"
-      | Browse Commands
-    = link_to communities_path, class: "btn btn-success ms-2", target: "_blank"
-      | Web Dashboard
+            .d-grid
+              = link_to join_path, class: "btn btn-outline-warning btn-sm"
+                i.bi.bi-discord.me-2
+                | Get Support
