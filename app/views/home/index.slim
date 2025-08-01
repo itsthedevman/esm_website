@@ -2,150 +2,166 @@
 .vh-100.d-flex.align-items-center.justify-content-center.text-center.position-relative
   .container
     .row.justify-content-center
-      .col-lg-10
-        h1.display-3.mb-4.text-info
-          | Your Exile Server's Management Platform
-        p.lead.mb-5
-          | ESM connects your Arma 3 server to Discord with real-time notifications, territory management, and admin tools. Stop logging into the game just to help players.
-        = link_to "Get Started", getting_started_docs_path,
-          class: "btn btn-primary btn-lg"
+      .col-lg-10.col-xl-8
+        / Main heading with better hierarchy
+        h1.display-2.mb-4.text-primary.fw-bold
+          | Your Exile Server's
+          br
+          | Management Platform
 
-/ Quick Stats Bar
-.py-4.bg-primary.bg-opacity-10
+        p.lead.mb-5.text-muted.fs-4
+          | ESM connects your Arma 3 server to Discord with real-time notifications, territory management, and admin tools.
+          br.d-none.d-md-block
+          strong.text-light Stop logging into the game just to help players.
+
+        / CTA buttons with better styling
+        .d-flex.gap-4.justify-content-center.flex-wrap.mb-5
+          = link_to getting_started_docs_path, class: "btn btn-primary btn-lg px-5 py-3"
+            i.bi.bi-rocket-takeoff.me-2
+            | Get Started
+          = link_to commands_docs_path, class: "btn btn-outline-light btn-lg px-5 py-3"
+            i.bi.bi-book.me-2
+            | Browse Commands
+
+        / Trust indicators
+        .d-flex.justify-content-center.gap-5.flex-wrap.text-muted.small
+          .d-flex.align-items-center
+            i.bi.bi-shield-check.text-success.me-2
+            | 7 Years Running
+          .d-flex.align-items-center
+            i.bi.bi-graph-up.text-info.me-2
+            | 99% Uptime
+          .d-flex.align-items-center
+            i.bi.bi-heart.text-danger.me-2
+            | Community Built
+
+/ Quick Stats Section - Redesigned
+.py-5.bg-primary.bg-opacity-10.border-top.border-primary.border-opacity-25
   .container
-    .row.text-center
-      .col-md-3.mb-3.mb-md-0
-        h4.text-info 7 Years
-        p.text-muted.mb-0 99% Uptime
-      .col-md-3.mb-3.mb-md-0
-        h4.text-info #{command_count} Commands
-        p.text-muted.mb-0 Discord Bot
-      .col-md-3.mb-3.mb-md-0
-        h4.text-info Web Dashboard
-        p.text-muted.mb-0 Full Configuration
-      .col-md-3
-        h4.text-info Real-Time
-        p.text-muted.mb-0 Server Integration
+    .row.text-center.g-4
+      .col-6.col-md-4
+        .h2.text-primary.mb-1.fw-bold 7+
+        .text-muted.small.text-uppercase.ls-1 Years Battle-Tested
+      .col-6.col-md-4
+        .h2.text-info.mb-1.fw-bold #{command_count}+
+        .text-muted.small.text-uppercase.ls-1 Discord Commands
+      .col-12.col-md-4
+        .h2.text-success.mb-1.fw-bold 99%
+        .text-muted.small.text-uppercase.ls-1 Uptime
 
-/ Main Features Section
-.py-5
+/ Core Features - Clean Cards
+.py-5.bg-secondary.bg-opacity-10
   .container
     .row.mb-5
-      .col-12
-        .text-center.mb-5
-          h2.display-5.text-primary From the Exile Community, For the Exile Community
-        p.fs-5.text-center
-          | ESM isn't some generic game bot - this is a purpose-built server management platform designed by the community for the real problems server admins actually face.
+      .col-12.text-center
+        h2.display-6.text-light.mb-5 The Tools You Actually Need
 
     .row.g-4.mb-5
       .col-lg-4
-        .card.h-100.border-primary.bg-primary.bg-opacity-10
-          .card-body
-            .text-primary.display-6.mb-3 ⚡
-            h4.mb-3.text-primary Admin Commands From Anywhere
-            p Give players poptabs while you're at dinner. Execute SQF code from your phone. Search server logs without digging through files. Reset stuck players instantly.
-            small.text-muted.font-monospace
-              = command_usage(:player, show_arguments: false)
-              br
-              = command_usage(:sqf, show_arguments: false)
-              br
-              = command_usage(:logs, show_arguments: false)
+        .card.h-100.bg-dark.border-secondary
+          .card-body.p-4
+            .text-center.mb-4
+              i.bi.bi-lightning-charge.text-primary.fs-1.mb-3
+
+            h4.mb-3.text-light.text-center Remote Server Control
+            p.text-muted.mb-4
+              | Give players poptabs while you're out. Execute SQF code from your phone. Search server logs without SSH. Reset stuck players instantly. All from Discord.
+
+            .bg-body.rounded.p-3.border
+              .font-monospace.small.text-muted
+                .mb-1 = command_usage(:player, show_arguments: false)
+                .mb-1 = command_usage(:sqf, show_arguments: false)
+                .mb-0 = command_usage(:logs, show_arguments: false)
 
       .col-lg-4
-        .card.h-100.border-success.bg-success.bg-opacity-10
-          .card-body
-            .text-success.display-6.mb-3 🏗️
-            h4.mb-3.text-success Territory Management That Works
-            p Handle territory disputes from Discord. Restore accidentally deleted bases. View all territories with member lists. No more "can you add me to the base?" DMs.
-            small.text-muted.font-monospace
-              = command_usage(:restore, show_arguments: false)
-              br
-              = command_usage(:server_territories, show_arguments: false)
-              br
-              = command_usage(:add, show_arguments: false)
+        .card.h-100.bg-dark.border-secondary
+          .card-body.p-4
+            .text-center.mb-4
+              i.bi.bi-house-gear.text-success.fs-1.mb-3
+
+            h4.mb-3.text-light.text-center Territory Management
+            p.text-muted.mb-4
+              | Handle territory disputes from Discord. Restore accidentally deleted bases. See who has access to what. End the "can you add me to the base?" spam.
+
+            .bg-body.rounded.p-3.border
+              .font-monospace.small.text-muted
+                .mb-1 = command_usage(:restore, show_arguments: false)
+                .mb-1 = command_usage(:territories, show_arguments: false)
+                .mb-0 = command_usage(:add, show_arguments: false)
 
       .col-lg-4
-        .card.h-100.border-info.bg-info.bg-opacity-10
-          .card-body
-            .text-info.display-6.mb-3 🔔
-            h4.mb-3.text-info Smart Player Notifications
-            p Your players get raid alerts, MarXet sales, and protection reminders sent to Discord automatically. Configure what goes where and customize every message.
-            small.text-muted
-              | Custom templates, channel routing, XM8 integration
+        .card.h-100.bg-dark.border-secondary
+          .card-body.p-4
+            .text-center.mb-4
+              i.bi.bi-bell.text-info.fs-1.mb-3
 
-/ Web Dashboard Section
-.py-5.bg-secondary.bg-opacity-10
-  .container
-    .row.align-items-center
-      .col-lg-6
-        h3.mb-4.text-warning Web Dashboard for the Heavy Lifting
-        p.mb-3
-          | Some things are just easier with a proper interface. The web dashboard handles server registration, command configuration, notification templates, and all the stuff that would be painful in Discord.
-        ul.list-unstyled
-          li.mb-2
-            span.text-success ✓
-            |  Configure gambling odds and reward systems
-          li.mb-2
-            span.text-success ✓
-            |  Set up notification routing for your community
-          li.mb-2
-            span.text-success ✓
-            |  Enable/disable commands with role restrictions
-          li.mb-2
-            span.text-success ✓
-            |  Create custom notification templates
-          li.mb-2
-            span.text-success ✓
-            |  Search logs with regex patterns across multiple days
-      .col-lg-6
-        .card.bg-secondary.bg-opacity-25.border-secondary
-          .card-body.text-center.py-5
-            .display-1.text-warning.mb-3 🌐
-            h5.mb-3 Dashboard Screenshot/Visual
-            p.mb-0.small Point-and-click configuration
+            h4.mb-3.text-light.text-center Player Notifications
+            p.text-muted.mb-4
+              | Raid alerts, MarXet sales, protection reminders - all sent to Discord automatically. Players stay informed even when offline.
 
-/ Player Benefits Section
+            .alert.alert-info.bg-info.bg-opacity-10.border-info.mb-0
+              .small.text-info
+                i.bi.bi-gear.me-2
+                | Custom templates, smart routing, zero spam
+
+/ Player Benefits
 .py-5.bg-dark.bg-opacity-25
   .container
-    .row
-      .col-12
-        .text-center.mb-5
-          h3.text-primary Your Players Will Love You For This
-        .row.g-4
-          .col-md-4.text-center
-            .text-danger.display-6.mb-3 🚨
-            h5.text-danger Never Miss a Raid Again
-            p Territory alerts sent instantly to Discord, whether they're online or not
-          .col-md-4.text-center
-            .text-warning.display-6.mb-3 💰
-            h5.text-warning Pay Bills From Discord
-            p Protection money and territory upgrades without logging into Arma
-          .col-md-4.text-center
-            .text-success.display-6.mb-3 🎲
-            h5.text-success Gambling That Fits Your Economy
-            p Server-controlled odds and rewards that make sense for your server
+    .text-center.mb-5
+      h3.display-6.text-primary What Players Actually Get
 
-/ Reliability Section
-.py-5
-  .container
-    .row
-      .col-12
-        .mb-4
-          h2.display-5.text-info Infrastructure That Just Works
-        p.fs-5
-          strong.text-success 7 years, 99% uptime.
-          |  ESM has been handling Exile servers since 2018 - through busy weekend raids, 3 AM emergencies, and everything in between. It's the boring reliability you want from critical infrastructure.
-        .mt-4
-          h4.text-warning Zero Pain Setup
-          p
-            | Add ESM to Discord, register your server on the web dashboard, drop the mod file in your server folder. That's it. No complicated configs, no weird dependencies.
+    .row.g-4.mb-5
+      .col-md-4
+        .text-center.p-4
+          i.bi.bi-shield-exclamation.text-danger.display-4.mb-4
+          h5.text-danger.mb-3 Never Miss a Raid
+          p.text-muted Instant Discord alerts when your base is under attack, even when you're offline
 
-/ Final CTA Section
+      .col-md-4
+        .text-center.p-4
+          i.bi.bi-credit-card.text-warning.display-4.mb-4
+          h5.text-warning.mb-3 Pay Bills Remotely
+          p.text-muted Handle protection money and territory upgrades from Discord instead of logging in
+
+      .col-md-4
+        .text-center.p-4
+          i.bi.bi-dice-6.text-success.display-4.mb-4
+          h5.text-success.mb-3 Fair Gambling System
+          p.text-muted Server-controlled odds and limits that actually make sense for the economy
+
+/ Reliability & Trust
 .py-5.bg-primary.bg-opacity-10
   .container
-    .row
-      .col-12
-        .text-center.mt-5
-          h3.mb-4.text-primary Ready to Upgrade Your Server Management?
-          = link_to "Get Started", getting_started_docs_path,
-            class: "btn btn-primary btn-lg"
+    .row.justify-content-center
+      .col-lg-8.text-center
+        h2.display-6.text-primary.mb-4 Built to Last
+
+        .mb-4
+          .h1.text-success.fw-bold.mb-2 7 Years, 99% Uptime
+          p.fs-5.text-muted
+            | ESM has been running Exile servers since 2018 - through busy weekend raids, 3 AM emergencies, and everything in between. It's the reliable infrastructure you don't have to think about.
+
+        .card.bg-dark.border-success.mb-4
+          .card-body.p-4
+            h4.text-success.mb-3
+              i.bi.bi-rocket-takeoff.me-2
+              | Actually Simple Setup
+            p.mb-0.text-muted
+              | Invite the bot to Discord, register your server, drop one mod file in your server folder. Done. No complex configs, no weird dependencies, no PhD required.
+
+/ Final CTA Section
+.py-5.bg-secondary.bg-opacity-25
+  .container
+    .row.justify-content-center
+      .col-lg-6.text-center
+        h3.display-6.mb-4.text-primary Ready to Give It a Try?
+        p.text-muted.mb-5.fs-5
+          | ESM is completely free and open source. Set it up in a few minutes and see what you think.
+
+        .d-flex.gap-4.justify-content-center.flex-wrap
+          = link_to getting_started_docs_path, class: "btn btn-primary btn-lg px-5"
+            i.bi.bi-book.me-2
+            | Setup Guide
+          = link_to invite_path, class: "btn btn-outline-primary btn-lg px-5"
+            i.bi.bi-discord.me-2
+            | Add to Discord
