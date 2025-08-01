@@ -25,7 +25,7 @@ class DiscoversController < ApplicationController
       .order(:community_id)
 
     servers = ESM::Server
-      .select(:server_id, :server_name, :server_ip)
+      .select(:server_id, :server_name, :server_ip, :server_port)
       .joins(:community)
       .where(server_visibility: :public)
       .where(
