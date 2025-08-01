@@ -80,7 +80,7 @@
             li Stats checking, gambling, and rewards
 
           .d-grid
-            = link_to player_setup_docs_path, class: "btn btn-info"
+            = link_to player_setup_docs_path, class: "btn btn-info btn-lg"
               | Player Setup Guide
 
     .col-lg-6
@@ -105,8 +105,10 @@
             li Comprehensive logging and monitoring
 
           .d-grid
-            = link_to server_setup_docs_path, class: "btn btn-success"
+            = link_to server_setup_docs_path, class: "btn btn-success btn-lg"
               | Server Setup Guide
+
+  hr.py-5
 
   / Core Systems Deep Dive
   .mb-5
@@ -137,12 +139,12 @@
                   li <strong>Territory Management</strong> - Player additions/removals
                   li <strong>Custom Events</strong> - Server-defined notifications
 
-            .alert.alert-info.border-info.bg-info.bg-opacity-10.mt-3.mb-0
-              h6.text-info.mb-2 Notification Routing
+            .alert.border.border-secondary.bg-dark.mt-3.mb-0
+              h6.text-warning.mb-2 Notification Routing
               p.small.mb-0 You can route notifications to specific Discord channels in Player Mode communities. Set up custom routes through the web dashboard to control where different notification types go.
 
-          .col-lg-4
-            .card.bg-dark.border-0
+          .col-lg-4.d-flex
+            .card.bg-dark.border-0.flex-fill
               .card-body.text-center.py-4
                 i.bi.bi-arrow-right.text-warning.fs-2.mb-3
                 h6.text-warning Default Behavior
@@ -157,10 +159,10 @@
           | Command System & Permissions
       .card-body
         .row.g-4
-          .col-lg-8
+          .col-lg-8.d-flex.flex-column
             p.mb-3 ESM commands are organized by domain and have different permission levels. Understanding where you can use which commands is crucial.
 
-            .table-responsive
+            .table-responsive.flex-fill
               table.table.table-sm.table-dark.mb-3
                 thead
                   tr
@@ -181,8 +183,8 @@
                       small.text-muted.d-block (if community allows)
                     td.text-danger No
 
-            .alert.alert-warning.border-warning.bg-warning.bg-opacity-10.mb-0
-              h6.text-warning.mb-2 Community Control
+            .alert.border-secondary.bg-dark.mb-0.flex-shrink
+              h6.text-danger.mb-2 Community Control
               p.small.mb-0 Communities can disable commands, restrict them to specific roles, set custom cooldowns, and control which channels they work in. If a command doesn't work, try it in DM or ask an admin.
 
           .col-lg-4
@@ -195,10 +197,19 @@
                   | /domain scope action target
 
                 h6.text-info.mb-2 Examples:
-                ul.small.text-muted.mb-0
-                  li #{command_usage(:me, show_arguments: false)} - Check your stats
-                  li #{command_usage(:territories, show_arguments: false)} - List your bases
-                  li #{command_usage(:player, arguments: {target: "@user", action: "heal"})} - Admin heal player
+                ul.small.text-muted.mb-0.list-unstyled
+                  li.mb-1
+                    | Check your stats
+                    .ms-2.mt-1
+                      = command_usage(:me, show_arguments: false)
+                  li.mb-1
+                    | List your bases
+                    .ms-2.mt-1
+                      = command_usage(:territories, show_arguments: false)
+                  li
+                    | Admin heal player
+                    .ms-2.mt-1
+                      = command_usage(:player, arguments: {target: "@user", action: "heal"})
 
     / Territory Management
     .card.bg-success.bg-opacity-10.border-success.mb-4
@@ -230,15 +241,15 @@
                   li View all server territories
                   li Manage territory permissions
 
-            .alert.alert-success.border-success.bg-success.bg-opacity-10.mt-3.mb-0
+            .alert.border-secondary.bg-dark.mt-3.mb-0
               h6.text-success.mb-2 Territory IDs
-              p.small.mb-0 Territories get auto-generated IDs like "AB123" for easy reference. You can set custom IDs with #{command_usage(:set_id, show_arguments: false)} to make them more memorable.
+              p.small.mb-0 Territories get auto-generated IDs like "abcxyz" for easy reference. You can set custom IDs with #{command_usage(:set_id, show_arguments: false)} to make them more memorable.
 
-          .col-lg-4
-            .card.bg-dark.border-0
+          .col-lg-4.d-flex
+            .card.bg-dark.border-0.flex-fill
               .card-body
                 h6.text-success.mb-3 Key Commands
-                ul.small.text-muted.mb-0
+                ul.small.text-muted.mb-0.list-unstyled
                   li #{command_usage(:territories, show_arguments: false)}
                   li #{command_usage(:pay, show_arguments: false)}
                   li #{command_usage(:upgrade, show_arguments: false)}
@@ -246,47 +257,49 @@
                   li #{command_usage(:remove, show_arguments: false)}
                   li #{command_usage(:promote, show_arguments: false)}
 
-  / Player vs Admin Mode
+  / Player vs Server Mode
   .card.bg-secondary.bg-opacity-10.border-secondary.mb-5
     .card-body
       h4.text-light.mb-4
         i.bi.bi-toggle-on.me-2
-        | Player Mode vs Admin Mode
+        | Player Mode vs Server Mode
 
       .row.g-4
         .col-lg-6
           .card.bg-info.bg-opacity-10.border-info.h-100
             .card-header.border-info
               h5.mb-0.text-info Player Mode Communities
-            .card-body
+            .card-body.d-flex.flex-column
               p.small.text-muted.mb-3 Discord servers running in Player Mode focus on providing notification routing and player features.
 
-              h6.text-light.mb-2 Features Available:
-              ul.small.text-muted.mb-3
-                li XM8 notification routing to channels
-                li Player commands in DMs and text channels
-                li Notification preference management
-                li User alias and default settings
+              .flex-fill
+                h6.text-light.mb-2 Features Available:
+                ul.small.text-muted.mb-3
+                  li XM8 notification routing to channels
+                  li Player commands in DMs and text channels
+                  li Notification preference management
+                  li User alias and default settings
 
-              .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-0
+              .alert.border-secondary.bg-dark.mb-0.flex-shrink
                 p.small.mb-0 <strong>Perfect for:</strong> Gaming communities that want their members to get notifications in Discord channels rather than just DMs.
 
         .col-lg-6
           .card.bg-warning.bg-opacity-10.border-warning.h-100
             .card-header.border-warning
-              h5.mb-0.text-warning Admin Mode Communities
-            .card-body
-              p.small.text-muted.mb-3 Discord servers running in Admin Mode provide full server management capabilities for server owners.
+              h5.mb-0.text-warning Server Mode Communities
+            .card-body.d-flex.flex-column
+              p.small.text-muted.mb-3 Discord servers running in Server Mode provide full server management capabilities for server owners.
 
-              h6.text-light.mb-2 Features Available:
-              ul.small.text-muted.mb-3
-                li All Player Mode features
-                li Admin commands for server management
-                li Web dashboard configuration
-                li Command permission management
-                li Custom notification templates
+              .flex-fill
+                h6.text-light.mb-2 Features Available:
+                ul.small.text-muted.mb-3
+                  li All Player Mode features
+                  li Admin commands for server management
+                  li Web dashboard configuration
+                  li Command permission management
+                  li Custom notification templates
 
-              .alert.alert-warning.border-warning.bg-warning.bg-opacity-10.mb-0
+              .alert.border-secondary.bg-dark.mb-0.flex-shrink
                 p.small.mb-0 <strong>Perfect for:</strong> Server administrators who want to manage their servers through Discord and the web dashboard.
 
   / Advanced Features
@@ -329,71 +342,17 @@
               li Locker capacity limits
               li Custom win/loss messages
 
-  / Common Workflows
-  .mb-5
-    h3.text-center.mb-5 Common Workflows
-
-    .row.g-4
-      .col-lg-4
-        .card.bg-dark.border-secondary.h-100
-          .card-body
-            h5.text-warning.mb-3
-              i.bi.bi-1-circle.me-2
-              | New Player
-            ol.small.text-muted.mb-3
-              li Register your Steam and Discord accounts
-              li Join a Discord server that has ESM
-              li Try #{command_usage(:help, show_arguments: false)} to see available commands
-              li Set up notification preferences
-              li Create aliases for servers you play on
-
-            .mt-auto
-              = link_to player_setup_docs_path, class: "btn btn-outline-warning btn-sm"
-                | Player Guide
-
-      .col-lg-4
-        .card.bg-dark.border-secondary.h-100
-          .card-body
-            h5.text-info.mb-3
-              i.bi.bi-2-circle.me-2
-              | New Server Admin
-            ol.small.text-muted.mb-3
-              li Invite ESM bot to your Discord
-              li Register and set up web dashboard
-              li Install @esm mod on your server
-              li Configure commands and notifications
-              li Set up notification routing for players
-
-            .mt-auto
-              = link_to server_setup_docs_path, class: "btn btn-outline-info btn-sm"
-                | Server Guide
-
-      .col-lg-4
-        .card.bg-dark.border-secondary.h-100
-          .card-body
-            h5.text-success.mb-3
-              i.bi.bi-3-circle.me-2
-              | Existing User
-            ol.small.text-muted.mb-3
-              li Browse commands for new features
-              li Check notification routing settings
-              li Explore the web dashboard
-              li Set up advanced aliases and defaults
-              li Configure custom notification templates
-
-            .mt-auto
-              = link_to commands_docs_path, class: "btn btn-outline-success btn-sm"
-                | Commands
+  hr.py-3
 
   / Quick Actions
   .row.g-4
     .col-md-4
-      .card.bg-warning.bg-opacity-10.border-warning.h-100
+      .card.bg-success.bg-opacity-10.border-success.h-100
         .card-body.text-center
-          i.bi.bi-search.text-warning.fs-2.mb-3
-          h5.text-warning.mb-3 Find Server IDs
+          i.bi.bi-search.text-success.fs-2.mb-3
+          h5.text-success.mb-3 Find Server IDs
           p.text-muted.mb-3 Don't know your community or server ID?
-          = link_to discover_path, class: "btn btn-outline-warning"
+          = link_to discover_path, class: "btn btn-outline-success"
             | ID Lookup Tool
 
     .col-md-4
@@ -406,10 +365,10 @@
             | View Commands
 
     .col-md-4
-      .card.bg-success.bg-opacity-10.border-success.h-100
+      .card.bg-warning.bg-opacity-10.border-warning.h-100
         .card-body.text-center
-          i.bi.bi-question-circle.text-success.fs-2.mb-3
-          h5.text-success.mb-3 Need Help?
+          i.bi.bi-question-circle.text-warning.fs-2.mb-3
+          h5.text-warning.mb-3 Need Help?
           p.text-muted.mb-3 Join our community for support and updates
-          = link_to join_path, class: "btn btn-outline-success"
+          = link_to join_path, class: "btn btn-outline-warning"
             | Discord Support
