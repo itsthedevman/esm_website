@@ -69,6 +69,14 @@ Rails.application.routes.draw do
   # /join
   get :join, to: redirect("https://discord.gg/28Ttc2s")
 
+  # /legal
+  resource :legal, only: [] do
+    collection do
+      get :privacy_policy
+      get :terms_of_service
+    end
+  end
+
   # /register
   get :register, to: "user_controller#index"
 
