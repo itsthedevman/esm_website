@@ -13,11 +13,11 @@ class CommandArgumentDocsComponent < ApplicationComponent
         semantic_class = argument_semantic_class(name, argument)
 
         <<~HTML
-          <div class="mb-3 p-3 bg-black border border-secondary rounded">
+          <div class="mb-3 p-3 bg-dark border border-secondary rounded">
             <div class="mb-2">
               <span class="arg #{semantic_class} fs-6">#{argument["display_name"]}</span>
             </div>
-            <div class="text-light small">
+            <div class="text-light">
               #{Markdown.to_html(argument["description"])}
               #{"<br>#{Markdown.to_html(argument["description_extra"])}" if argument["description_extra"].present?}
             </div>
