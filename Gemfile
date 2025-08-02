@@ -41,7 +41,7 @@ group :development do
   gem "ed25519", require: false
   gem "bcrypt_pbkdf", require: false
 
-  gem "benchmark-ips", "~> 2.14"
+  gem "benchmark-ips"
 end
 
 ####################################################################################################
