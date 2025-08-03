@@ -1,10 +1,10 @@
-import { Controller } from "@hotwired/stimulus";
+import ApplicationController from "./application_controller";
 import * as R from "ramda";
 import $ from "cash-dom";
 import JustValidate from "just-validate";
 
 // Connects to data-controller="server-new"
-export default class extends Controller {
+export default class extends ApplicationController {
   static targets = ["form", "v1Card", "v2Card", "version"];
   static values = { ids: Array };
 

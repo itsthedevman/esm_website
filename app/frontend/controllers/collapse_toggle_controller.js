@@ -1,7 +1,7 @@
-import { Controller } from "@hotwired/stimulus";
+import ApplicationController from "./application_controller";
 
 // Connects to data-controller="collapse-toggle"
-export default class extends Controller {
+export default class extends ApplicationController {
   static values = {
     defaultText: String,
     activeText: String,

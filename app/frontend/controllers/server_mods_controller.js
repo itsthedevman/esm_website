@@ -1,4 +1,4 @@
-import { Controller } from "@hotwired/stimulus";
+import ApplicationController from "./application_controller";
 import * as R from "ramda";
 import $ from "cash-dom";
 import Validate from "../helpers/validator";
@@ -6,7 +6,7 @@ import * as bootstrap from "bootstrap";
 import { Serializer } from "../helpers/forms";
 
 // Connects to data-controller="server-mods"
-export default class extends Controller {
+export default class extends ApplicationController {
   static targets = [
     "addForm",
     "editForm",

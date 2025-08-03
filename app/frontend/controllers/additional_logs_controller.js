@@ -1,9 +1,9 @@
-import { Controller } from "@hotwired/stimulus";
+import ApplicationController from "./application_controller";
 import * as R from "ramda";
 import $ from "cash-dom";
 
 // Connects to data-controller="additional-logs"
-export default class extends Controller {
+export default class extends ApplicationController {
   static targets = ["emptyState", "pathsContainer", "pathsList", "pathCount"];
   static values = { paths: Array };
 

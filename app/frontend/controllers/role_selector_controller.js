@@ -1,9 +1,9 @@
-import { Controller } from "@hotwired/stimulus";
+import ApplicationController from "./application_controller";
 import Choices from "choices.js";
 import "choices.js/public/assets/styles/choices.css";
 
 // Connects to data-controller="role-selector"
-export default class extends Controller {
+export default class extends ApplicationController {
   static values = { id: String };
 
   connect() {

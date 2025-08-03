@@ -1,11 +1,11 @@
-import { Controller } from "@hotwired/stimulus";
+import ApplicationController from "./application_controller";
 import * as R from "ramda";
 import JustValidate from "just-validate";
 import { allowTurbo } from "../helpers/just_validate";
 import { disableSubmitOnEnter } from "../helpers/forms";
 
 // Connects to data-controller="server-edit"
-export default class extends Controller {
+export default class extends ApplicationController {
   static targets = ["form"];
   static values = { ids: Array };
 
