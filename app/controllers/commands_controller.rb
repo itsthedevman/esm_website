@@ -5,49 +5,62 @@ class CommandsController < AuthenticatedController
   before_action :redirect_if_player_mode!
 
   def index
+    configurations = current_community
+      .command_configurations
+      .order(:community_id)
+      .index_by(&:command_name)
+
     commands_by_category = Command.all.values
       .sort_by(&:category)
       .select(&:modifiable?)
-      .each { |command| command.preload_configuration(current_community) }
+      .each { |command| command.configuration = configurations[command.name] }
       .group_by(&:category)
 
-    cooldown_types = ESM::CommandConfiguration::COOLDOWN_TYPES.map { |t| [t.humanize, t] }
+    cooldown_types = ESM::Cooldown::TYPES.map { |t| [t.humanize, t] }
 
     render locals: {commands_by_category:, cooldown_types:}
   end
 
   def update
-    command = current_community.command_configurations.where(command_name: params[:name]).first
-    command_details = command.details
+    command = current_community.command_configurations.find_by(command_name: params[:name])
+    not_found! if command.nil?
 
-    return render js: "Toaster.error('Configuration for <code>/#{params[:name]}</code> for your community was not found<br><span class='esm-text-color-red'>Please log out and log back in again</span><br>If this error persists, please join our Discord and let us know.');" if command.nil?
+    command.update!(command_params)
 
-    # Default these. If they are empty (or unchecked), the param is nil
-    params[:allowlisted_role_ids] ||= []
-    params[:enabled] ||= false
-    params[:notify_when_disabled] ||= false
-
-    # Same goes for whitelist and allowed
-    # Only modify these if the command is enabled though.
-    if params[:enabled]
-      params[:allowed_in_text_channels] ||= false
-      params[:allowlist_enabled] ||= false
-    else
-      # If the command is not enabled, remove these from the params
-      params.delete(:allowed_in_text_channels)
-      params.delete(:allowlist_enabled)
-    end
-
-    if command.update(command_params)
-      render js: "Toaster.success('<code>#{command_details.command_usage}</code> has been updated');"
-    else
-      render js: "Toaster.error('Failed to update.<br><span class='esm-text-color-red'>Please log out and log back in again</span><br>If this error persists, please join our Discord and let us know.');"
-    end
+    render turbo_stream: create_success_toast(
+      "<code>#{command.details.command_usage}</code> has been updated"
+    )
   end
 
   private
 
   def command_params
-    params.permit(:enabled, :notify_when_disabled, :allowed_in_text_channels, :cooldown_quantity, :cooldown_type, :allowlist_enabled, allowlisted_role_ids: [])
+    permitted_params = params.require(:command_configuration).permit(
+      :enabled, :notify_when_disabled,
+      :allowed_in_text_channels,
+      :cooldown_quantity, :cooldown_type,
+      :allowlist_enabled, allowlisted_role_ids: []
+    )
+
+    permitted_params[:enabled] = permitted_params[:enabled] == "1"
+
+    permitted_params[:notify_when_disabled] = permitted_params[:notify_when_disabled] == "1"
+
+    permitted_params[:allowed_in_text_channels] = (
+      permitted_params[:enabled] && permitted_params[:allowed_in_text_channels] == "1"
+    )
+
+    permitted_params[:allowlist_enabled] = (
+      permitted_params[:enabled] && permitted_params[:allowlist_enabled] == "1"
+    )
+
+    (permitted_params[:allowlisted_role_ids] ||= []).compact_blank!
+
+    # Default invalid types to "times"
+    if (type = permitted_params[:cooldown_type]) && !ESM::Cooldown::TYPES.include?(type)
+      permitted_params[:cooldown_type] = "times"
+    end
+
+    permitted_params
   end
 end

@@ -6,6 +6,9 @@ application.register("additional-logs", AdditionalLogsController);
 import CollapseToggleController from "./collapse_toggle_controller";
 application.register("collapse-toggle", CollapseToggleController);
 
+import CommandConfigurationController from "./command_configuration_controller";
+application.register("command-configuration", CommandConfigurationController);
+
 import CommunityEditController from "./community_edit_controller";
 application.register("community-edit", CommunityEditController);
 
