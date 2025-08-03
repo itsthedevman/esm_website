@@ -1,9 +1,9 @@
-import { Controller } from "@hotwired/stimulus";
+import ApplicationController from "./application_controller";
 import $ from "cash-dom";
 import { isChecked } from "../helpers/forms";
 
 // Connects to data-controller="command-configuration"
-export default class extends Controller {
+export default class extends ApplicationController {
   static targets = [
     "enable",
     "notifyWhenDisabled",
@@ -17,21 +17,7 @@ export default class extends Controller {
   static values = { id: String };
 
   connect() {
-    if (this.hasEnableTarget) {
-      const commandEnabled = isChecked(this.enableTarget);
-
-      // This will cause a race condition with the next toggle
-      // Plus, the elements are already enabled by default
-      if (!commandEnabled) {
-        console.log("Toggling form");
-        this.#toggleForm(commandEnabled);
-      }
-
-      if (commandEnabled && this.hasAllowlistEnabledTarget) {
-        console.log("Toggling allowlist");
-        this.#toggleAllowlist(isChecked(this.allowlistEnabledTarget));
-      }
-    }
+    this.nextTick(() => this.#setup());
   }
 
   onEnableClicked(event) {
@@ -40,12 +26,27 @@ export default class extends Controller {
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
+  #setup() {
+    if (!this.hasEnableTarget) return;
+
+    const commandEnabled = isChecked(this.enableTarget);
+
+    // This will cause a race condition with the next toggle
+    // Plus, the elements are already enabled by default
+    if (!commandEnabled) {
+      this.#toggleForm(commandEnabled);
+    }
+
+    if (commandEnabled && this.hasAllowlistEnabledTarget) {
+      this.#toggleAllowlist(isChecked(this.allowlistEnabledTarget));
+    }
+  }
+
   #toggleAllowlist(enabled) {
     if (!this.hasAllowlistedRoleIdsTarget) return;
 
     $(this.allowlistedRoleIdsTarget).prop("disabled", !enabled);
 
-    console.log(`Dispatching enable changed to ${this.idValue} - ${enabled}`);
     this.dispatch("enableChanged", {
       detail: { enabled, targetId: this.idValue },
     });
