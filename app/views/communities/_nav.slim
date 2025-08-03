@@ -19,7 +19,7 @@
 
       .list-group.list-group-flush
         - if current_community.servers.size > 0
-          - current_community.servers.order("UPPER(server_id)").find_each do |nav_server|
+          - current_community.servers.sort_by(:server_id).insensitive.each do |nav_server|
             = link_to community_server_path(current_community, nav_server),
               class: class_names( \
                 "list-group-item list-group-item-action d-flex align-items-center py-3",
