@@ -15,7 +15,15 @@ export default class extends Controller {
 
   static values = { id: String };
 
-  connect() {}
+  connect() {
+    const enabledElem = $(this.element).find(
+      "[name='command_configuration[enabled]']"
+    );
+
+    if (enabledElem[0]) {
+      this.#toggleForm(enabledElem.is(":checked"));
+    }
+  }
 
   onEnableClicked(event) {
     const elem = $(event.currentTarget);
@@ -26,18 +34,32 @@ export default class extends Controller {
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   #toggleForm(enabled) {
-    $(this.notifyWhenDisabledTarget).prop("disabled", !enabled);
-    $(this.allowInTextChannelsTarget).prop("disabled", !enabled);
-    $(this.allowlistEnabledTarget).prop("disabled", !enabled);
-    $(this.cooldownQuantityTarget).prop("disabled", !enabled);
-    $(this.cooldownTypeTarget).prop("disabled", !enabled);
+    if (this.hasNotifyWhenDisabledTarget) {
+      $(this.notifyWhenDisabledTarget).prop("disabled", !enabled);
+    }
 
-    $(this.allowlistedRoleIdsTarget)
-      .children()
-      .each((e) => $(e).prop("disabled", !enabled));
+    if (this.hasAllowInTextChannelsTarget) {
+      $(this.allowInTextChannelsTarget).prop("disabled", !enabled);
+    }
 
-    this.dispatch("enableChanged", {
-      detail: { enabled, targetId: this.idValue },
-    });
+    if (this.hasAllowlistEnabledTarget) {
+      $(this.allowlistEnabledTarget).prop("disabled", !enabled);
+    }
+
+    if (this.hasCooldownQuantityTarget) {
+      $(this.cooldownQuantityTarget).prop("disabled", !enabled);
+    }
+
+    if (this.hasCooldownTypeTarget) {
+      $(this.cooldownTypeTarget).prop("disabled", !enabled);
+    }
+
+    if (this.hasAllowlistedRoleIdsTarget) {
+      $(this.allowlistedRoleIdsTarget).prop("disabled", !enabled);
+
+      this.dispatch("enableChanged", {
+        detail: { enabled, targetId: this.idValue },
+      });
+    }
   }
 }
