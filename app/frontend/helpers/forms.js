@@ -49,3 +49,7 @@ export class Serializer {
       .appendTo(this.form);
   }
 }
+
+export function isChecked(elem) {
+  return $(elem).is(":checked");
+}

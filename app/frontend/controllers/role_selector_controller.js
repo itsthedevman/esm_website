@@ -26,6 +26,10 @@ export default class extends Controller {
   handleEnableChange({ detail: { enabled, targetId } }) {
     if (this.choices == null || this.idValue != targetId) return;
 
+    console.log(
+      `Received enableChange to ${targetId} - ${enabled}.`
+    );
+
     if (enabled) {
       this.choices.enable();
     } else {
