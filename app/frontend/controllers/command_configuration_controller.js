@@ -24,6 +24,10 @@ export default class extends ApplicationController {
     this.#toggleForm(isChecked(event.currentTarget));
   }
 
+  onAllowlistEnableClicked(event) {
+    this.#toggleAllowlist(isChecked(event.currentTarget));
+  }
+
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   #setup() {

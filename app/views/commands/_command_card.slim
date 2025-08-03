@@ -8,7 +8,7 @@
       class: "d-flex flex-column h-100" do |f|
 
     / Header
-    .card-header.py-3.flex-shrink
+    .card-header.py-3.flex-fill
       .d-flex.align-items-center.mb-2
         - if command.admin?
           i.bi.bi-shield-lock.text-warning.me-2[
@@ -21,13 +21,13 @@
       small.text-muted = Markdown.to_html(command.description).html_safe
 
     / Command configuration body
-    .card-body.d-flex.flex-column
+    .card-body
       / Options section
       h6.mb-3
         i.bi.bi-gear.text-info.me-2
         | Options
 
-      / Enabled toggle - moved here with other options
+      / Enabled toggle
       - if command.attributes["enabled"]["modifiable"]
         .form-check.form-switch.mb-3
           = f.check_box :enabled,
@@ -76,13 +76,16 @@
           .form-check.form-switch
             = f.check_box :allowlist_enabled,
               class: "form-check-input",
-              data: {command_configuration_target: "allowlistEnabled"}
+              data: { \
+                command_configuration_target: "allowlistEnabled",
+                action: "input->command-configuration#onAllowlistEnableClicked",
+              }
 
             = f.label :allowlist_enabled, class: "form-check-label" do
               | Use role allowlist
 
           - if command.attributes["allowlisted_role_ids"]["modifiable"]
-            .mt-3.flex-grow-1
+            .mt-3
               label.form-label.mb-2
                 i.bi.bi-person-badge.text-info.me-2
                 | Allowed Roles
@@ -122,7 +125,7 @@
                 class: "form-select",
                 data: {command_configuration_target: "cooldownType"}
 
-    / Save button - simplified footer
+    / Save button
     .card-footer.border-top.bg-transparent
       .text-end
         = f.submit "Save Changes", class: "btn btn-primary btn-sm"
