@@ -57,10 +57,6 @@ export default class extends ApplicationController {
   }
 
   #toggleForm(enabled) {
-    if (this.hasNotifyWhenDisabledTarget) {
-      $(this.notifyWhenDisabledTarget).prop("disabled", !enabled);
-    }
-
     if (this.hasAllowInTextChannelsTarget) {
       $(this.allowInTextChannelsTarget).prop("disabled", !enabled);
     }
