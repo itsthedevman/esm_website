@@ -22,31 +22,7 @@
           .mb-4
             = f.label :notification_type, "Notification Type", class: "form-label fw-medium"
             = f.select :notification_type,
-                grouped_options_for_select([ \
-                  ["XM8 Territory Events", [ \
-                    ["Base Raid", "base-raid"],
-                    ["Flag Stolen", "flag-stolen"],
-                    ["Flag Restored", "flag-restored"],
-                    ["Protection Money Due", "protection-money-due"],
-                    ["Protection Money Paid", "protection-money-paid"],
-                    ["Charge Plant Started", "charge-plant-started"],
-                    ["Grind Started", "grind-started"],
-                    ["Hack Started", "hack-started"],
-                    ["Flag Steal Started", "flag-steal-started"],
-                    ["MarXet Item Sold", "marxet-item-sold"] \
-                  ]],
-                  ["Gambling Events", [ \
-                    ["Won", "won"],
-                    ["Loss", "loss"] \
-                  ]],
-                  ["Player Management", [ \
-                    ["Money", "money"],
-                    ["Locker", "locker"],
-                    ["Respect", "respect"],
-                    ["Heal", "heal"],
-                    ["Kill", "kill"] \
-                  ]] \
-                ], notification.notification_type),
+                grouped_options_for_select(grouped_notification_types, notification.notification_type),
                 {},
                 { class: "form-select" }
 
@@ -69,7 +45,6 @@
               .col-6
                 = f.color_field :notification_color,
                     class: "form-control",
-                    style: "height: 38px;",
                     value: notification.notification_color
 
           / Live Preview

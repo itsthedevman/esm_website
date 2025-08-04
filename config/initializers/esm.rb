@@ -5,7 +5,7 @@ Rails.application.config.to_prepare do
   core_path = Pathname.new(File.expand_path("../../../", __dir__))
     .join("esm_ruby_core/lib")
 
-  Dir[core_path.join("esm/models/*.rb")].sort.each do |file|
+  Dir[core_path.join("esm/**/*.rb")].sort.each do |file|
     load file
   end
 

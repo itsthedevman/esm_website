@@ -9,7 +9,7 @@
       h4.mb-0
         i.bi.bi-bell.text-warning.me-2
         | Notifications
-        span.badge.bg-secondary.ms-2 = notifications.count
+        span.badge.bg-secondary.ms-2 = notifications.size
 
       / Compact filter
       = form_with url: community_notifications_path(current_community),
@@ -94,3 +94,5 @@
           button.btn.btn-primary.btn-lg data-bs-toggle="modal" data-bs-target="#create-notification-modal"
             i.bi.bi-plus.me-2
             | Create Your First Notification
+
+= render "notifications/create_modal", **local_assigns

@@ -20,7 +20,41 @@ class NotificationsController < AuthenticatedController
 
     notifications.load # preload, avoids extra queries
 
-    render locals: {notifications: notifications.sort_by(&:notification_category)}
+    grouped_notification_types = [
+      ["XM8 Territory Events", [
+        ["Base Raid", "base-raid"],
+        ["Flag Stolen", "flag-stolen"],
+        ["Flag Restored", "flag-restored"],
+        ["Protection Money Due", "protection-money-due"],
+        ["Protection Money Paid", "protection-money-paid"],
+        ["Charge Plant Started", "charge-plant-started"],
+        ["Grind Started", "grind-started"],
+        ["Hack Started", "hack-started"],
+        ["Flag Steal Started", "flag-steal-started"],
+        ["MarXet Item Sold", "marxet-item-sold"]
+      ]],
+      ["Gambling Events", [
+        ["Won", "won"],
+        ["Loss", "loss"]
+      ]],
+      ["Player Management", [
+        ["Money", "money"],
+        ["Locker", "locker"],
+        ["Respect", "respect"],
+        ["Heal", "heal"],
+        ["Kill", "kill"]
+      ]]
+    ]
+
+    colors = ESM::Color::Toast.to_h
+      .transform_keys { |k| k.to_s.titleize }
+      .sort_by(&:first) # Name
+
+    render locals: {
+      colors:,
+      grouped_notification_types:,
+      notifications: notifications.sort_by(&:notification_category)
+    }
   end
 
   def create
