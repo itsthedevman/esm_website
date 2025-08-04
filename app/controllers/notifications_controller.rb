@@ -7,7 +7,7 @@ class NotificationsController < AuthenticatedController
   def index
     filter_category, filter_type = (params[:filter] || "all").split("_")
 
-    notifications = current_community.notifications
+    notifications = current_community.notifications.order(:community_id, :notification_type)
 
     notifications =
       if filter_category == "all"
@@ -18,7 +18,9 @@ class NotificationsController < AuthenticatedController
         notifications.with_category(filter_category).with_type(filter_type)
       end
 
-    render locals: {notifications:}
+    notifications.load # preload, avoids extra queries
+
+    render locals: {notifications: notifications.sort_by(&:notification_category)}
   end
 
   def create
