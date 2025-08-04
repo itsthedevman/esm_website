@@ -11,7 +11,7 @@ class CommandsController < AuthenticatedController
       .index_by(&:command_name)
 
     commands_by_category = Command.all.values
-      .sort_by(&:category)
+      .sort_by(&:usage)
       .select(&:modifiable?)
       .each { |command| command.configuration = configurations[command.name] }
       .group_by(&:category)
