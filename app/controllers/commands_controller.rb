@@ -42,19 +42,23 @@ class CommandsController < AuthenticatedController
       :allowlist_enabled, allowlisted_role_ids: []
     )
 
-    permitted_params[:enabled] = permitted_params[:enabled] == "1"
+    if (value = permitted_params[:enabled])
+      permitted_params[:enabled] = value == "1"
+    end
 
-    permitted_params[:notify_when_disabled] = permitted_params[:notify_when_disabled] == "1"
+    if (value = permitted_params[:notify_when_disabled])
+      permitted_params[:notify_when_disabled] = value == "1"
+    end
 
-    permitted_params[:allowed_in_text_channels] = (
-      permitted_params[:enabled] && permitted_params[:allowed_in_text_channels] == "1"
-    )
+    if (value = permitted_params[:allowed_in_text_channels])
+      permitted_params[:allowed_in_text_channels] = value == "1"
+    end
 
-    permitted_params[:allowlist_enabled] = (
-      permitted_params[:enabled] && permitted_params[:allowlist_enabled] == "1"
-    )
+    if (value = permitted_params[:allowlist_enabled])
+      permitted_params[:allowlist_enabled] = value == "1"
+    end
 
-    (permitted_params[:allowlisted_role_ids] ||= []).compact_blank!
+    permitted_params[:allowlisted_role_ids]&.compact_blank!
 
     # Default invalid types to "times"
     if (type = permitted_params[:cooldown_type]) && !ESM::Cooldown::TYPES.include?(type)
