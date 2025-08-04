@@ -8,7 +8,7 @@
       class: "d-flex flex-column h-100" do |f|
 
     / Header
-    .card-header.py-3.flex-fill
+    .card-header.py-3
       .d-flex.align-items-center.mb-2
         - if command.admin?
           i.bi.bi-shield-lock.text-warning.me-2[
@@ -21,7 +21,27 @@
       small.text-muted = Markdown.to_html(command.description).html_safe
 
     / Command configuration body
-    .card-body
+    .card-body.flex-fill
+      / Cooldown section
+      - if command.attributes["cooldown_time"]["modifiable"]
+        .mb-3
+          h6.mb-3
+            i.bi.bi-clock.text-info.me-2
+            | Cooldown
+          .row.g-2
+            .col-6
+              = f.number_field :cooldown_quantity,
+                class: "form-control",
+                min: 1,
+                placeholder: "2",
+                data: {command_configuration_target: "cooldownQuantity"}
+            .col-6
+              = f.select :cooldown_type,
+                options_for_select(cooldown_types, command.configuration.cooldown_type),
+                {},
+                class: "form-select",
+                data: {command_configuration_target: "cooldownType"}
+
       / Options section
       h6.mb-3
         i.bi.bi-gear.text-info.me-2
@@ -117,27 +137,7 @@
                       global: true) \
                   }
 
-      / Cooldown section
-      - if command.attributes["cooldown_time"]["modifiable"]
-        .mt-3
-          h6.mb-3
-            i.bi.bi-clock.text-info.me-2
-            | Cooldown
-          .row.g-2
-            .col-6
-              = f.number_field :cooldown_quantity,
-                class: "form-control",
-                min: 1,
-                placeholder: "2",
-                data: {command_configuration_target: "cooldownQuantity"}
-            .col-6
-              = f.select :cooldown_type,
-                options_for_select(cooldown_types, command.configuration.cooldown_type),
-                {},
-                class: "form-select",
-                data: {command_configuration_target: "cooldownType"}
-
     / Save button
-    .card-footer.border-top.bg-transparent
+    .card-footer.border-top
       .text-end
         = f.submit "Save Changes", class: "btn btn-primary btn-sm"
