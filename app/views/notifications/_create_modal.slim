@@ -1,0 +1,171 @@
+/ Create Notification Modal
+= render "shared/modal", id: "create-notification-modal", class: "modal-lg", **local_assigns do
+  .modal-header.bg-primary.text-light
+    h5.modal-title
+      i.bi.bi-plus-circle.me-2
+      | Create New Notification
+    button.btn-close.btn-close-white data-bs-dismiss="modal"
+
+  = form_with model: [current_community, ESM::Notification.new],
+      url: community_notifications_path(current_community),
+      local: true,
+      class: "notification-form" do |f|
+
+    .modal-body
+      .row.g-4
+        / Left Column - Settings
+        .col-md-6
+          h6.text-primary.mb-3
+            i.bi.bi-gear.me-2
+            | Configuration
+
+          / Type Selection
+          .mb-4
+            = f.label :notification_type, "Notification Type", class: "form-label fw-medium"
+            = f.select :notification_type,
+                grouped_options_for_select([ \
+                  ["XM8 Territory Events", [ \
+                    ["Base Raid", "base-raid"],
+                    ["Flag Stolen", "flag-stolen"],
+                    ["Flag Restored", "flag-restored"],
+                    ["Protection Money Due", "protection-money-due"],
+                    ["Protection Money Paid", "protection-money-paid"],
+                    ["Charge Plant Started", "charge-plant-started"],
+                    ["Grind Started", "grind-started"],
+                    ["Hack Started", "hack-started"],
+                    ["Flag Steal Started", "flag-steal-started"],
+                    ["MarXet Item Sold", "marxet-item-sold"] \
+                  ]],
+                  ["Gambling Events", [ \
+                    ["Won", "won"],
+                    ["Loss", "loss"] \
+                  ]],
+                  ["Player Management", [ \
+                    ["Money", "money"],
+                    ["Locker", "locker"],
+                    ["Respect", "respect"],
+                    ["Heal", "heal"],
+                    ["Kill", "kill"] \
+                  ]] \
+                ]),
+                { prompt: "Select notification type..." },
+                { class: "form-select" }
+
+          / Color Selection
+          .mb-4
+            = f.label :notification_color, "Embed Color", class: "form-label fw-medium"
+            .row.g-2
+              .col-6
+                select.form-select#color-preset
+                  option value="#C62551" Red
+                  option value="#3ED3FB" selected Blue
+                  option value="#9FDE3A" Green
+                  option value="#DECA39" Yellow
+                  option value="#793ADE" Purple
+                  option value="#DE3A9F" Pink
+                  option value="#DE7839" Orange
+                  option value="#FFFFFF" White
+                  option value="random" Random
+                  option value="custom" Custom
+              .col-6
+                = f.color_field :notification_color,
+                    class: "form-control",
+                    style: "height: 38px;",
+                    value: "#3ED3FB"
+
+          / Live Preview
+          .card.bg-dark.border-secondary
+            .card-header.py-2
+              h6.mb-0.text-light
+                i.bi.bi-eye.me-2
+                | Live Preview
+            .card-body.p-3
+              .discord-embed.p-3.rounded style="background: #2f3136; border-left: 4px solid #3ED3FB;"
+                .d-flex.align-items-center.mb-2
+                  = image_tag "/icon.png", width: 20, height: 20, class: "rounded-circle me-2"
+                  small.text-muted
+                    | [#{sample_server_id}] #{sample_server_name}
+                .text-light.fw-medium.mb-1#preview-title Preview title will appear here
+                .text-muted.small#preview-description Preview message will appear here
+
+        / Right Column - Content
+        .col-md-6
+          h6.text-primary.mb-3
+            i.bi.bi-type.me-2
+            | Message Content
+
+          / Title Input
+          .mb-4
+            .d-flex.align-items-center.justify-content-between.mb-2
+              = f.label :notification_title, "Title", class: "form-label fw-medium mb-0"
+              .dropdown
+                button.btn.btn-sm.btn-outline-info.dropdown-toggle type="button" data-bs-toggle="dropdown"
+                  i.bi.bi-info-circle.me-1
+                  | Variables
+                ul.dropdown-menu.dropdown-menu-end style="min-width: 350px;"
+                  li
+                    h6.dropdown-header Global Variables
+                  li
+                    .dropdown-item-text.small
+                      strong Available for all types:
+                      br
+                      .font-monospace.text-primary
+                        | {{ serverID }}, {{ serverName }}, {{ communityID }}
+                        br
+                        | {{ userName }}, {{ userTag }}
+                  li
+                    hr.dropdown-divider
+                  li#xm8-variables style="display: none;"
+                    h6.dropdown-header XM8 Variables
+                  li#xm8-variables-content style="display: none;"
+                    .dropdown-item-text.small
+                      .font-monospace.text-success
+                        | {{ territoryID }}, {{ territoryName }}
+                  li#gambling-variables style="display: none;"
+                    h6.dropdown-header Gambling Variables
+                  li#gambling-variables-content style="display: none;"
+                    .dropdown-item-text.small
+                      .font-monospace.text-warning
+                        | {{ amountChanged }}, {{ amountGambled }}
+                        br
+                        | {{ lockerBefore }}, {{ lockerAfter }}
+                  li#player-variables style="display: none;"
+                    h6.dropdown-header Player Variables
+                  li#player-variables-content style="display: none;"
+                    .dropdown-item-text.small
+                      .font-monospace.text-info
+                        | {{ targetUID }}
+                        br
+                        span#player-money-variables style="display: none;"
+                          | {{ modifiedAmount }}, {{ previousAmount }}, {{ newAmount }}
+
+            = f.text_field :notification_title,
+                class: "form-control",
+                placeholder: "Your notification title here",
+                maxlength: 256
+            .d-flex.justify-content-between.mt-1
+              small.text-muted
+                = link_to "Discord Markdown", "https://support.discord.com/hc/en-us/articles/210298617",
+                    target: "_blank", class: "text-decoration-none"
+                |  supported
+              small.text-muted
+                span#title-count 0
+                | /256
+
+          / Message Input
+          .mb-4
+            = f.label :notification_description, "Message", class: "form-label fw-medium"
+            = f.text_area :notification_description,
+                class: "form-control",
+                rows: 6,
+                placeholder: "Your notification message here",
+                maxlength: 2048
+            .d-flex.justify-content-between.mt-1
+              small.text-muted Variables will be replaced when sent
+              small.text-muted
+                span#description-count 0
+                | /2048
+
+    .modal-footer
+      button.btn.btn-outline-secondary type="button" data-bs-dismiss="modal" Cancel
+      = f.submit "Create Notification", class: "btn btn-success"

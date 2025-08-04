@@ -5,9 +5,20 @@ class NotificationsController < AuthenticatedController
   before_action :redirect_if_player_mode!
 
   def index
-    # @servers = current_community.servers.map { |server| OpenStruct.new(id: server.server_id, name: server.server_name) }
+    filter_category, filter_type = (params[:filter] || "all").split("_")
 
-    @notifications = current_community.notifications
+    notifications = current_community.notifications
+
+    notifications =
+      if filter_category == "all"
+        notifications
+      elsif filter_type == "all"
+        notifications.with_category(filter_category)
+      else
+        notifications.with_category(filter_category).with_type(filter_type)
+      end
+
+    render locals: {notifications:}
   end
 
   def create
