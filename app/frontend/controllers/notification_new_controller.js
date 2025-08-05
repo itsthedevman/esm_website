@@ -4,15 +4,41 @@ import Markdown from "../helpers/markdown";
 
 // Connects to data-controller="notification-new"
 export default class extends ApplicationController {
-  static targets = ["colorSelect", "colorPicker", "livePreview"];
+  static targets = [
+    "livePreview",
+    "colorSelect",
+    "colorPicker",
+    "titleLength",
+    "descriptionLength",
+  ];
 
   connect() {
     this.preview = {
       color: $(this.colorSelectTarget).val(),
-      title: "Preview title will appear here",
-      description: "Preview message will appear here",
+      title: "Preview title",
+      description: "Preview message",
       footer: "[esm] Exile Server Manager",
     };
+
+    this.#renderLivePreview();
+  }
+
+  onTitleChanged(event) {
+    const inputBox = $(event.currentTarget);
+    const title = inputBox.val();
+
+    this.preview.title = title || "Preview title";
+    $(this.titleLengthTarget).html(title.length);
+
+    this.#renderLivePreview();
+  }
+
+  onDescriptionChanged(event) {
+    const inputBox = $(event.currentTarget);
+    const description = inputBox.val();
+
+    this.preview.description = description || "Preview message";
+    $(this.descriptionLengthTarget).html(description.length);
 
     this.#renderLivePreview();
   }

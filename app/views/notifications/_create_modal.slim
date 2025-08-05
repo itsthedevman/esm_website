@@ -120,6 +120,7 @@
               = f.text_field :notification_title,
                   class: "form-control",
                   placeholder: "Your notification title here",
+                  data: {action: "input->notification-new#onTitleChanged"},
                   maxlength: 256
               .d-flex.justify-content-between.mt-1
                 = link_to_tab discord_markdown_docs_url, class: "text-decoration-none" do
@@ -127,7 +128,7 @@
                     i.bi.bi-markdown.me-1
                     | Discord markdown supported
                 small.text-muted
-                  span#title-count 0
+                  span[data-notification-new-target="titleLength"] 0
                   | /256
 
             / Message Input
@@ -137,11 +138,12 @@
                   class: "form-control",
                   rows: 6,
                   placeholder: "Your notification message here",
+                  data: {action: "input->notification-new#onDescriptionChanged"},
                   maxlength: 2048
               .d-flex.justify-content-between.mt-1
                 small.text-muted Variables will be replaced when sent
                 small.text-muted
-                  span#description-count 0
+                  span[data-notification-new-target="descriptionLength"] 0
                   | /2048
 
       .modal-footer

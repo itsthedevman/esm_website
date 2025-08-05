@@ -22,27 +22,27 @@ class NotificationsController < AuthenticatedController
 
     grouped_notification_types = [
       ["Gambling Events", [
-        ["Loss", "loss"],
-        ["Won", "won"]
+        ["Loss", "gambling_loss"],
+        ["Won", "gambling_won"]
       ]],
       ["Player Management", [
-        ["Healed", "heal"],
-        ["Killed", "kill"],
-        ["Locker Changed", "locker"],
-        ["Money Changed", "money"],
-        ["Respect Changed", "respect"]
+        ["Healed", "player_heal"],
+        ["Killed", "player_kill"],
+        ["Locker Changed", "player_locker"],
+        ["Money Changed", "player_money"],
+        ["Respect Changed", "player_respect"]
       ]],
       ["Territory Events", [
-        ["Base Raid", "base-raid"],
-        ["Charge Plant Started", "charge-plant-started"],
-        ["Flag Restored", "flag-restored"],
-        ["Flag Steal Started", "flag-steal-started"],
-        ["Flag Stolen", "flag-stolen"],
-        ["Grind Started", "grind-started"],
-        ["Hack Started", "hack-started"],
-        ["MarXet Item Sold", "marxet-item-sold"],
-        ["Protection Money Due", "protection-money-due"],
-        ["Protection Money Paid", "protection-money-paid"]
+        ["Base Raid", "xm8_base-raid"],
+        ["Charge Plant Started", "xm8_charge-plant-started"],
+        ["Flag Restored", "xm8_flag-restored"],
+        ["Flag Steal Started", "xm8_flag-steal-started"],
+        ["Flag Stolen", "xm8_flag-stolen"],
+        ["Grind Started", "xm8_grind-started"],
+        ["Hack Started", "xm8_hack-started"],
+        ["MarXet Item Sold", "xm8_marxet-item-sold"],
+        ["Protection Money Due", "xm8_protection-money-due"],
+        ["Protection Money Paid", "xm8_protection-money-paid"]
       ]]
     ]
 
