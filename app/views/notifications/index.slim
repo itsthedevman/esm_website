@@ -16,21 +16,7 @@
           method: :get, class: "d-flex align-items-center gap-2" do |f|
         label.form-label.small.text-muted.mb-0.text-nowrap Filter:
         = f.select :filter,
-            options_for_select([ \
-              ["All", "all"],
-              ["XM8", "xm8_all"],
-              ["Gambling", "gambling_all"],
-              ["Player", "player_all"],
-              ["─────", "", { disabled: true }],
-              ["Base Raid", "xm8_base-raid"],
-              ["Flag Events", "xm8_flag"],
-              ["Money Events", "xm8_money"],
-              ["Combat Events", "xm8_combat"],
-              ["Gambling Wins", "gambling_won"],
-              ["Gambling Losses", "gambling_loss"],
-              ["Player Money", "player_money"],
-              ["Player Actions", "player_actions"] \
-            ], params[:filter] || "all"),
+            options_for_select(filters, params[:filter] || "all"),
             {},
             { \
               class: "form-select form-select-sm col-3",
@@ -44,14 +30,13 @@
   / Notifications Table
   - if notifications.size > 0
     .card
-      .table-responsive
         table.table.table-hover.mb-0
           thead.table-dark
             tr
-              th Type
-              th Title
-              th Message Preview
-              th Actions
+              th.col-1 Type
+              th.col-5 Title
+              th.col-5 Message Preview
+              th.col-1 Actions
           tbody
             - notifications.each do |notification|
               tr
@@ -65,9 +50,9 @@
                       span.badge.bg-secondary.small.mt-1
                         = notification.notification_type.humanize
                 td
-                  strong.text-truncate style="max-width: 200px; display: block;" = notification.notification_title
+                  strong.text-truncate = notification.notification_title.truncate(30)
                 td
-                  .text-muted.small.text-truncate style="max-width: 300px;" = notification.notification_description
+                  .text-muted.small.text-truncate = notification.notification_description.truncate(50)
                 td
                   .d-flex.gap-1
                     button.btn.btn-outline-info.btn-sm data-bs-toggle="modal" data-bs-target="#preview-modal-#{notification.id}"

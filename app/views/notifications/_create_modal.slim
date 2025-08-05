@@ -32,12 +32,7 @@
             = f.label :notification_color, "Embed Color", class: "form-label fw-medium"
             .row.g-2
               .col-6
-                = f.select :notification_color, nil, {}, class: "form-select"
-                  - colors.each do |name, hex|
-                    = content_tag :option, name, value: hex
-                  = content_tag :option, "---", disabled: true
-                  = content_tag :option, "Custom", value: "custom"
-                  = content_tag :option, "Random", value: "random"
+                = f.select :notification_color, options_for_select(colors), {}, class: "form-select"
               .col-6
                 = f.color_field :notification_color,
                     class: "form-control",

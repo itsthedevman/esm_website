@@ -5,20 +5,20 @@ class NotificationsController < AuthenticatedController
   before_action :redirect_if_player_mode!
 
   def index
-    filter_category, filter_type = (params[:filter] || "all").split("_")
-
-    notifications = current_community.notifications.order(:community_id, :notification_type)
-
-    notifications =
-      if filter_category == "all"
-        notifications
-      elsif filter_type == "all"
-        notifications.with_category(filter_category)
-      else
-        notifications.with_category(filter_category).with_type(filter_type)
-      end
-
-    notifications.load # preload, avoids extra queries
+    filters = [
+      ["All", "all"],
+      ["XM8", "xm8_all"],
+      ["Gambling", "gambling_all"],
+      ["Player", "player_all"],
+      ["─────", "", disabled: true],
+      ["Base Raid", "xm8_raid"], # xm8; base-raid, charge-plant-started, grind-started, hack-started
+      ["Flag Events", "xm8_flag"], # xm8; flag-stolen, flag-restored, flag-steal-started
+      ["Money Events", "xm8_money"], # xm8; protection-money-due, protection-money-paid, marxet-item-sold
+      ["Gambling Wins", "gambling_won"],
+      ["Gambling Losses", "gambling_loss"],
+      ["Player Currency", "player_currency"], # player; money, locker, respect
+      ["Player Actions", "player_actions"] # player; heal, kill
+    ]
 
     grouped_notification_types = [
       ["XM8 Territory Events", [
@@ -49,11 +49,16 @@ class NotificationsController < AuthenticatedController
     colors = ESM::Color::Toast.to_h
       .transform_keys { |k| k.to_s.titleize }
       .sort_by(&:first) # Name
+      .push(
+        ["─────", "", disabled: true],
+        ["Custom", "custom"],
+        ["Random", "random"]
+      )
 
     render locals: {
-      colors:,
+      colors:, filters:,
       grouped_notification_types:,
-      notifications: notifications.sort_by(&:notification_category)
+      notifications: load_notifications
     }
   end
 
@@ -101,5 +106,46 @@ class NotificationsController < AuthenticatedController
 
   def notification_params
     # params.require("notification").permit(:notification_category, :notification_type, :notification_title, :notification_description, :notification_color)
+  end
+
+  def load_notifications
+    notifications = current_community.notifications.order(:community_id, :notification_type)
+
+    filter_notifications(notifications)
+      .load # Avoid extra queries
+      .sort_by(&:notification_category)
+  end
+
+  def filter_notifications(notifications)
+    case params[:filter]
+    when "xm8_all"
+      notifications.with_category("xm8")
+    when "gambling_all"
+      notifications.with_category("gambling")
+    when "xm8_raid"
+      notifications.with_category("xm8").with_any_type(
+        "base-raid", "charge-plant-started", "grind-started", "hack-started"
+      )
+    when "xm8_flag"
+      notifications.with_category("xm8").with_any_type(
+        "flag-stolen", "flag-restored", "flag-steal-started"
+      )
+    when "xm8_money" # xm8;
+      notifications.with_category("xm8").with_any_type(
+        "protection-money-due", "protection-money-paid", "marxet-item-sold"
+      )
+    when "gambling_won"
+      notifications.with_category("gambling").with_type("won")
+    when "gambling_loss"
+      notifications.with_category("gambling").with_type("loss")
+    when "player_currency"
+      notifications.with_category("player").with_any_type(
+        "money", "locker", "respect"
+      )
+    when "player_actions"
+      notifications.with_category("player").with_any_type("heal", "kill")
+    else
+      notifications
+    end
   end
 end
