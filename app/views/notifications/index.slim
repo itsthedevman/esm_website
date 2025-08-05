@@ -11,17 +11,14 @@
         | Notifications
         span.badge.bg-secondary.ms-2 = notifications.size
 
-      / Compact filter
+      / Filter
       = form_with url: community_notifications_path(current_community),
           method: :get, class: "d-flex align-items-center gap-2" do |f|
         label.form-label.small.text-muted.mb-0.text-nowrap Filter:
         = f.select :filter,
             options_for_select(filters, params[:filter] || "all"),
             {},
-            { \
-              class: "form-select form-select-sm col-3",
-              onchange: "this.form.submit();" \
-            }
+            {class: "form-select form-select-sm col-3", onchange: "this.form.submit();"}
 
     button.btn.btn-primary data-bs-toggle="modal" data-bs-target="#create-notification-modal"
       i.bi.bi-plus.me-1
@@ -42,17 +39,18 @@
               tr
                 td
                   .d-flex.align-items-center.gap-2
-                    .notification-color-indicator style="width: 3px; height: 20px; background-color: #{notification.notification_color}; border-radius: 2px;"
                     div
                       span.badge class="bg-#{notification_category_color(notification.notification_category)}"
                         = notification.notification_category.humanize
                       br
                       span.badge.bg-secondary.small.mt-1
-                        = notification.notification_type.humanize
+                        = notification.notification_type.underscore.humanize
                 td
-                  strong.text-truncate = notification.notification_title.truncate(30)
+                  strong.text-truncate
+                    = notification.notification_title.truncate(30)
                 td
-                  .text-muted.small.text-truncate = notification.notification_description.truncate(50)
+                  .text-muted.small.text-truncate
+                    = notification.notification_description.truncate(50)
                 td
                   .d-flex.gap-1
                     button.btn.btn-outline-info.btn-sm data-bs-toggle="modal" data-bs-target="#preview-modal-#{notification.id}"

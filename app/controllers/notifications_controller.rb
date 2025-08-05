@@ -11,38 +11,38 @@ class NotificationsController < AuthenticatedController
       ["Gambling", "gambling_all"],
       ["Player", "player_all"],
       ["─────", "", disabled: true],
-      ["Base Raid", "xm8_raid"], # xm8; base-raid, charge-plant-started, grind-started, hack-started
-      ["Flag Events", "xm8_flag"], # xm8; flag-stolen, flag-restored, flag-steal-started
-      ["Money Events", "xm8_money"], # xm8; protection-money-due, protection-money-paid, marxet-item-sold
-      ["Gambling Wins", "gambling_won"],
+      ["Flag Events", "xm8_flag"],
       ["Gambling Losses", "gambling_loss"],
-      ["Player Currency", "player_currency"], # player; money, locker, respect
-      ["Player Actions", "player_actions"] # player; heal, kill
+      ["Gambling Wins", "gambling_won"],
+      ["Money Events", "xm8_money"],
+      ["Player Actions", "player_actions"],
+      ["Player Currency", "player_currency"],
+      ["Raid Events", "xm8_raid"]
     ]
 
     grouped_notification_types = [
-      ["XM8 Territory Events", [
-        ["Base Raid", "base-raid"],
-        ["Flag Stolen", "flag-stolen"],
-        ["Flag Restored", "flag-restored"],
-        ["Protection Money Due", "protection-money-due"],
-        ["Protection Money Paid", "protection-money-paid"],
-        ["Charge Plant Started", "charge-plant-started"],
-        ["Grind Started", "grind-started"],
-        ["Hack Started", "hack-started"],
-        ["Flag Steal Started", "flag-steal-started"],
-        ["MarXet Item Sold", "marxet-item-sold"]
-      ]],
       ["Gambling Events", [
-        ["Won", "won"],
-        ["Loss", "loss"]
+        ["Loss", "loss"],
+        ["Won", "won"]
       ]],
       ["Player Management", [
-        ["Money", "money"],
-        ["Locker", "locker"],
-        ["Respect", "respect"],
         ["Heal", "heal"],
-        ["Kill", "kill"]
+        ["Kill", "kill"],
+        ["Locker", "locker"],
+        ["Money", "money"],
+        ["Respect", "respect"]
+      ]],
+      ["Territory Events", [
+        ["Base Raid", "base-raid"],
+        ["Charge Plant Started", "charge-plant-started"],
+        ["Flag Restored", "flag-restored"],
+        ["Flag Steal Started", "flag-steal-started"],
+        ["Flag Stolen", "flag-stolen"],
+        ["Grind Started", "grind-started"],
+        ["Hack Started", "hack-started"],
+        ["MarXet Item Sold", "marxet-item-sold"],
+        ["Protection Money Due", "protection-money-due"],
+        ["Protection Money Paid", "protection-money-paid"]
       ]]
     ]
 
@@ -117,34 +117,34 @@ class NotificationsController < AuthenticatedController
   end
 
   def filter_notifications(notifications)
-    case params[:filter]
-    when "xm8_all"
-      notifications.with_category("xm8")
-    when "gambling_all"
-      notifications.with_category("gambling")
-    when "xm8_raid"
-      notifications.with_category("xm8").with_any_type(
-        "base-raid", "charge-plant-started", "grind-started", "hack-started"
-      )
-    when "xm8_flag"
-      notifications.with_category("xm8").with_any_type(
-        "flag-stolen", "flag-restored", "flag-steal-started"
-      )
-    when "xm8_money" # xm8;
-      notifications.with_category("xm8").with_any_type(
+    category, type = (params[:filter] || "all").split("_")
+    return notifications if category == "all"
+
+    if ESM::Notification::CATEGORIES.include?(category)
+      notifications = notifications.with_category(category)
+    end
+
+    case type
+    when "actions"
+      notifications.with_any_type("heal", "kill")
+    when "currency"
+      notifications.with_any_type("money", "locker", "respect")
+    when "flag"
+      notifications.with_any_type("flag-stolen", "flag-restored", "flag-steal-started")
+    when "loss"
+      notifications.with_type("loss")
+    when "money"
+      notifications.with_any_type(
         "protection-money-due", "protection-money-paid", "marxet-item-sold"
       )
-    when "gambling_won"
-      notifications.with_category("gambling").with_type("won")
-    when "gambling_loss"
-      notifications.with_category("gambling").with_type("loss")
-    when "player_currency"
-      notifications.with_category("player").with_any_type(
-        "money", "locker", "respect"
+    when "raid"
+      notifications.with_any_type(
+        "base-raid", "charge-plant-started", "grind-started", "hack-started"
       )
-    when "player_actions"
-      notifications.with_category("player").with_any_type("heal", "kill")
+    when "won"
+      notifications.with_type("won")
     else
+      # xm8_all, player_all, gambling_all
       notifications
     end
   end
