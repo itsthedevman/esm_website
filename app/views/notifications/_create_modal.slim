@@ -1,135 +1,143 @@
-/ Create Notification Modal
-= render "shared/modal", id: "create-notification-modal", class: "modal-xl", **local_assigns do
-  .modal-header.border-info.bg-info.bg-opacity-10
-    h5.modal-title
-      i.bi.bi-plus-circle.text-info.me-2
-      | Create New Notification
-    button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
+= render "shared/modal",
+  id: "create-notification-modal",
+  class: "modal-xl",
+  data: {bs_backdrop: "static", bs_keyboard: "false"},
+  **local_assigns do
+  div[data-controller="notification-new"]
+    .modal-header.border-info.bg-info.bg-opacity-10
+      h5.modal-title
+        i.bi.bi-plus-circle.text-info.me-2
+        | Create New Notification
+      button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
 
-  = form_with model: [current_community, ESM::Notification.new],
-      url: community_notifications_path(current_community),
-      local: true,
-      class: "notification-form" do |f|
+    = form_with model: [current_community, ESM::Notification.new],
+        url: community_notifications_path(current_community),
+        local: true do |f|
 
-    .modal-body
-      .row.g-4
-        / Left Column - Settings
-        .col-md-6
-          h5.text-primary.mb-3
-            i.bi.bi-gear.me-2
-            | Configuration
+      .modal-body
+        .row.g-4
+          / Left Column - Settings
+          .col-md-6
+            h5.text-primary.mb-3
+              i.bi.bi-gear.me-2
+              | Configuration
 
-          / Type Selection
-          .mb-4
-            = f.label :notification_type, "Notification Type", class: "form-label fw-medium"
-            = f.select :notification_type,
-                grouped_options_for_select(grouped_notification_types),
-                { prompt: "Select notification type..." },
-                { class: "form-select" }
+            / Type Selection
+            .mb-4
+              = f.label :notification_type, "Notification Type", class: "form-label fw-medium"
+              = f.select :notification_type,
+                  grouped_options_for_select(grouped_notification_types),
+                  { prompt: "Select notification type..." },
+                  { class: "form-select" }
 
-          / Color Selection
-          .mb-4
-            = f.label :notification_color, "Embed Color", class: "form-label fw-medium"
-            .row.g-2
-              .col-6
-                = f.select :notification_color, options_for_select(colors), {}, class: "form-select"
-              .col-6
-                = f.color_field :notification_color,
-                    class: "form-control",
-                    style: "height: 38px;",
-                    value: "#3ED3FB"
+            / Color Selection
+            .mb-4
+              = f.label :notification_color, "Embed Color", class: "form-label fw-medium"
+              .row.g-2
+                .col-6
+                  = f.select :notification_color,
+                    options_for_select(colors),
+                    {},
+                    class: "form-select", data: {action: "input->notification-new#onColorChanged"}
 
-          / Live Preview
-          .card.bg-dark.border-secondary
-            .card-header.py-2
-              h6.mb-0.text-light
-                i.bi.bi-eye.me-2
-                | Live Preview
-            .card-body.p-3
-              .discord-embed.p-3.rounded style="background: #2f3136; border-left: 4px solid #3ED3FB;"
-                .text-light.fw-medium.mb-1.fs-6 Preview title will appear here
-                p.mb-1.text-muted Preview message will appear here
+                .col-6
+                  = f.color_field :notification_color,
+                      class: "form-control d-none",
+                      data: {notification_new_target: "colorPicker"},
+                      style: "height: 38px;",
+                      value: "#3ED3FB"
+
+            / Live Preview
+            .card.bg-dark.border-secondary
+              .card-header.py-2
+                h6.mb-0.text-light
+                  i.bi.bi-eye.me-2
+                  | Live Preview
+              .card-body.p-3
+                .discord-embed.p-3.rounded style="background: #2f3136; border-left: 4px solid #3ED3FB;"
+                  .text-light.fw-medium.mb-1.fs-6 Preview title will appear here
+                  p.mb-1.text-muted Preview message will appear here
+                  small.text-muted
+                      | [sample_server_id] sample_server_name
+
+          / Right Column - Content
+          .col-md-6
+            h5.text-primary.mb-3
+              i.bi.bi-type.me-2
+              | Message Content
+
+            / Title Input
+            .mb-4
+              .d-flex.align-items-center.justify-content-between.mb-2
+                = f.label :notification_title, "Title", class: "form-label fw-medium mb-0"
+                .dropdown
+                  button.btn.btn-sm.btn-outline-info.dropdown-toggle type="button" data-bs-toggle="dropdown"
+                    i.bi.bi-info-circle.me-1
+                    | Variables
+                  ul.dropdown-menu.dropdown-menu-end style="min-width: 350px;"
+                    li
+                      h6.dropdown-header Global Variables
+                    li
+                      .dropdown-item-text.small
+                        strong Available for all types:
+                        br
+                        .font-monospace.text-primary
+                          | {{ serverID }}, {{ serverName }}, {{ communityID }}
+                          br
+                          | {{ userName }}, {{ userTag }}
+                    li
+                      hr.dropdown-divider
+                    li
+                      h6.dropdown-header XM8 Variables
+                    li
+                      .dropdown-item-text.small
+                        .font-monospace.text-success
+                          | {{ territoryID }}, {{ territoryName }}
+                    li
+                      h6.dropdown-header Gambling Variables
+                    li
+                      .dropdown-item-text.small
+                        .font-monospace.text-warning
+                          | {{ amountChanged }}, {{ amountGambled }}
+                          br
+                          | {{ lockerBefore }}, {{ lockerAfter }}
+                    li
+                      h6.dropdown-header Player Variables
+                    li
+                      .dropdown-item-text.small
+                        .font-monospace.text-info
+                          | {{ targetUID }}
+                          br
+                          span
+                            | {{ modifiedAmount }}, {{ previousAmount }}, {{ newAmount }}
+
+              = f.text_field :notification_title,
+                  class: "form-control",
+                  placeholder: "Your notification title here",
+                  maxlength: 256
+              .d-flex.justify-content-between.mt-1
+                = link_to_tab discord_markdown_docs_url, class: "text-decoration-none" do
+                  small.text-info
+                    i.bi.bi-markdown.me-1
+                    | Discord markdown supported
                 small.text-muted
-                    | [sample_server_id] sample_server_name
+                  span#title-count 0
+                  | /256
 
-        / Right Column - Content
-        .col-md-6
-          h5.text-primary.mb-3
-            i.bi.bi-type.me-2
-            | Message Content
+            / Message Input
+            .mb-4
+              = f.label :notification_description, "Message", class: "form-label fw-medium"
+              = f.text_area :notification_description,
+                  class: "form-control",
+                  rows: 6,
+                  placeholder: "Your notification message here",
+                  maxlength: 2048
+              .d-flex.justify-content-between.mt-1
+                small.text-muted Variables will be replaced when sent
+                small.text-muted
+                  span#description-count 0
+                  | /2048
 
-          / Title Input
-          .mb-4
-            .d-flex.align-items-center.justify-content-between.mb-2
-              = f.label :notification_title, "Title", class: "form-label fw-medium mb-0"
-              .dropdown
-                button.btn.btn-sm.btn-outline-info.dropdown-toggle type="button" data-bs-toggle="dropdown"
-                  i.bi.bi-info-circle.me-1
-                  | Variables
-                ul.dropdown-menu.dropdown-menu-end style="min-width: 350px;"
-                  li
-                    h6.dropdown-header Global Variables
-                  li
-                    .dropdown-item-text.small
-                      strong Available for all types:
-                      br
-                      .font-monospace.text-primary
-                        | {{ serverID }}, {{ serverName }}, {{ communityID }}
-                        br
-                        | {{ userName }}, {{ userTag }}
-                  li
-                    hr.dropdown-divider
-                  li
-                    h6.dropdown-header XM8 Variables
-                  li
-                    .dropdown-item-text.small
-                      .font-monospace.text-success
-                        | {{ territoryID }}, {{ territoryName }}
-                  li
-                    h6.dropdown-header Gambling Variables
-                  li
-                    .dropdown-item-text.small
-                      .font-monospace.text-warning
-                        | {{ amountChanged }}, {{ amountGambled }}
-                        br
-                        | {{ lockerBefore }}, {{ lockerAfter }}
-                  li
-                    h6.dropdown-header Player Variables
-                  li
-                    .dropdown-item-text.small
-                      .font-monospace.text-info
-                        | {{ targetUID }}
-                        br
-                        span
-                          | {{ modifiedAmount }}, {{ previousAmount }}, {{ newAmount }}
-
-            = f.text_field :notification_title,
-                class: "form-control",
-                placeholder: "Your notification title here",
-                maxlength: 256
-            .d-flex.justify-content-between.mt-1
-              = link_to_tab discord_markdown_docs_url, class: "text-decoration-none" do
-                small.text-info
-                  i.bi.bi-markdown.me-1
-                  | Discord markdown supported
-              small.text-muted
-                span#title-count 0
-                | /256
-
-          / Message Input
-          .mb-4
-            = f.label :notification_description, "Message", class: "form-label fw-medium"
-            = f.text_area :notification_description,
-                class: "form-control",
-                rows: 6,
-                placeholder: "Your notification message here",
-                maxlength: 2048
-            .d-flex.justify-content-between.mt-1
-              small.text-muted Variables will be replaced when sent
-              small.text-muted
-                span#description-count 0
-                | /2048
-
-    .modal-footer
-      button.btn.btn-outline-secondary type="button" data-bs-dismiss="modal" Cancel
-      = f.submit "Create Notification", class: "btn btn-success text-white"
+      .modal-footer
+        button.btn.btn-outline-secondary type="button" data-bs-dismiss="modal" Cancel
+        = f.submit "Create Notification", class: "btn btn-success text-white"
