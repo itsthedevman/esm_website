@@ -2,23 +2,51 @@
     background: $esm-warm-gray-900;
     color: $white;
 
-    border-left: 3px solid $esm-primary-blue;
+    border-left: 3px solid $esm-toast-red;
 
     &.random {
-        animation: border-random 10s infinite;
+        animation: border-random 60s infinite;
 
         @keyframes border-random {
-            0% {
+            0%,
+            100% {
                 border-left-color: $esm-toast-red;
             }
-            25% {
+            8% {
+                border-left-color: $esm-toast-pink;
+            }
+            16% {
+                border-left-color: $esm-toast-purple;
+            }
+            24% {
+                border-left-color: $esm-toast-lavender;
+            }
+            32% {
                 border-left-color: $esm-toast-blue;
             }
-            50% {
+            40% {
+                border-left-color: $esm-toast-steel-green;
+            }
+            48% {
                 border-left-color: $esm-toast-green;
             }
-            75% {
+            56% {
+                border-left-color: $esm-toast-sage;
+            }
+            64% {
                 border-left-color: $esm-toast-yellow;
+            }
+            72% {
+                border-left-color: $esm-toast-orange;
+            }
+            80% {
+                border-left-color: $esm-toast-burnt-orange;
+            }
+            88% {
+                border-left-color: $esm-toast-brown;
+            }
+            96% {
+                border-left-color: $esm-toast-white;
             }
         }
     }
