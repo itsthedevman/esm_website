@@ -38,12 +38,18 @@
                   = f.select :notification_color,
                     options_for_select(colors),
                     {},
-                    class: "form-select", data: {action: "input->notification-new#onColorChanged"}
+                    class: "form-select", data: {\
+                      notification_new_target: "colorSelect",
+                      action: "input->notification-new#onColorChanged" \
+                    }
 
                 .col-6
                   = f.color_field :notification_color,
                       class: "form-control d-none",
-                      data: {notification_new_target: "colorPicker"},
+                      data: { \
+                        notification_new_target: "colorPicker",
+                        action: "input->notification-new#onColorChanged" \
+                      },
                       style: "height: 38px;",
                       value: "#3ED3FB"
 
@@ -54,11 +60,11 @@
                   i.bi.bi-eye.me-2
                   | Live Preview
               .card-body.p-3
-                .discord-embed.p-3.rounded style="background: #2f3136; border-left: 4px solid #3ED3FB;"
-                  .text-light.fw-medium.mb-1.fs-6 Preview title will appear here
-                  p.mb-1.text-muted Preview message will appear here
-                  small.text-muted
-                      | [sample_server_id] sample_server_name
+                .discord-embed.p-3.rounded[data-notification-new-target="livePreview"]
+                  #title.text-light.fw-medium.mb-1.fs-6 Preview title will appear here
+                  #description.p.mb-1.text-muted Preview message will appear here
+                  #footer.small.text-muted
+                    | [sample_server_id] sample_server_name
 
           / Right Column - Content
           .col-md-6
