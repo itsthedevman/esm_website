@@ -1,7 +1,7 @@
 import ApplicationController from "./application_controller";
 import JustValidate from "just-validate";
 import { allowTurbo } from "../helpers/just_validate";
-import $ from "cash-dom";
+import $ from "../helpers/cash_dom";
 
 // Connects to data-controller="community-edit"
 export default class extends ApplicationController {

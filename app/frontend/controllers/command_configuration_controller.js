@@ -1,5 +1,5 @@
 import ApplicationController from "./application_controller";
-import $ from "cash-dom";
+import $ from "../helpers/cash_dom";
 import { isChecked } from "../helpers/forms";
 
 // Connects to data-controller="command-configuration"

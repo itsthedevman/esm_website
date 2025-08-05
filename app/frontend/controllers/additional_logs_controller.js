@@ -1,6 +1,6 @@
 import ApplicationController from "./application_controller";
 import * as R from "ramda";
-import $ from "cash-dom";
+import $ from "../helpers/cash_dom";
 
 // Connects to data-controller="additional-logs"
 export default class extends ApplicationController {

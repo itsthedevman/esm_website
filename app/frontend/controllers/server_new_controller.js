@@ -1,6 +1,6 @@
 import ApplicationController from "./application_controller";
 import * as R from "ramda";
-import $ from "cash-dom";
+import $ from "../helpers/cash_dom";
 import JustValidate from "just-validate";
 
 // Connects to data-controller="server-new"

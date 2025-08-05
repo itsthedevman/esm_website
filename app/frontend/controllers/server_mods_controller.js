@@ -1,6 +1,6 @@
 import ApplicationController from "./application_controller";
 import * as R from "ramda";
-import $ from "cash-dom";
+import $ from "../helpers/cash_dom";
 import Validate from "../helpers/validator";
 import * as bootstrap from "bootstrap";
 import { Serializer } from "../helpers/forms";
