@@ -26,11 +26,11 @@ class NotificationsController < AuthenticatedController
         ["Won", "won"]
       ]],
       ["Player Management", [
-        ["Heal", "heal"],
-        ["Kill", "kill"],
-        ["Locker", "locker"],
-        ["Money", "money"],
-        ["Respect", "respect"]
+        ["Healed", "heal"],
+        ["Killed", "kill"],
+        ["Locker Changed", "locker"],
+        ["Money Changed", "money"],
+        ["Respect Changed", "respect"]
       ]],
       ["Territory Events", [
         ["Base Raid", "base-raid"],
