@@ -12,8 +12,8 @@ application.register("command-configuration", CommandConfigurationController);
 import CommunityEditController from "./community_edit_controller";
 application.register("community-edit", CommunityEditController);
 
-import ToastsController from "./toasts_controller";
-application.register("toasts", ToastsController);
+import NotificationNewController from "./notification_new_controller";
+application.register("notification-new", NotificationNewController);
 
 import RoleSelectorController from "./role_selector_controller";
 application.register("role-selector", RoleSelectorController);
@@ -29,3 +29,6 @@ application.register("server-new", ServerNewController);
 
 import ServerRewardsController from "./server_rewards_controller";
 application.register("server-rewards", ServerRewardsController);
+
+import ToastsController from "./toasts_controller";
+application.register("toasts", ToastsController);
