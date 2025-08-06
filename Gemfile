@@ -50,10 +50,10 @@ end
 gem "propshaft"
 
 # Use postgresql as the database for Active Record
-gem "pg", "~> 1.1"
+gem "pg"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", ">= 5.0"
+gem "puma"
 
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem "turbo-rails"
@@ -82,33 +82,35 @@ gem "everythingrb"
 gem "arel-helpers"
 
 # Authentication
-gem "devise", "~> 4.9"
+gem "devise"
 
 # Authorization
-gem "pundit", "~> 2.5"
+gem "pundit"
 
 # Asset/Javascript compilation
-gem "vite_rails", "~> 3.0"
+gem "vite_rails"
 
 # Slim template engine for Rails views
-gem "slim", "~> 5.2"
+gem "slim"
 
 gem "esm_ruby_core", path: "../esm_ruby_core"
 
-gem "view_component", "~> 3.23"
+gem "view_component"
 
-gem "omniauth", "~> 2.1"
+gem "omniauth"
 
-gem "omniauth-discord", "~> 1.2"
+gem "omniauth-discord"
 
-gem "omniauth-steam", "~> 1.0"
+gem "omniauth-steam"
 
-gem "ostruct", "~> 0.6.2"
+gem "ostruct"
 
-gem "omniauth-rails_csrf_protection", "~> 1.0"
+gem "omniauth-rails_csrf_protection"
 
-gem "http", "~> 5.3"
+gem "http"
 
-gem "sass-embedded", "~> 1.89"
+gem "sass-embedded"
 
-gem "semantic", "~> 1.6"
+gem "semantic"
+
+gem "faker"

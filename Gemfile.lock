@@ -135,6 +135,8 @@ GEM
     everythingrb (0.9.0)
       json (~> 2.10)
       ostruct (~> 0.6)
+    faker (3.5.2)
+      i18n (>= 1.8.11, < 2)
     faraday (2.13.4)
       faraday-net_http (>= 2.0, < 3.5)
       json
@@ -292,11 +294,13 @@ GEM
     parser (3.3.9.0)
       ast (~> 2.4.1)
       racc
-    pg (1.6.0)
-    pg (1.6.0-aarch64-linux)
-    pg (1.6.0-arm64-darwin)
-    pg (1.6.0-x86_64-darwin)
-    pg (1.6.0-x86_64-linux)
+    pg (1.6.1)
+    pg (1.6.1-aarch64-linux)
+    pg (1.6.1-aarch64-linux-musl)
+    pg (1.6.1-arm64-darwin)
+    pg (1.6.1-x86_64-darwin)
+    pg (1.6.1-x86_64-linux)
+    pg (1.6.1-x86_64-linux-musl)
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
@@ -410,21 +414,21 @@ GEM
       rubocop (~> 1.72, >= 1.72.1)
     ruby-openid (2.9.2)
     ruby-progressbar (1.13.0)
-    sass-embedded (1.89.2-aarch64-linux-gnu)
+    sass-embedded (1.90.0-aarch64-linux-gnu)
       google-protobuf (~> 4.31)
-    sass-embedded (1.89.2-aarch64-linux-musl)
+    sass-embedded (1.90.0-aarch64-linux-musl)
       google-protobuf (~> 4.31)
-    sass-embedded (1.89.2-arm-linux-gnueabihf)
+    sass-embedded (1.90.0-arm-linux-gnueabihf)
       google-protobuf (~> 4.31)
-    sass-embedded (1.89.2-arm-linux-musleabihf)
+    sass-embedded (1.90.0-arm-linux-musleabihf)
       google-protobuf (~> 4.31)
-    sass-embedded (1.89.2-arm64-darwin)
+    sass-embedded (1.90.0-arm64-darwin)
       google-protobuf (~> 4.31)
-    sass-embedded (1.89.2-x86_64-darwin)
+    sass-embedded (1.90.0-x86_64-darwin)
       google-protobuf (~> 4.31)
-    sass-embedded (1.89.2-x86_64-linux-gnu)
+    sass-embedded (1.90.0-x86_64-linux-gnu)
       google-protobuf (~> 4.31)
-    sass-embedded (1.89.2-x86_64-linux-musl)
+    sass-embedded (1.90.0-x86_64-linux-musl)
       google-protobuf (~> 4.31)
     securerandom (0.4.1)
     semantic (1.6.1)
@@ -476,11 +480,11 @@ GEM
     stringio (3.1.7)
     temple (0.10.4)
     thor (1.4.0)
-    thruster (0.1.14)
-    thruster (0.1.14-aarch64-linux)
-    thruster (0.1.14-arm64-darwin)
-    thruster (0.1.14-x86_64-darwin)
-    thruster (0.1.14-x86_64-linux)
+    thruster (0.1.15)
+    thruster (0.1.15-aarch64-linux)
+    thruster (0.1.15-arm64-darwin)
+    thruster (0.1.15-x86_64-darwin)
+    thruster (0.1.15-x86_64-linux)
     tilt (2.6.1)
     timeout (0.4.3)
     turbo-rails (2.0.16)
@@ -494,10 +498,9 @@ GEM
     uri (1.0.3)
     useragent (0.16.11)
     version_gem (1.1.8)
-    view_component (3.23.2)
-      activesupport (>= 5.2.0, < 8.1)
+    view_component (4.0.1)
+      activesupport (>= 7.1.0, < 8.1)
       concurrent-ruby (~> 1)
-      method_source (~> 1.0)
     vite_rails (3.0.19)
       railties (>= 5.1, < 9)
       vite_ruby (~> 3.0, >= 3.2.2)
@@ -544,33 +547,34 @@ DEPENDENCIES
   capistrano-bundler
   capistrano-rails
   capistrano-yarn
-  devise (~> 4.9)
+  devise
   ed25519
   esm_ruby_core!
   everythingrb
+  faker
   htmlbeautifier
-  http (~> 5.3)
+  http
   kramdown
   kramdown-parser-gfm
-  omniauth (~> 2.1)
-  omniauth-discord (~> 1.2)
-  omniauth-rails_csrf_protection (~> 1.0)
-  omniauth-steam (~> 1.0)
-  ostruct (~> 0.6.2)
-  pg (~> 1.1)
+  omniauth
+  omniauth-discord
+  omniauth-rails_csrf_protection
+  omniauth-steam
+  ostruct
+  pg
   propshaft
   pry
   pry-remote
-  puma (>= 5.0)
-  pundit (~> 2.5)
+  puma
+  pundit
   rack-mini-profiler
   rails (~> 8.0.2)
   rubocop-performance
   rubocop-rails
   rubocop-rspec
-  sass-embedded (~> 1.89)
-  semantic (~> 1.6)
-  slim (~> 5.2)
+  sass-embedded
+  semantic
+  slim
   solid_cable
   solid_cache
   solid_queue
@@ -579,8 +583,8 @@ DEPENDENCIES
   stimulus-rails
   thruster
   turbo-rails
-  view_component (~> 3.23)
-  vite_rails (~> 3.0)
+  view_component
+  vite_rails
   web-console
 
 BUNDLED WITH
