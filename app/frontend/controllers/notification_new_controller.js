@@ -26,7 +26,7 @@ export default class extends ApplicationController {
 
     this.preview = {
       color: $(this.colorSelectTarget).val(),
-      title: "Preview title",
+      title: "",
       description: "Preview message",
       footer: `[${this.previewValues.global.serverID}] ${this.previewValues.global.serverName}`,
     };
@@ -48,7 +48,7 @@ export default class extends ApplicationController {
     const title = inputBox.val();
     const type = $(this.typeTarget).val();
 
-    this.preview.title = this.#replaceVariables(title, type) || "Preview title";
+    this.preview.title = this.#replaceVariables(title, type);
 
     $(this.titleLengthTarget).html(title.length);
 
@@ -120,7 +120,13 @@ export default class extends ApplicationController {
   #renderLivePreview() {
     const preview = $(this.livePreviewTarget);
 
-    preview.find("#title").html(Markdown.toHTML(this.preview.title));
+    const titleElem = preview.find("#title");
+    if (R.isEmpty(this.preview.title)) {
+      titleElem.hide();
+    } else {
+      titleElem.show();
+      titleElem.html(Markdown.toHTML(this.preview.title));
+    }
 
     preview
       .find("#description")

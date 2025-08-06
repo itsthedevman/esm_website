@@ -15,16 +15,15 @@ class NotificationsController < AuthenticatedController
   end
 
   def create
-    # notification = Notification.new(notification_params.merge(community_id: current_community.id))
+    permitted_params = permit_params
 
-    # if notification.save
-    #   render json: {notifications: current_community.notifications}
-    # else
-    #   render json: {message: "I'm sorry, we were unable to create the notification<br>Please try again later"}
-    # end
+    ESM::Notification.create!(permitted_params)
+
+    render turbo_stream: create_success_toast("Notification created")
   end
 
   def update
+    raise "You need to create a migration for public_id on notifications"
     # notification = Notification.where(id: params[:id], community_id: current_community.id).first
 
     # # Make sure it wasn't delete
@@ -56,8 +55,19 @@ class NotificationsController < AuthenticatedController
 
   private
 
-  def notification_params
-    # params.require("notification").permit(:notification_category, :notification_type, :notification_title, :notification_description, :notification_color)
+  def permit_params
+    permitted_params = params.require(:notification).permit(
+      :notification_type, :notification_color,
+      :notification_title, :notification_description
+    )
+
+    permitted_params[:community_id] = current_community.id
+
+    category, type = permitted_params[:notification_type]&.split("_")
+    permitted_params[:notification_category] = category || "xm8"
+    permitted_params[:notification_type] = type || "base-raid"
+
+    permitted_params
   end
 
   def load_notifications
