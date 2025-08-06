@@ -6,6 +6,9 @@ import * as R from "ramda";
 // Connects to data-controller="notification-new"
 export default class extends ApplicationController {
   static targets = [
+    "type",
+    "title",
+    "description",
     "livePreview",
     "colorSelect",
     "colorPicker",
@@ -17,6 +20,10 @@ export default class extends ApplicationController {
   static values = { variables: Object };
 
   connect() {
+    this.lastFocusedField = null;
+
+    this.previewValues = this.#generatePreviewValues();
+
     this.preview = {
       color: $(this.colorSelectTarget).val(),
       title: "Preview title",
@@ -25,6 +32,7 @@ export default class extends ApplicationController {
     };
 
     this.#renderLivePreview();
+    this.#bindFocusEvents();
   }
 
   onTypeChanged(event) {
@@ -37,8 +45,10 @@ export default class extends ApplicationController {
   onTitleChanged(event) {
     const inputBox = $(event.currentTarget);
     const title = inputBox.val();
+    const type = $(this.typeTarget).val();
 
-    this.preview.title = title || "Preview title";
+    this.preview.title = this.#replaceVariables(title, type) || "Preview title";
+
     $(this.titleLengthTarget).html(title.length);
 
     this.#renderLivePreview();
@@ -47,8 +57,11 @@ export default class extends ApplicationController {
   onDescriptionChanged(event) {
     const inputBox = $(event.currentTarget);
     const description = inputBox.val();
+    const type = $(this.typeTarget).val();
 
-    this.preview.description = description || "Preview message";
+    this.preview.description =
+      this.#replaceVariables(description, type) || "Preview message";
+
     $(this.descriptionLengthTarget).html(description.length);
 
     this.#renderLivePreview();
@@ -73,9 +86,35 @@ export default class extends ApplicationController {
 
   onVariableClicked(event) {
     const variable = $(event.currentTarget).data("variable");
+    const variableText = `{{ ${variable} }}`;
+
+    // Use last focused field, or default to description
+    const targetElement =
+      this.lastFocusedField || $("#notification_notification_description")[0];
+
+    this.#insertAtCursor(targetElement, variableText);
+
+    // Refocus the field so they can keep typing
+    targetElement.focus();
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
+
+  #generatePreviewValues() {
+    return R.map(
+      R.map(R.prop("placeholder")) // For each group, extract just the placeholders
+    )(this.variablesValue);
+  }
+
+  #bindFocusEvents() {
+    $(this.titleTarget).on("focus", (event) => {
+      this.lastFocusedField = event.target;
+    });
+
+    $(this.descriptionTarget).on("focus", (event) => {
+      this.lastFocusedField = event.target;
+    });
+  }
 
   #renderLivePreview() {
     const preview = $(this.livePreviewTarget);
@@ -97,6 +136,11 @@ export default class extends ApplicationController {
   }
 
   #renderVariableChips(notificationType) {
+    if (notificationType === "") {
+      $(this.variableChipsTarget).html("");
+      return;
+    }
+
     const variables = this.#getVariablesForType(notificationType);
 
     const chipsHtml = R.pipe(
@@ -106,7 +150,7 @@ export default class extends ApplicationController {
           `
             <button type="button"
               class="btn btn-outline-info btn-sm me-1 mb-1"
-              data-action="click->notification-new#onVariableClicked"
+              data-action="click->${this.identifier}#onVariableClicked"
               data-variable="${key}"
               title="${config.description}"
             >
@@ -160,20 +204,20 @@ export default class extends ApplicationController {
     // Add type-specific variables
     const typeGroups = {
       xm8: [
-        "base-raid",
-        "flag-stolen",
-        "flag-restored",
-        "protection-money-due",
-        "protection-money-paid",
-        "charge-plant-started",
-        "grind-started",
-        "hack-started",
-        "flag-steal-started",
+        "xm8_base-raid",
+        "xm8_charge-plant-started",
+        "xm8_flag-restored",
+        "xm8_flag-steal-started",
+        "xm8_flag-stolen",
+        "xm8_grind-started",
+        "xm8_hack-started",
+        "xm8_protection-money-due",
+        "xm8_protection-money-paid",
       ],
-      marxet: ["marxet-item-sold"],
-      gambling: ["won", "loss"],
-      player_actions: ["kill", "heal"],
-      player_currency: ["money", "locker", "respect"],
+      marxet: ["xm8_marxet-item-sold"],
+      gambling: ["gambling_loss", "gambling_won"],
+      player_actions: ["player_heal", "player_kill"],
+      player_currency: ["player_locker", "player_money", "player_respect"],
     };
 
     // Find which group this notification type belongs to
@@ -188,10 +232,29 @@ export default class extends ApplicationController {
 
     // Replace all variables in one go
     return R.reduce(
-      (str, [varName, value]) =>
-        str.replace(new RegExp(`{{\\s*${varName}\\s*}}`, "gi"), value),
+      (str, [varName, value]) => {
+        return str.replace(new RegExp(`{{\\s*${varName}\\s*}}`, "gi"), value);
+      },
       string,
       R.toPairs(variables)
     );
+  }
+
+  // Insert text at cursor position
+  #insertAtCursor(element, textToInsert) {
+    const start = element.selectionStart;
+    const end = element.selectionEnd;
+    const value = element.value;
+
+    // Insert the text
+    element.value =
+      value.substring(0, start) + textToInsert + value.substring(end);
+
+    // Move cursor to end of inserted text
+    const newCursorPos = start + textToInsert.length;
+    element.setSelectionRange(newCursorPos, newCursorPos);
+
+    // Trigger input event so your change handlers fire
+    element.dispatchEvent(new Event("input", { bubbles: true }));
   }
 }
