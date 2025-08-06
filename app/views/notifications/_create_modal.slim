@@ -124,12 +124,12 @@
           .col-12
             .card.bg-secondary.bg-opacity-10.border-secondary
               .card-body.py-3
-                .d-flex.align-items-center.justify-content-between.mb-2
+                .d-flex.align-items-center.justify-content-between.mb-3
                   h6.mb-0.text-light.fw-medium
                     i.bi.bi-code.me-2
                     | Available Variables
                   small.text-muted Click to insert at cursor position
-                .variable-chips[data-notification-new-target="variableChips"]
+                .d-flex.flex-wrap.gap-2[data-notification-new-target="variableChips"]
                   / Populated by Stimulus based on selected notification type
 
       .modal-footer

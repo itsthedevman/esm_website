@@ -28,11 +28,12 @@ export default class extends ApplicationController {
       color: $(this.colorSelectTarget).val(),
       title: "Preview title",
       description: "Preview message",
-      footer: "[esm] Exile Server Manager",
+      footer: `[${this.previewValues.global.serverID}] ${this.previewValues.global.serverName}`,
     };
 
     this.#renderLivePreview();
     this.#bindFocusEvents();
+    this.#renderVariableChips();
   }
 
   onTypeChanged(event) {
@@ -136,8 +137,12 @@ export default class extends ApplicationController {
   }
 
   #renderVariableChips(notificationType) {
-    if (notificationType === "") {
-      $(this.variableChipsTarget).html("");
+    const chipsElem = $(this.variableChipsTarget);
+    const cardElem = chipsElem.parents(".card").first();
+
+    if (R.either(R.isNil, R.isEmpty)(notificationType)) {
+      chipsElem.html("");
+      cardElem.hide();
       return;
     }
 
@@ -145,11 +150,12 @@ export default class extends ApplicationController {
 
     const chipsHtml = R.pipe(
       R.toPairs,
+      R.sortBy(R.head),
       R.map(
         ([key, config]) =>
           `
             <button type="button"
-              class="btn btn-outline-info btn-sm me-1 mb-1"
+              class="btn btn-outline-info btn-sm"
               data-action="click->${this.identifier}#onVariableClicked"
               data-variable="${key}"
               title="${config.description}"
@@ -161,7 +167,8 @@ export default class extends ApplicationController {
       R.join("")
     )(variables);
 
-    $(this.variableChipsTarget).html(chipsHtml);
+    chipsElem.html(chipsHtml);
+    cardElem.show();
   }
 
   #getVariablesForType(notificationType) {
@@ -178,19 +185,25 @@ export default class extends ApplicationController {
       return { ...variables, ...this.variablesValue.xm8 };
     }
 
-    if (notificationType === "marxet-item-sold") {
+    if (R.test(/marxet-item-sold/, notificationType)) {
       return { ...variables, ...this.variablesValue.marxet };
     }
 
-    if (R.includes(notificationType, ["won", "loss"])) {
+    if (R.includes(notificationType, ["gambling_won", "gambling_loss"])) {
       return { ...variables, ...this.variablesValue.gambling };
     }
 
-    if (R.includes(notificationType, ["kill", "heal"])) {
+    if (R.includes(notificationType, ["player_kill", "player_heal"])) {
       return { ...variables, ...this.variablesValue.player_actions };
     }
 
-    if (R.includes(notificationType, ["money", "locker", "respect"])) {
+    if (
+      R.includes(notificationType, [
+        "player_money",
+        "player_locker",
+        "player_respect",
+      ])
+    ) {
       return { ...variables, ...this.variablesValue.player_currency };
     }
 

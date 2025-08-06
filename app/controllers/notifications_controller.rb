@@ -169,7 +169,7 @@ class NotificationsController < AuthenticatedController
         },
         serverName: {
           description: "Friendly server name players will recognize",
-          placeholder: sample_server&.server_name || "Example Server"
+          placeholder: sample_server&.server_name&.presence || "Example Server"
         },
         communityID: {
           description: "Your community's short ID for player reference",
@@ -207,7 +207,7 @@ class NotificationsController < AuthenticatedController
       xm8: {
         territoryID: {
           description: "Territory's public ID that players use in commands",
-          placeholder: Faker::Alphanumeric.alpha(number: 5).upcase
+          placeholder: Faker::Alphanumeric.alpha(number: 5).downcase
         },
         territoryName: {
           description: "Custom territory name set by the owner",
