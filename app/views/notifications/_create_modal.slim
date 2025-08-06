@@ -3,7 +3,8 @@
   class: "modal-xl",
   data: {bs_backdrop: "static", bs_keyboard: "false"},
   **local_assigns do
-  div[data-controller="notification-new"]
+  = content_tag :div, nil,
+    data: {controller: "notification-new", notification_new_variables_value: variables}
     .modal-header.border-info.bg-info.bg-opacity-10
       h5.modal-title
         i.bi.bi-plus-circle.text-info.me-2
@@ -28,7 +29,7 @@
               = f.select :notification_type,
                   grouped_options_for_select(grouped_notification_types),
                   { prompt: "Select notification type..." },
-                  { class: "form-select" }
+                  class: "form-select", data: {action: "input->notification-new#onTypeChanged"}
 
             / Color Selection
             .mb-4
@@ -74,49 +75,7 @@
 
             / Title Input
             .mb-4
-              .d-flex.align-items-center.justify-content-between.mb-2
-                = f.label :notification_title, "Title", class: "form-label fw-medium mb-0"
-                .dropdown
-                  button.btn.btn-sm.btn-outline-info.dropdown-toggle type="button" data-bs-toggle="dropdown"
-                    i.bi.bi-info-circle.me-1
-                    | Variables
-                  ul.dropdown-menu.dropdown-menu-end style="min-width: 350px;"
-                    li
-                      h6.dropdown-header Global Variables
-                    li
-                      .dropdown-item-text.small
-                        strong Available for all types:
-                        br
-                        .font-monospace.text-primary
-                          | {{ serverID }}, {{ serverName }}, {{ communityID }}
-                          br
-                          | {{ userName }}, {{ userTag }}
-                    li
-                      hr.dropdown-divider
-                    li
-                      h6.dropdown-header XM8 Variables
-                    li
-                      .dropdown-item-text.small
-                        .font-monospace.text-success
-                          | {{ territoryID }}, {{ territoryName }}
-                    li
-                      h6.dropdown-header Gambling Variables
-                    li
-                      .dropdown-item-text.small
-                        .font-monospace.text-warning
-                          | {{ amountChanged }}, {{ amountGambled }}
-                          br
-                          | {{ lockerBefore }}, {{ lockerAfter }}
-                    li
-                      h6.dropdown-header Player Variables
-                    li
-                      .dropdown-item-text.small
-                        .font-monospace.text-info
-                          | {{ targetUID }}
-                          br
-                          span
-                            | {{ modifiedAmount }}, {{ previousAmount }}, {{ newAmount }}
-
+              = f.label :notification_title, "Title", class: "form-label fw-medium mb-0"
               = f.text_field :notification_title,
                   class: "form-control",
                   placeholder: "Your notification title here",
@@ -145,6 +104,9 @@
                 small.text-muted
                   span[data-notification-new-target="descriptionLength"] 0
                   | /2048
+              .available-variables.mt-2
+                small.text-muted.d-block.mb-2 Available variables (click to insert):
+                .variable-chips[data-notification-new-target="variableChips"]
 
       .modal-footer
         button.btn.btn-outline-secondary type="button" data-bs-dismiss="modal" Cancel
