@@ -4,7 +4,7 @@
   data: {bs_backdrop: "static", bs_keyboard: "false"},
   **local_assigns do
   = content_tag :div, nil,
-    data: {controller: "notification-new", notification_new_variables_value: variables}
+    data: {controller: "notifications", notifications_variables_value: variables}
     .modal-header.border-info.bg-info.bg-opacity-10
       h5.modal-title
         i.bi.bi-plus-circle.text-info.me-2
@@ -32,8 +32,8 @@
                   grouped_options_for_select(grouped_notification_types),
                   { prompt: "Select notification type..." },
                   class: "form-select", data: { \
-                    notification_new_target: "type",
-                    action: "input->notification-new#onTypeChanged" \
+                    notifications_target: "type",
+                    action: "input->notifications#onTypeChanged" \
                   }
 
             / Color Selection
@@ -45,16 +45,16 @@
                     options_for_select(colors),
                     {},
                     class: "form-select", data: {\
-                      notification_new_target: "colorSelect",
-                      action: "input->notification-new#onColorChanged" \
+                      notifications_target: "colorSelect",
+                      action: "input->notifications#onColorChanged" \
                     }
 
                 .col-6
                   = f.color_field :notification_color,
                       class: "form-control d-none",
                       data: { \
-                        notification_new_target: "colorPicker",
-                        action: "input->notification-new#onColorChanged" \
+                        notifications_target: "colorPicker",
+                        action: "input->notifications#onColorChanged" \
                       },
                       style: "height: 38px;",
                       value: "#3ED3FB"
@@ -67,7 +67,7 @@
                   i.bi.bi-eye.me-2
                   | Live Preview
               .card-body.p-3
-                .discord-embed.p-3.rounded[data-notification-new-target="livePreview"]
+                .discord-embed.p-3.rounded[data-notifications-target="livePreview"]
                   #title.text-light.fw-medium.mb-1.fs-6 Preview title will appear here
                   #description.p.mb-1.text-muted Preview message will appear here
                   #footer.small.text-muted
@@ -88,8 +88,8 @@
                     class: "form-control",
                     placeholder: "Your notification title here",
                     data: { \
-                      notification_new_target: "title",
-                      action: "input->notification-new#onTitleChanged" \
+                      notifications_target: "title",
+                      action: "input->notifications#onTitleChanged" \
                     },
                     maxlength: 256
                 .d-flex.justify-content-between.mt-1
@@ -98,7 +98,7 @@
                       i.bi.bi-markdown.me-1
                       | Discord markdown supported
                   small.text-muted
-                    span[data-notification-new-target="titleLength"] 0
+                    span[data-notifications-target="titleLength"] 0
                     | /256
 
               / Message Input
@@ -109,14 +109,14 @@
                     rows: 6,
                     placeholder: "Your notification message here",
                     data: { \
-                      notification_new_target: "description",
-                      action: "input->notification-new#onDescriptionChanged" \
+                      notifications_target: "description",
+                      action: "input->notifications#onDescriptionChanged" \
                     },
                     maxlength: 2048
                 .d-flex.justify-content-between.mt-1
                   small.text-muted Variables will be replaced when sent
                   small.text-muted
-                    span[data-notification-new-target="descriptionLength"] 0
+                    span[data-notifications-target="descriptionLength"] 0
                     | /2048
 
         / Row 3: Variables (Full Width)
@@ -129,7 +129,7 @@
                     i.bi.bi-code.me-2
                     | Available Variables
                   small.text-muted Click to insert at cursor position
-                .d-flex.flex-wrap.gap-2[data-notification-new-target="variableChips"]
+                .d-flex.flex-wrap.gap-2[data-notifications-target="variableChips"]
                   / Populated by Stimulus based on selected notification type
 
       .modal-footer

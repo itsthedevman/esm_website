@@ -3,7 +3,7 @@ import $ from "../helpers/cash_dom";
 import Markdown from "../helpers/markdown";
 import * as R from "ramda";
 
-// Connects to data-controller="notification-new"
+// Connects to data-controller="notifications"
 export default class extends ApplicationController {
   static targets = [
     "type",
