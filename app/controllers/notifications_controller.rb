@@ -19,15 +19,24 @@ class NotificationsController < AuthenticatedController
 
     current_community.notifications.create!(permitted_params)
 
-    render turbo_stream: create_success_toast("Notification created")
+    flash[:success] = "Notification created"
+    render turbo_stream: turbo_stream.refresh(request_id: nil)
   end
 
   def edit
     notification = find_notification
     not_found! if notification.nil?
 
+    notification_color = notification.notification_color.upcase
+    if notification_color != "RANDOM" && !ESM::Color::Toast.to_h.value?(notification_color)
+      custom_color = notification_color
+      notification_color = "custom"
+    end
+
     render locals: {
       notification:,
+      notification_color:,
+      custom_color:,
       colors: load_colors,
       grouped_notification_types: load_grouped_notification_types,
       variables: load_variables
@@ -53,18 +62,15 @@ class NotificationsController < AuthenticatedController
   end
 
   def destroy
-    # notification = Notification.where(id: params[:id], community_id: current_community.id).first
+    notification = find_notification
+    not_found! if notification.nil?
 
-    # # Make sure it wasn't delete
-    # if notification.nil?
-    #   return render json: {message: "We were unable to find the requested notification.", notifications: current_community.notifications}, status: :unprocessable_entity
-    # end
+    notification.destroy!
 
-    # if notification.destroy
-    #   render json: {notifications: current_community.notifications}
-    # else
-    #   render json: {message: "I'm sorry, we were unable to delete that notification<br>Please try again later"}, status: :unprocessable_entity
-    # end
+    render turbo_stream: [
+      turbo_stream.remove(dom_id(notification)),
+      create_success_toast("Notification deleted")
+    ]
   end
 
   private

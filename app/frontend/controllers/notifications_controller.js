@@ -2,10 +2,14 @@ import ApplicationController from "./application_controller";
 import $ from "../helpers/cash_dom";
 import Markdown from "../helpers/markdown";
 import * as R from "ramda";
+import JustValidate from "just-validate";
+import { allowTurbo } from "../helpers/just_validate";
+import { disableSubmitOnEnter } from "../helpers/forms";
 
 // Connects to data-controller="notifications"
 export default class extends ApplicationController {
   static targets = [
+    "form",
     "type",
     "title",
     "description",
@@ -17,11 +21,16 @@ export default class extends ApplicationController {
     "variableChips",
   ];
 
-  static values = { variables: Object };
+  static values = {
+    maxTitleLength: Number,
+    maxDescriptionLength: Number,
+    variables: Object,
+  };
 
   connect() {
-    this.lastFocusedField = null;
+    this.validator = new JustValidate(this.formTarget);
 
+    this.lastFocusedField = null;
     this.previewValues = this.#generatePreviewValues();
 
     this.preview = {
@@ -31,12 +40,13 @@ export default class extends ApplicationController {
       footer: `[${this.previewValues.global.serverID}] ${this.previewValues.global.serverName}`,
     };
 
-    this.#renderLivePreview();
     this.#bindFocusEvents();
+    this.#initializeValidator();
+    this.#renderLivePreview();
     this.#renderVariableChips();
   }
 
-  onTypeChanged(event) {
+  onTypeChanged(_event) {
     this.#renderVariableChips();
   }
 
@@ -92,6 +102,28 @@ export default class extends ApplicationController {
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
+
+  #initializeValidator() {
+    this.validator
+      .addField("#notification_notification_type", [{ rule: "required" }])
+      .addField("#notification_notification_color", [{ rule: "required" }])
+      .addField("#notification_notification_title", [
+        {
+          rule: "maxLength",
+          value: this.maxTitleLengthValue,
+        },
+      ])
+      .addField("#notification_notification_description", [
+        { rule: "required" },
+        {
+          rule: "maxLength",
+          value: this.maxDescriptionLengthValue,
+        },
+      ]);
+
+    disableSubmitOnEnter();
+    allowTurbo(this.validator);
+  }
 
   #generatePreviewValues() {
     return R.map(

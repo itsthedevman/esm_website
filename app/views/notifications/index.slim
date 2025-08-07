@@ -1,4 +1,6 @@
 = render "communities/container", **local_assigns do
+  script
+    | console.log("#{ESM::Color::Toast.to_h.values}");
   .text-center.mb-4
     h1.mb-2 Notification Configuration
     p.lead.text-muted Customize Discord notifications for your community

@@ -1,6 +1,14 @@
 = update_turbo_modal
+  script
+    | console.log("1. #{ESM::Color::Toast.to_h.key(notification_color)}");
+    | console.log("2. #{notification.notification_color.upcase}");
   = content_tag :div, nil,
-    data: {controller: "notifications", notifications_variables_value: variables}
+    data: { \
+      controller: "notifications",
+      notifications_max_title_length_value: ESM::EMBED::TITLE_LENGTH_MAX,
+      notifications_max_description_length_value: ESM::EMBED::DESCRIPTION_LENGTH_MAX,
+      notifications_variables_value: variables \
+    }
     .modal-header.border-info.bg-info.bg-opacity-10
       h5.modal-title
         i.bi.bi-plus-circle.text-info.me-2
@@ -9,7 +17,8 @@
 
     = form_with model: [current_community, notification],
         url: community_notification_path(current_community, notification),
-        scope: :notification do |f|
+        scope: :notification,
+        data: {notifications_target: "form"} do |f|
 
       .modal-body
         / Row 1: Configuration + Live Preview
@@ -40,7 +49,7 @@
               .row.g-2
                 .col-6
                   = f.select :notification_color,
-                    options_for_select(colors, notification.notification_color),
+                    options_for_select(colors, notification_color),
                     {},
                     class: "form-select", data: {\
                       notifications_target: "colorSelect",
@@ -48,14 +57,14 @@
                     }
 
                 .col-6
-                  = f.color_field :notification_color,
+                  = f.color_field :notification_color_picker,
                       class: "form-control d-none",
                       data: { \
                         notifications_target: "colorPicker",
                         action: "input->notifications#onColorChanged" \
                       },
                       style: "height: 38px;",
-                      value: "#3ED3FB"
+                      value: custom_color || "#3ED3FB"
 
           / Right Column - Live Preview
           .col-md-6
@@ -89,7 +98,7 @@
                       notifications_target: "title",
                       action: "input->notifications#onTitleChanged" \
                     },
-                    maxlength: 256
+                    maxlength: ESM::EMBED::TITLE_LENGTH_MAX
                 .d-flex.justify-content-between.mt-1
                   = link_to_tab discord_markdown_docs_url, class: "text-decoration-none" do
                     small.text-info
@@ -97,7 +106,7 @@
                       | Discord markdown supported
                   small.text-muted
                     span[data-notifications-target="titleLength"] 0
-                    | /256
+                    | /#{ESM::EMBED::TITLE_LENGTH_MAX}
 
               / Message Input
               .col-12
@@ -110,12 +119,12 @@
                       notifications_target: "description",
                       action: "input->notifications#onDescriptionChanged" \
                     },
-                    maxlength: 2048
+                    maxlength: ESM::EMBED::DESCRIPTION_LENGTH_MAX
                 .d-flex.justify-content-between.mt-1
                   small.text-muted Variables will be replaced when sent
                   small.text-muted
                     span[data-notifications-target="descriptionLength"] 0
-                    | /2048
+                    | /#{ESM::EMBED::DESCRIPTION_LENGTH_MAX}
 
         / Row 3: Variables (Full Width)
         .row
