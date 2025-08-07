@@ -26,8 +26,8 @@ export default class extends ApplicationController {
 
     this.preview = {
       color: $(this.colorSelectTarget).val(),
-      title: "",
-      description: "Preview message",
+      title: $(this.titleTarget).val(),
+      description: $(this.descriptionTarget).val(),
       footer: `[${this.previewValues.global.serverID}] ${this.previewValues.global.serverName}`,
     };
 
@@ -37,19 +37,14 @@ export default class extends ApplicationController {
   }
 
   onTypeChanged(event) {
-    const typeElem = $(event.currentTarget);
-    const notificationType = typeElem.val();
-
-    this.#renderVariableChips(notificationType);
+    this.#renderVariableChips();
   }
 
   onTitleChanged(event) {
     const inputBox = $(event.currentTarget);
     const title = inputBox.val();
-    const type = $(this.typeTarget).val();
 
-    this.preview.title = this.#replaceVariables(title, type);
-
+    this.preview.title = title || "";
     $(this.titleLengthTarget).html(title.length);
 
     this.#renderLivePreview();
@@ -58,11 +53,8 @@ export default class extends ApplicationController {
   onDescriptionChanged(event) {
     const inputBox = $(event.currentTarget);
     const description = inputBox.val();
-    const type = $(this.typeTarget).val();
 
-    this.preview.description =
-      this.#replaceVariables(description, type) || "Preview message";
-
+    this.preview.description = description || "Preview message";
     $(this.descriptionLengthTarget).html(description.length);
 
     this.#renderLivePreview();
@@ -119,18 +111,28 @@ export default class extends ApplicationController {
 
   #renderLivePreview() {
     const preview = $(this.livePreviewTarget);
+    const notificationType = $(this.typeTarget).val();
 
     const titleElem = preview.find("#title");
     if (R.isEmpty(this.preview.title)) {
       titleElem.hide();
     } else {
       titleElem.show();
-      titleElem.html(Markdown.toHTML(this.preview.title));
+
+      titleElem.html(
+        Markdown.toHTML(
+          this.#replaceVariables(this.preview.title, notificationType)
+        )
+      );
     }
 
     preview
       .find("#description")
-      .html(Markdown.toHTML(this.preview.description));
+      .html(
+        Markdown.toHTML(
+          this.#replaceVariables(this.preview.description, notificationType)
+        )
+      );
 
     preview.find("#footer").html(this.preview.footer);
 
@@ -142,7 +144,8 @@ export default class extends ApplicationController {
     }
   }
 
-  #renderVariableChips(notificationType) {
+  #renderVariableChips() {
+    const notificationType = $(this.typeTarget).val();
     const chipsElem = $(this.variableChipsTarget);
     const cardElem = chipsElem.parents(".card").first();
 

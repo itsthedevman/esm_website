@@ -55,8 +55,12 @@
                   .d-flex.gap-1
                     button.btn.btn-outline-info.btn-sm data-bs-toggle="modal" data-bs-target="#preview-modal-#{notification.id}"
                       i.bi.bi-eye
-                    button.btn.btn-outline-primary.btn-sm data-bs-toggle="modal" data-bs-target="#edit-notification-modal-#{notification.id}"
+
+                    = link_to edit_community_notification_path(current_community, notification),
+                      class: "btn btn-outline-primary btn-sm",
+                      data: {"turbo-prefetch": false, "turbo-frame": "turbo_modal"}
                       i.bi.bi-pencil
+
                     = link_to community_notification_path(current_community, notification),
                         method: :delete,
                         class: "btn btn-outline-danger btn-sm",
@@ -79,3 +83,5 @@
             | Create Your First Notification
 
 = render "notifications/create_modal", **local_assigns
+= render "shared/turbo_modal",
+  class: "modal-xl", data: {bs_backdrop: "static", bs_keyboard: "false"}, **local_assigns

@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
   delegate :create_toast,
     :create_info_toast, :create_success_toast,
     :create_warn_toast, :create_error_toast,
+    :hide_turbo_modal,
     to: :helpers
 
   rescue_from NotFoundError, with: :render_not_found
@@ -16,12 +17,13 @@ class ApplicationController < ActionController::Base
 
   def render_not_found(exception = nil)
     respond_to do |format|
-      format.html { render "errors/not_found_404" }
+      format.html { render template: "errors/not_found_404", status: :not_found }
 
       format.json { render json: {error: "Not found"}, status: :not_found }
 
       format.turbo_stream do
-        render turbo_stream: create_error_toast("The request item was not found")
+        render turbo_stream: create_error_toast("The request item was not found"),
+          status: :not_found
       end
     end
   end

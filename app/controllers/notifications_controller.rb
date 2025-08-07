@@ -17,25 +17,34 @@ class NotificationsController < AuthenticatedController
   def create
     permitted_params = permit_params
 
-    ESM::Notification.create!(permitted_params)
+    current_community.notifications.create!(permitted_params)
 
     render turbo_stream: create_success_toast("Notification created")
   end
 
+  def edit
+    notification = find_notification
+    not_found! if notification.nil?
+
+    render locals: {
+      notification:,
+      colors: load_colors,
+      grouped_notification_types: load_grouped_notification_types,
+      variables: load_variables
+    }
+  end
+
   def update
-    raise "You need to create a migration for public_id on notifications"
-    # notification = Notification.where(id: params[:id], community_id: current_community.id).first
+    notification = find_notification
+    not_found! if notification.nil?
 
-    # # Make sure it wasn't delete
-    # if notification.nil?
-    #   return render json: {message: "I'm sorry, we were unable to find the requested notification.", notifications: current_community.notifications}, status: :unprocessable_entity
-    # end
+    permitted_params = permit_params
+    notification.update!(permitted_params)
 
-    # if notification.update(notification_params.merge(community_id: current_community.id))
-    #   render json: {notifications: current_community.notifications}
-    # else
-    #   render json: {message: "I'm sorry, we were unable to update that notification<br>Please try again later"}, status: :unprocessable_entity
-    # end
+    render turbo_stream: [
+      hide_turbo_modal,
+      create_success_toast("Notification updated")
+    ]
   end
 
   def destroy
@@ -61,13 +70,15 @@ class NotificationsController < AuthenticatedController
       :notification_title, :notification_description
     )
 
-    permitted_params[:community_id] = current_community.id
-
     category, type = permitted_params[:notification_type]&.split("_")
     permitted_params[:notification_category] = category || "xm8"
     permitted_params[:notification_type] = type || "base-raid"
 
     permitted_params
+  end
+
+  def find_notification
+    current_community.notifications.find_by(public_id: params[:notification_id])
   end
 
   def load_notifications
@@ -198,19 +209,27 @@ class NotificationsController < AuthenticatedController
       gambling: {
         amountChanged: {
           description: "Net gain/loss from the gambling attempt",
-          placeholder: Faker::Commerce.price(range: 1_000..100_000, as_string: true)
+          placeholder: helpers.number_with_delimiter(
+            Faker::Commerce.price(range: 1_000..100_000).to_i
+          )
         },
         amountGambled: {
           description: "Original bet amount the player risked",
-          placeholder: Faker::Commerce.price(range: 1_000..25_000, as_string: true)
+          placeholder: helpers.number_with_delimiter(
+            Faker::Commerce.price(range: 1_000..25_000).to_i
+          )
         },
         lockerBefore: {
           description: "Player's bank balance before gambling",
-          placeholder: Faker::Commerce.price(range: 50_000..500_000, as_string: true)
+          placeholder: helpers.number_with_delimiter(
+            Faker::Commerce.price(range: 50_000..500_000).to_i
+          )
         },
         lockerAfter: {
           description: "Player's bank balance after gambling",
-          placeholder: Faker::Commerce.price(range: 60_000..600_000, as_string: true)
+          placeholder: helpers.number_with_delimiter(
+            Faker::Commerce.price(range: 60_000..600_000).to_i
+          )
         }
       },
 
@@ -232,7 +251,9 @@ class NotificationsController < AuthenticatedController
         },
         amount: {
           description: "Poptabs received from the marketplace sale",
-          placeholder: Faker::Commerce.price(range: 500..50_000, as_string: true)
+          placeholder: helpers.number_with_delimiter(
+            Faker::Commerce.price(range: 500..50_000).to_i
+          )
         }
       },
 
@@ -250,15 +271,21 @@ class NotificationsController < AuthenticatedController
         },
         modifiedAmount: {
           description: "Amount of poptabs/respect that was added or removed",
-          placeholder: Faker::Commerce.price(range: 1_000..50_000, as_string: true)
+          placeholder: helpers.number_with_delimiter(
+            Faker::Commerce.price(range: 1_000..50_000).to_i
+          )
         },
         previousAmount: {
           description: "Player's balance before the admin modification",
-          placeholder: Faker::Commerce.price(range: 10_000..100_000, as_string: true)
+          placeholder: helpers.number_with_delimiter(
+            Faker::Commerce.price(range: 10_000..100_000).to_i
+          )
         },
         newAmount: {
           description: "Player's final balance after the modification",
-          placeholder: Faker::Commerce.price(range: 15_000..150_000, as_string: true)
+          placeholder: helpers.number_with_delimiter(
+            Faker::Commerce.price(range: 15_000..150_000).to_i
+          )
         }
       }
     }

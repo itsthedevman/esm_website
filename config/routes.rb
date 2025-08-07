@@ -22,7 +22,7 @@ Rails.application.routes.draw do
     resources :commands, only: %i[index update], param: :name
 
     # /communities/:community_id/notifications
-    resources :notifications
+    resources :notifications, param: :notification_id
 
     # /communities/:community_id/servers
     resources :servers, param: :server_id do

@@ -1,18 +1,14 @@
-= render "shared/modal",
-  id: "create-notification-modal",
-  class: "modal-xl",
-  data: {bs_backdrop: "static", bs_keyboard: "false"},
-  **local_assigns do
+= update_turbo_modal
   = content_tag :div, nil,
     data: {controller: "notifications", notifications_variables_value: variables}
     .modal-header.border-info.bg-info.bg-opacity-10
       h5.modal-title
         i.bi.bi-plus-circle.text-info.me-2
-        | Create New Notification
+        | Edit Notification
       button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
 
-    = form_with model: [current_community, ESM::Notification.new],
-        url: community_notifications_path(current_community),
+    = form_with model: [current_community, notification],
+        url: community_notification_path(current_community, notification),
         scope: :notification do |f|
 
       .modal-body
@@ -28,7 +24,10 @@
             .mb-4
               = f.label :notification_type, "Notification Type", class: "form-label fw-medium"
               = f.select :notification_type,
-                  grouped_options_for_select(grouped_notification_types),
+                  grouped_options_for_select( \
+                    grouped_notification_types,
+                    "#{notification.notification_category}_#{notification.notification_type}" \
+                  ),
                   { prompt: "Select notification type..." },
                   class: "form-select", data: { \
                     notifications_target: "type",
@@ -41,7 +40,7 @@
               .row.g-2
                 .col-6
                   = f.select :notification_color,
-                    options_for_select(colors),
+                    options_for_select(colors, notification.notification_color),
                     {},
                     class: "form-select", data: {\
                       notifications_target: "colorSelect",
@@ -133,4 +132,4 @@
 
       .modal-footer
         button.btn.btn-outline-secondary type="button" data-bs-dismiss="modal" Cancel
-        = f.submit "Create Notification", class: "btn btn-success text-white"
+        = f.submit "Save Notification", class: "btn btn-success text-white"
