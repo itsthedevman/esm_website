@@ -14,9 +14,7 @@ module ApplicationHelper
       yield
 
       concat <<~HTML.html_safe
-        <script>
-          bootstrap.Modal.getOrCreateInstance(document.getElementById("turbo-modal")).show();
-        </script>
+        <script>showTurboModal();</script>
       HTML
     end
   end
@@ -24,9 +22,7 @@ module ApplicationHelper
   def hide_turbo_modal
     turbo_stream.append("turbo_modal") do
       <<~HTML.html_safe
-        <script>
-          bootstrap.Modal.getOrCreateInstance(document.getElementById("turbo-modal")).hide();
-        </script>
+        <script>hideTurboModal();</script>
       HTML
     end
   end

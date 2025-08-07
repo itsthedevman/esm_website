@@ -1,26 +1,34 @@
 // Entry point for the build script in your package.json
-import "@hotwired/turbo-rails"
-import "../controllers"
-import * as bootstrap from "bootstrap"
+import "@hotwired/turbo-rails";
+import "../controllers";
+import * as bootstrap from "bootstrap";
+import $ from "cash-dom";
 
-document.addEventListener("turbo:load", function() {
+window.showTurboModal = function () {
+  bootstrap.Modal.getOrCreateInstance($("#turbo-modal")[0]).show();
+};
+
+window.hideTurboModal = function () {
+  bootstrap.Modal.getOrCreateInstance($("#turbo-modal")[0]).hide();
+};
+
+$(document).on("turbo:load", function () {
   bindToolTips();
   bindTurboModal();
 });
 
 function bindToolTips() {
-  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl)
-  })
+  $('[data-bs-toggle="tooltip"]').each(function (i, el) {
+    new bootstrap.Tooltip(el);
+  });
 }
 
 function bindTurboModal() {
-    let elem = document.getElementById("turbo-modal");
-    if (elem == null) return;
+  let elem = $("#turbo-modal");
+  if (elem.length === 0) return;
 
-    // Remove the content once it is hidden
-    elem.addEventListener("hidden.bs.modal", _event => {
-        document.getElementById("turbo_modal").innerHTML = "";
-    });
+  // Remove the content once it is hidden
+  elem.on("hidden.bs.modal", (_event) => {
+    $("#turbo_modal").html("");
+  });
 }
