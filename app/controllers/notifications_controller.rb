@@ -27,8 +27,8 @@ class NotificationsController < AuthenticatedController
     notification = find_notification
     not_found! if notification.nil?
 
-    notification_color = notification.notification_color.upcase
-    if notification_color != "RANDOM" && !ESM::Color::Toast.to_h.value?(notification_color)
+    notification_color = notification.notification_color.downcase
+    if notification_color != "random" && !ESM::Color::Toast.to_h.value?(notification_color)
       custom_color = notification_color
       notification_color = "custom"
     end
@@ -77,13 +77,18 @@ class NotificationsController < AuthenticatedController
 
   def permit_params
     permitted_params = params.require(:notification).permit(
-      :notification_type, :notification_color,
+      :notification_type, :notification_color, :notification_custom_color,
       :notification_title, :notification_description
     )
 
     category, type = permitted_params[:notification_type]&.split("_")
     permitted_params[:notification_category] = category || "xm8"
     permitted_params[:notification_type] = type || "base-raid"
+
+    custom_color = permitted_params.delete(:notification_custom_color)
+    if (color = permitted_params[:notification_color]) && color == "custom"
+      permitted_params[:notification_color] = custom_color
+    end
 
     permitted_params
   end
@@ -135,7 +140,7 @@ class NotificationsController < AuthenticatedController
 
   def load_colors
     ESM::Color::Toast.to_h
-      .transform_keys { |k| k.to_s.titleize }
+      .map { |name, hex| [name.to_s.titleize, hex.downcase] }
       .sort_by(&:first) # Name
       .push(
         ["─────", "", disabled: true],

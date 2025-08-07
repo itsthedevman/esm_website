@@ -1,7 +1,4 @@
 = update_turbo_modal
-  script
-    | console.log("1. #{ESM::Color::Toast.to_h.key(notification_color)}");
-    | console.log("2. #{notification.notification_color.upcase}");
   = content_tag :div, nil,
     data: { \
       controller: "notifications",
@@ -57,7 +54,7 @@
                     }
 
                 .col-6
-                  = f.color_field :notification_color_picker,
+                  = f.color_field :notification_custom_color,
                       class: "form-control d-none",
                       data: { \
                         notifications_target: "colorPicker",

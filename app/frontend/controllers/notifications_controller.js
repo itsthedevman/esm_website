@@ -34,15 +34,16 @@ export default class extends ApplicationController {
     this.previewValues = this.#generatePreviewValues();
 
     this.preview = {
-      color: $(this.colorSelectTarget).val(),
+      color: "", // Set by onColorChanged below
       title: $(this.titleTarget).val(),
       description: $(this.descriptionTarget).val() || "Preview message",
       footer: `[${this.previewValues.global.serverID}] ${this.previewValues.global.serverName}`,
     };
 
+    this.onColorChanged(); // This will call #renderLivePreview
+
     this.#bindFocusEvents();
     this.#initializeValidator();
-    this.#renderLivePreview();
     this.#renderVariableChips();
   }
 
