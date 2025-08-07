@@ -42,6 +42,11 @@ class NotificationsController < AuthenticatedController
     notification.update!(permitted_params)
 
     render turbo_stream: [
+      turbo_stream.replace(
+        dom_id(notification),
+        partial: "notification_row",
+        locals: {notification:}
+      ),
       hide_turbo_modal,
       create_success_toast("Notification updated")
     ]

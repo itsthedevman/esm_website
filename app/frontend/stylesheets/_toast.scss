@@ -5,10 +5,15 @@
     right: 1em;
 }
 
+$toast-bg: $esm-warm-gray-800;
+
 .toast {
     --bs-toast-border-color: transparent;
     --bs-toast-header-border-color: transparent;
+    --bs-toast-header-bg: #{$toast-bg};
+    --bs-toast-bg: #{$toast-bg};
 
+    background-color: var(--bs-toast-bg);
     border: 0;
     border-left-width: 3px;
     border-left-style: solid;
