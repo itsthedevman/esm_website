@@ -27,7 +27,7 @@ export default class extends ApplicationController {
     this.preview = {
       color: $(this.colorSelectTarget).val(),
       title: $(this.titleTarget).val(),
-      description: $(this.descriptionTarget).val(),
+      description: $(this.descriptionTarget).val() || "Preview message",
       footer: `[${this.previewValues.global.serverID}] ${this.previewValues.global.serverName}`,
     };
 
