@@ -1,6 +1,6 @@
 // Entry point for the build script in your package.json
 import "@hotwired/turbo-rails";
-import "../controllers";
+import "../src/controllers";
 import * as bootstrap from "bootstrap";
 import $ from "cash-dom";
 import * as R from "ramda";

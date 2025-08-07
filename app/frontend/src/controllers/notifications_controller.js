@@ -1,10 +1,10 @@
 import ApplicationController from "./application_controller";
-import $ from "../helpers/cash_dom";
-import Markdown from "../helpers/markdown";
+import $ from "../../helpers/cash_dom";
+import Markdown from "../../helpers/markdown";
 import * as R from "ramda";
 import JustValidate from "just-validate";
-import { allowTurbo } from "../helpers/just_validate";
-import { disableSubmitOnEnter } from "../helpers/forms";
+import { allowTurbo } from "../../helpers/just_validate";
+import { disableSubmitOnEnter } from "../../helpers/forms";
 
 // Connects to data-controller="notifications"
 export default class extends ApplicationController {
