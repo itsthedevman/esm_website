@@ -52,8 +52,8 @@ class NotificationsController < AuthenticatedController
 
     render turbo_stream: [
       turbo_stream.replace(
-        dom_id(notification),
-        partial: "notification_row",
+        notification.dom_id,
+        partial: "notification_card",
         locals: {notification:}
       ),
       hide_modal("#edit_notification_modal"),
@@ -68,7 +68,15 @@ class NotificationsController < AuthenticatedController
     notification.destroy!
 
     render turbo_stream: [
-      turbo_stream.remove(dom_id(notification)),
+      turbo_stream.replace(
+        "notifications_index",
+        partial: "index",
+        locals: {
+          filters: load_filters,
+          notifications: load_notifications,
+          variables: load_variables
+        }
+      ),
       create_success_toast("Notification deleted")
     ]
   end
