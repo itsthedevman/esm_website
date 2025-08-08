@@ -67,18 +67,22 @@ class NotificationsController < AuthenticatedController
 
     notification.destroy!
 
-    render turbo_stream: [
-      turbo_stream.replace(
-        "notifications_index",
-        partial: "index",
-        locals: {
-          filters: load_filters,
-          notifications: load_notifications,
-          variables: load_variables
-        }
-      ),
-      create_success_toast("Notification deleted")
-    ]
+    # Determine if we need to refresh the page (with 0 left) or remove and update the counter
+    notifications = current_community.notifications.order(:community_id)
+    remaining_count = filter_notifications(notifications).size
+
+    if remaining_count == 0
+      flash[:success] = "Notification deleted"
+      actions = [turbo_stream.refresh(request_id: nil)]
+    else
+      actions = [
+        turbo_stream.remove(notification.dom_id),
+        turbo_stream.update("notification_count", remaining_count.to_s),
+        create_success_toast("Notification deleted")
+      ]
+    end
+
+    render turbo_stream: actions
   end
 
   private

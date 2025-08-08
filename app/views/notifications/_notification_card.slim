@@ -27,17 +27,18 @@
 
     / Discord-style preview
     .card-body.p-0.d-flex.flex-column.flex-fill
-      - color_style = notification.notification_color == "random" ? "" : "border-left-color: #{notification.notification_color};"
-      - random_class = notification.notification_color == "random" ? "random" : ""
-
-      .discord-embed.p-3.rounded-bottom.flex-fill.d-flex.flex-column class="#{random_class}" style="#{color_style}"
+      = content_tag :div,
+        class: class_names( \
+          "discord-embed", "p-3", "rounded-bottom", "flex-fill", "d-flex", "flex-column",
+          "random" => notification.notification_color == "random" \
+        ),
+        style: class_names( \
+          "border-left-color: #{notification.notification_color};" => \
+            notification.notification_color != "random" \
+        )
         - if notification.notification_title.present?
           .text-light.fw-medium.mb-2.fs-6
             = truncate(notification.notification_title, length: 50)
 
         .text-muted.mb-2.flex-fill
           = truncate(notification.notification_description, length: 100)
-
-        .small.text-muted.mt-auto
-          | [#{variables.dig(:global, :serverID, :placeholder)}]
-          |< #{variables.dig(:global, :serverName, :placeholder)}
