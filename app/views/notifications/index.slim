@@ -18,7 +18,7 @@
         = f.select :filter,
             options_for_select(filters, params[:filter] || "all"),
             {},
-            {class: "form-select form-select-sm col-3", onchange: "this.form.submit();"}
+            {class: "form-select form-select-sm col-3", onchange: "this.form.requestSubmit();"}
 
     button.btn.btn-primary data-bs-toggle="modal" data-bs-target="#create_notification_modal"
       i.bi.bi-plus.me-1
