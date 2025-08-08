@@ -29,19 +29,25 @@
     .row.g-4
       = render partial: "notifications/notification_card",
         collection: notifications,
-        as: :notification
+        as: :notification,
+        locals: local_assigns
 
   - else
     / Empty State
     .text-center.py-5
       .card.bg-dark.border-secondary
         .card-body.py-5
-          i.bi.bi-bell-slash.display-1.text-muted.mb-4.d-block
-          h4.text-muted.mb-3 No Notifications Yet
-          p.text-muted.mb-4 Get started by creating your first custom notification template for Discord
-          button.btn.btn-primary.btn-lg data-bs-toggle="modal" data-bs-target="#create_notification_modal"
-            i.bi.bi-plus.me-2
-            | Create Your First Notification
+          i.bi.bi-search.display-1.text-muted.mb-4.d-block
+          h4.text-muted.mb-3 No Notifications Found
+          p.text-muted.mb-4 Try adjusting your filter or create a new notification
+
+          .d-flex.gap-3.justify-content-center
+            = link_to community_notifications_path(current_community),
+                class: "btn btn-outline-secondary"
+              | Clear Filter
+            button.btn.btn-primary data-bs-toggle="modal" data-bs-target="#create_notification_modal"
+              i.bi.bi-plus.me-2
+              | Create Notification
 
 = render "notifications/create_modal", **local_assigns
 

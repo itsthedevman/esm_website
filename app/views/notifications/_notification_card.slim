@@ -36,4 +36,5 @@
           = truncate(notification.notification_description, length: 100)
 
         .small.text-muted.mt-auto
-          | [#{sample_server_id}] #{sample_server_name}
+          | [#{variables.dig(:global, :serverID, :placeholder)}]
+          |< #{variables.dig(:global, :serverName, :placeholder)}
