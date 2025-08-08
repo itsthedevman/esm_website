@@ -19,7 +19,7 @@
     = form_with model: [current_community, ESM::Notification.new],
         url: community_notifications_path(current_community),
         scope: :notification,
-        data: {notifications_target: "form"} do |f|
+        data: {notifications_target: "form", turbo: false} do |f|
 
       .modal-body
         / Row 1: Configuration + Live Preview

@@ -20,7 +20,7 @@ class NotificationsController < AuthenticatedController
     current_community.notifications.create!(permitted_params)
 
     flash[:success] = "Notification created"
-    render turbo_stream: turbo_stream.refresh(request_id: nil)
+    redirect_to community_notifications_path(current_community, filter: "recent")
   end
 
   def edit
@@ -109,6 +109,13 @@ class NotificationsController < AuthenticatedController
     category, type = (params[:filter] || "all").split("_")
     return notifications if category == "all"
 
+    case category
+    when "recent"
+      return notifications.where("created_at >= ?", 1.day.ago).order(created_at: :desc)
+    when "all"
+      return notifications
+    end
+
     if ESM::Notification::CATEGORIES.include?(category)
       notifications = notifications.with_category(category)
     end
@@ -152,6 +159,7 @@ class NotificationsController < AuthenticatedController
   def load_filters
     [
       ["All", "all"],
+      ["Recently Created", "recent"],
       ["XM8", "xm8_all"],
       ["Gambling", "gambling_all"],
       ["Player", "player_all"],
