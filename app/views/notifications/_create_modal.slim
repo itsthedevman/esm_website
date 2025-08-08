@@ -26,9 +26,15 @@
         .row.g-4.mb-4
           / Left Column - Configuration
           .col-md-6
-            h5.text-primary.mb-3
+            h5.text-primary.mb-3.d-flex.align-items-center
               i.bi.bi-gear.me-2
               | Configuration
+              button.btn.btn-link.text-muted.p-0.ms-2[
+                type="button"
+                data-action="click->notifications#onClearConfiguration"
+                title="Reset configuration"
+              ]
+                i.bi.bi-arrow-counterclockwise
 
             / Type Selection
             .mb-4
@@ -81,9 +87,15 @@
         / Row 2: Message Content (Full Width)
         .row.mb-4
           .col-12
-            h5.text-primary.mb-3
+            h5.text-primary.mb-3.d-flex.align-items-center
               i.bi.bi-type.me-2
               | Message Content
+              button.btn.btn-link.text-muted.p-0.ms-2[
+                type="button"
+                data-action="click->notifications#onClearContent"
+                title="Reset content"
+              ]
+                i.bi.bi-arrow-counterclockwise
 
             .row.g-4
               / Title Input

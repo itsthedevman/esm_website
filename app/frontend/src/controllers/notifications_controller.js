@@ -6,6 +6,8 @@ import JustValidate from "just-validate";
 import { allowTurbo } from "../helpers/just_validate";
 import { disableSubmitOnEnter } from "../helpers/forms";
 
+const DEFAULT_DESCRIPTION = "Preview message";
+
 // Connects to data-controller="notifications"
 export default class extends ApplicationController {
   static targets = [
@@ -36,7 +38,7 @@ export default class extends ApplicationController {
     this.preview = {
       color: "", // Set by onColorChanged below
       title: $(this.titleTarget).val(),
-      description: $(this.descriptionTarget).val() || "Preview message",
+      description: $(this.descriptionTarget).val() || DEFAULT_DESCRIPTION,
       footer: `[${this.previewValues.global.serverID}] ${this.previewValues.global.serverName}`,
     };
 
@@ -65,7 +67,7 @@ export default class extends ApplicationController {
     const inputBox = $(event.currentTarget);
     const description = inputBox.val();
 
-    this.preview.description = description || "Preview message";
+    this.preview.description = description || DEFAULT_DESCRIPTION;
     $(this.descriptionLengthTarget).html(description.length);
 
     this.#renderLivePreview();
@@ -100,6 +102,24 @@ export default class extends ApplicationController {
 
     // Refocus the field so they can keep typing
     targetElement.focus();
+  }
+
+  onClearConfiguration(_event) {
+    $(this.typeTarget).val("");
+    $(this.colorSelectTarget)[0].selectedIndex = 0;
+
+    this.onColorChanged();
+    this.#renderVariableChips();
+  }
+
+  onClearContent(_event) {
+    $(this.titleTarget).val("");
+    $(this.descriptionTarget).val("");
+
+    this.preview.title = "";
+    this.preview.description = DEFAULT_DESCRIPTION;
+
+    this.#renderLivePreview();
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
