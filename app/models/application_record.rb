@@ -36,7 +36,7 @@ class ApplicationRecord < ActiveRecord::Base
   # =============================================================================
 
   def dom_id
-    "#{model_name.singular}-#{public_id}"
+    "#{self.class.table_name.singularize}-#{public_id}"
   end
 
   def to_param
