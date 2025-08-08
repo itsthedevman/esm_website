@@ -56,7 +56,7 @@ class NotificationsController < AuthenticatedController
         partial: "notification_row",
         locals: {notification:}
       ),
-      hide_turbo_modal,
+      hide_modal("#edit_notification_modal"),
       create_success_toast("Notification updated")
     ]
   end

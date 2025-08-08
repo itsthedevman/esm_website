@@ -23,7 +23,7 @@ tr id="#{dom_id(notification)}"
 
       = link_to edit_community_notification_path(current_community, notification),
         class: "btn btn-outline-primary btn-sm",
-        data: {"turbo-prefetch": false, "turbo-frame": "turbo_modal"}
+        data: {"turbo-prefetch": false, "turbo-frame": "edit_notification_modal_frame"}
         i.bi.bi-pencil
 
       = link_to community_notification_path(current_community, notification),

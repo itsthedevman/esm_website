@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
     :create_toast,
     :create_info_toast, :create_success_toast,
     :create_warn_toast, :create_error_toast,
-    :hide_turbo_modal, :hide_modal,
+    :hide_modal,
     to: :helpers
 
   rescue_from NotFoundError, with: :render_not_found

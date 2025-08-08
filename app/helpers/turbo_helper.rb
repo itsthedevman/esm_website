@@ -1,16 +1,18 @@
 # frozen_string_literal: true
 
 module TurboHelper
-  def update_turbo_modal(&block)
-    turbo_frame_tag "turbo_modal" do
+  def update_turbo_modal(id, &block)
+    turbo_frame_tag("#{id}_frame") do
       yield
 
-      concat content_tag(:div, nil, data: {trigger: "modal:show:#turbo-modal"})
+      concat content_tag(:div, nil, data: {trigger: "modal:show:##{id}"})
     end
   end
 
-  def hide_turbo_modal
-    hide_modal("#turbo-modal")
+  def show_modal(selector)
+    turbo_stream.append("main-container") do
+      content_tag(:div, nil, data: {trigger: "modal:show:#{selector}"})
+    end
   end
 
   def hide_modal(selector)
