@@ -38,7 +38,10 @@
 
             / Type Selection
             .mb-4
-              = f.label :notification_type, "Notification Type", class: "form-label fw-medium"
+              = f.label :notification_type, class: "form-label fw-medium"
+                span.text-danger.me-1 *
+                | Notification Type
+
               = f.select :notification_type,
                   grouped_options_for_select(grouped_notification_types),
                   { prompt: "Select notification type..." },
@@ -49,7 +52,9 @@
 
             / Color Selection
             .mb-0
-              = f.label :notification_color, "Embed Color", class: "form-label fw-medium"
+              = f.label :notification_color, class: "form-label fw-medium"
+                span.text-danger.me-1 *
+                | Embed Color
               .row.g-2
                 .col-6
                   = f.select :notification_color,
@@ -120,7 +125,9 @@
 
               / Message Input
               .col-12
-                = f.label :notification_description, "Message", class: "form-label fw-medium"
+                = f.label :notification_description, class: "form-label fw-medium"
+                  span.text-danger.me-1 *
+                  | Message
                 = f.text_area :notification_description,
                     class: "form-control",
                     rows: 6,

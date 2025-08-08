@@ -24,21 +24,12 @@
       i.bi.bi-plus.me-1
       | Create Notification
 
-  / Notifications Table
+  / Card Gallery
   - if notifications.size > 0
-    .card
-        table.table.table-hover.mb-0
-          thead.table-dark
-            tr
-              th.col-1 Type
-              th.col-5 Title
-              th.col-5 Message Preview
-              th.col-1 Actions
-          tbody
-            = render partial: "notifications/notification_row",
-              collection: notifications,
-              as: :notification
-
+    .row.g-4
+      = render partial: "notifications/notification_card",
+        collection: notifications,
+        as: :notification
 
   - else
     / Empty State
