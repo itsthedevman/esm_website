@@ -18,6 +18,9 @@ application.register("notifications", NotificationsController);
 import RoleSelectorController from "./role_selector_controller";
 application.register("role-selector", RoleSelectorController);
 
+import RptParserController from "./rpt_parser_controller";
+application.register("rpt-parser", RptParserController);
+
 import ServerEditController from "./server_edit_controller";
 application.register("server-edit", ServerEditController);
 
