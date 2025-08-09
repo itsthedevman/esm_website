@@ -34,6 +34,22 @@ Rails.application.routes.draw do
         patch :enable_v2
       end
     end
+
+    # /communities/:community_id/notification_routing
+    resources :user_notification_routes,
+      path: "notification_routing",
+      as: "notification_routing",
+      only: %i[index create update destroy] do
+      collection do
+        patch "accept_requests"
+        patch "decline_requests"
+
+        put "accept_all_requests"
+        put "decline_all_requests"
+
+        delete :destroy_many
+      end
+    end
   end
 
   # /discover

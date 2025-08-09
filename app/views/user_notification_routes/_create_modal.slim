@@ -1,0 +1,104 @@
+/ Create New Route Modal
+= render "shared/modal", id: "createRouteModal", class: "modal-lg" do
+  .modal-header.border-primary.bg-primary.bg-opacity-10
+    h5.modal-title.text-primary Create a new routing request
+    button.btn-close type="button" data-bs-dismiss="modal"
+
+  .modal-body
+    / Route for Users
+    .mb-4
+      label.form-label.fw-medium Route XM8 notifications for
+      select.form-select multiple="" size="4"
+        option PlayerOne (76561198123456789)
+        option ExilePlayer (76561198987654321)
+        option AdminUser (76561198555666777)
+        option TestUser (76561198111222333)
+      small.form-text.text-muted Hold Ctrl/Cmd to select multiple users
+
+    / To Channel
+    .mb-4
+      label.form-label.fw-medium To channel
+      select.form-select
+        option Select a channel...
+        option #general
+        option #notifications
+        option #raid-alerts
+        option #admin-only
+
+    / From Server
+    .mb-4
+      label.form-label.fw-medium From server(s)
+      .ms-3
+        .form-check
+          input.form-check-input type="radio" name="serverRadio" value="any" checked=""
+          label.form-check-label Any
+        .form-check
+          input.form-check-input type="radio" name="serverRadio" value="custom"
+          label.form-check-label Custom
+        .ms-4.mt-2
+          select.form-select disabled=""
+            option abc4_altis_main
+            option abc4_tanoa_test
+            option abc4_malden_dev
+
+    / Notification Types - Grouped
+    .mb-4
+      label.form-label.fw-medium Notification Types
+      .ms-3
+        .form-check
+          input.form-check-input type="radio" name="typesRadio" value="any" checked=""
+          label.form-check-label All Types
+        .form-check
+          input.form-check-input type="radio" name="typesRadio" value="raids"
+          label.form-check-label 🏠 Territory Events (Base Raids, Flags, Grinding)
+        .form-check
+          input.form-check-input type="radio" name="typesRadio" value="payments"
+          label.form-check-label 💰 Economy Events (Payments, MarXet Sales)
+        .form-check
+          input.form-check-input type="radio" name="typesRadio" value="custom"
+          label.form-check-label Custom Selection
+
+        .ms-4.mt-3 style="display: none;"
+          .row.g-3
+            .col-4
+              h6.small.text-muted 🏠 Territory Events
+              .form-check
+                input.form-check-input type="checkbox"
+                label.form-check-label.small Base Raid
+              .form-check
+                input.form-check-input type="checkbox"
+                label.form-check-label.small Flag Stolen
+              .form-check
+                input.form-check-input type="checkbox"
+                label.form-check-label.small Flag Restored
+              .form-check
+                input.form-check-input type="checkbox"
+                label.form-check-label.small Grind Started
+            .col-4
+              h6.small.text-muted 💰 Economy Events
+              .form-check
+                input.form-check-input type="checkbox"
+                label.form-check-label.small Protection Money Due
+              .form-check
+                input.form-check-input type="checkbox"
+                label.form-check-label.small Protection Money Paid
+              .form-check
+                input.form-check-input type="checkbox"
+                label.form-check-label.small MarXet Item Sold
+            .col-4
+              h6.small.text-muted ⚔️ Combat Events
+              .form-check
+                input.form-check-input type="checkbox"
+                label.form-check-label.small Hack Started
+              .form-check
+                input.form-check-input type="checkbox"
+                label.form-check-label.small Charge Plant Started
+
+    .alert.alert-info.border-info.bg-info.bg-opacity-10
+      i.bi.bi-info-circle.me-2
+      strong Note:
+      |< Once this request is created, the selected users will need to accept the request from their player dashboard before their notifications will be routed.
+
+  .modal-footer.border-top
+    button.btn.btn-outline-secondary type="button" data-bs-dismiss="modal" Cancel
+    button.btn.btn-primary type="button" Create Request
