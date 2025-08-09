@@ -10,7 +10,7 @@
         small.text-muted Processing time: seconds
       .d-flex.align-items-center
         .badge.bg-success.rounded-circle.me-2 ✓
-        small.text-muted Works offline in your browser
+        small.text-muted Works locally in your browser
 
   / Parser Interface
   = content_tag :div, data: { controller: "rpt-parser" } do
@@ -35,12 +35,12 @@
         .row.g-3
           .col-md-6
             .form-check.form-switch
-              input.form-check-input type="checkbox" checked=true data-rpt-parser-target="removeDuplicates"
-              label.form-check-label Remove duplicate errors
+              input#remove-duplicate-errors.form-check-input type="checkbox" checked=true data-rpt-parser-target="removeDuplicates"
+              label.form-check-label[for="remove-duplicate-errors"] Remove duplicate errors
           .col-md-6
             .form-check.form-switch
-              input.form-check-input type="checkbox" checked=true data-rpt-parser-target="showExplanations"
-              label.form-check-label Show error explanations
+              input#show-explanations.form-check-input type="checkbox" checked=true data-rpt-parser-target="showExplanations"
+              label.form-check-label[for="show-explanations"] Show error explanations
 
     / Loading State
     .card.bg-dark.border-secondary.mb-4.d-none data-rpt-parser-target="loadingCard"
@@ -108,6 +108,5 @@
         .card-body
           ul.small.mb-0
             li.mb-2 All processing happens in your browser - files never leave your computer
-            li.mb-2 This tool is in beta - always double-check results manually
             li.mb-2 Not all errors may be detected, but common ones should be caught
             li Large files may take a few moments to process

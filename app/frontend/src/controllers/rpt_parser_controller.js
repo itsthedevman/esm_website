@@ -398,11 +398,11 @@ export default class extends ApplicationController {
             ${
               error.fileReference
                 ? `
-              <small class="text-muted mt-1 d-block font-monospace">
-                <i class="bi bi-clipboard me-1" style="cursor: pointer;" onclick="navigator.clipboard.writeText('${error.fileReference}')" title="Copy to clipboard"></i>
-                ${error.fileReference}
-              </small>
-            `
+                  <small class="text-muted mt-1 d-block font-monospace">
+                    ${error.fileReference}
+                    <i class="bi bi-clipboard me-1" style="cursor: pointer;" onclick="navigator.clipboard.writeText('${error.fileReference}')" title="Copy to clipboard"></i>
+                  </small>
+                `
                 : ""
             }
           </div>
