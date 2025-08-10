@@ -4,6 +4,7 @@ PATH
     esm_ruby_core (0.0.1)
       colorize
       fast_jsonparser
+      http
 
 GEM
   remote: https://rubygems.org/
