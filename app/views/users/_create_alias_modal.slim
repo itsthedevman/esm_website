@@ -1,0 +1,64 @@
+= render "shared/modal", id: "create_alias_modal", class: "modal-lg", data: {bs_backdrop: "static", bs_keyboard: "false"} do
+  .modal-header.border-primary.bg-primary.bg-opacity-10
+    h5.modal-title.text-primary
+      i.bi.bi-bookmark.me-2
+      | Create Alias
+    button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
+
+  = form_with url: "#", method: :post do |f|
+    .modal-body
+      / Alias Value Input
+      .mb-4
+        = f.label :alias_value, class: "form-label fw-medium"
+          span.text-danger.me-1 *
+          | Alias
+        = f.text_field :alias_value,
+            class: "form-control",
+            placeholder: "ex",
+            maxlength: 64,
+            required: true
+        small.form-text.text-muted Up to 64 characters, must be unique for the selected type
+
+      / Type Selection
+      .mb-4
+        label.form-label.fw-medium What does this alias represent?
+
+        .form-check.mb-3
+          = f.radio_button :alias_type, "community", class: "form-check-input", checked: true
+          = f.label :alias_type_community, "A Community", class: "form-check-label"
+
+        .form-check
+          = f.radio_button :alias_type, "server", class: "form-check-input"
+          = f.label :alias_type_server, "A Server", class: "form-check-label"
+
+      / Community Selection
+      .mb-4
+        = f.label :community_id, "Community", class: "form-label fw-medium"
+        = f.select :community_id,
+            options_for_select([ \
+              ["Select a community...", ""],
+              ["Example Community (abc4)", "1"],
+              ["Test Community (xyz9)", "2"] \
+            ]),
+            {},
+            class: "form-select"
+        small.form-text.text-muted.text-info Only available when "A Community" is selected
+
+      / Server Selection
+      .mb-0
+        = f.label :server_id, "Server", class: "form-label fw-medium"
+        = f.select :server_id,
+            options_for_select([ \
+              ["Select a server...", ""],
+              ["abc4_altis_main", "1"],
+              ["abc4_tanoa_test", "2"],
+              ["xyz9_malden_dev", "3"] \
+            ]),
+            {},
+            class: "form-select",
+            disabled: true
+        small.form-text.text-muted Only available when "A Server" is selected
+
+    .modal-footer.border-top
+      button.btn.btn-outline-secondary[type="button" data-bs-dismiss="modal"] Cancel
+      = f.submit "Create Alias", class: "btn btn-primary"

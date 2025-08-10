@@ -16,6 +16,41 @@ Rails.application.routes.draw do
   # /
   root "home#index"
 
+  # /account
+  resource :users, only: %i[edit destroy], path: "account" do
+    collection do
+      # post "cancel_transfer"
+      # get "transfer_account"
+      # get "deregister"
+    end
+
+    ###
+
+    # /account/notification_routing
+    resources :user_notification_routes,
+      path: :notification_routing,
+      as: :notification_routing,
+      only: %i[create update destroy] do
+      collection do
+        get :/, action: :player_index
+
+        patch :accept_requests
+        patch :decline_requests
+
+        put :accept_all_requests
+        put :decline_all_requests
+
+        delete :destroy_many
+      end
+    end
+
+    #   resources :user_aliases, path: "aliases", as: "aliases", only: [:create, :update, :destroy]
+
+    #   resources :user_defaults, path: "defaults", as: "defaults", only: [] do
+    #     patch "/", action: :update, on: :collection
+    #   end
+  end
+
   # /communities
   resources :communities, param: :community_id do
     # /communities/:community_id/commands
@@ -125,56 +160,8 @@ end
 
 # # Requires authentication routes below!
 # resources :communities, only: %i[index edit update destroy] do
-#   resources :commands, only: %i[index update], param: :name
-#   resources :notifications, only: %i[index create update destroy]
-#   resources :user_notification_routes, path: "notification_routing", as: "notification_routing", only: %i[create update destroy] do
-#     collection do
-#       get "/", action: :server_index
-#       patch "accept_requests"
-#       patch "decline_requests"
-
-#       put "accept_all_requests"
-#       put "decline_all_requests"
-
-#       delete :destroy_many
-#     end
-#   end
-
 #   member do
 #     get "can_change_id"
-#   end
-# end
-
-# resources :users, only: %i[edit destroy] do
-#   member do
-#     post "cancel_transfer"
-#     get "transfer_account"
-#     get "deregister"
-#   end
-
-#   ###
-
-#   resources :user_notification_routes,
-#     path: "notification_routing",
-#     as: "notification_routing",
-#     only: %i[create update destroy] do
-#     collection do
-#       get "/", action: :player_index
-
-#       patch "accept_requests"
-#       patch "decline_requests"
-
-#       put "accept_all_requests"
-#       put "decline_all_requests"
-
-#       delete :destroy_many
-#     end
-#   end
-
-#   resources :user_aliases, path: "aliases", as: "aliases", only: [:create, :update, :destroy]
-
-#   resources :user_defaults, path: "defaults", as: "defaults", only: [] do
-#     patch "/", action: :update, on: :collection
 #   end
 # end
 
