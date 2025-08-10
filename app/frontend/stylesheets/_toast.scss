@@ -20,22 +20,28 @@ $toast-bg: $esm-warm-gray-800;
     border-left-color: #{$secondary};
 }
 
-.toast-red {
+.toast-red,
+.toast-error {
     --bs-toast-header-color: #{$esm-toast-red};
     border-left-color: #{$esm-toast-red};
 }
 
-.toast-blue {
+.toast-blue,
+.toast-info,
+.toast-notice {
     --bs-toast-header-color: #{$esm-toast-blue};
     border-left-color: #{$esm-toast-blue};
 }
 
-.toast-green {
+.toast-green,
+.toast-success {
     --bs-toast-header-color: #{$esm-toast-green};
     border-left-color: #{$esm-toast-green};
 }
 
-.toast-yellow {
+.toast-yellow,
+.toast-warn,
+.toast-alert {
     --bs-toast-header-color: #{$esm-toast-yellow};
     border-left-color: #{$esm-toast-yellow};
 }

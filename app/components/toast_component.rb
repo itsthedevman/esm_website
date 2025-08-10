@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 class ToastComponent < ApplicationComponent
-  COLORS = [:red, :blue, :green, :yellow].freeze
+  COLORS = [
+    :red, :blue, :green, :yellow,
+    :success, :info, :warn, :error,
+    :alert, :notice
+  ].freeze
 
   attr_reader :title, :subtitle, :body
 
@@ -11,8 +15,9 @@ class ToastComponent < ApplicationComponent
     @body = body
     @color = color
 
-    if color && COLORS.exclude?(color)
-      raise ArgumentError, "Invalid color provided to toast. Got #{color}, expected one of #{COLORS}"
+    if color && COLORS.exclude?(color.to_sym)
+      raise ArgumentError,
+        "Invalid color provided to toast. Got #{color}, expected one of #{COLORS}"
     end
   end
 
