@@ -149,72 +149,44 @@
             | Create alias "ex" for "exile" and use: #{command_usage(:servers, arguments: {community_id: "ex"})}
 
       / Aliases cards
-      .row.g-3
-        .col-md-6
-          .card.bg-dark.border-secondary
-            .card-body.d-flex.align-items-center.justify-content-between
-              .d-flex.align-items-center.flex-fill
-                / Alias badge
-                .me-3
-                  span.badge.bg-warning.text-dark.fs-6.px-3.py-2.font-monospace ex
-
-                / Type icon and target info
-                .d-flex.align-items-center.me-3
+      .row.gap-3
+        .col.card.bg-dark.border-secondary
+          .card-body
+            .row.align-items-center
+              .col-3
+                span.badge.bg-warning.text-dark.fs-6.px-3.py-2.font-monospace.text-wrap.text-break
+                  | ex
+              .col
+                .d-flex.align-items-center
                   i.bi.bi-discord.text-primary.fs-4.me-2
                   div
                     .text-light.fw-medium Example Community
                     small.text-muted abc4
+              .col-2
+                .d-flex.gap-1.justify-content-end
+                  button.btn.btn-outline-primary.btn-sm[title="Edit alias"]
+                    i.bi.bi-pencil
+                  button.btn.btn-outline-danger.btn-sm[title="Delete alias"]
+                    i.bi.bi-trash
 
-              / Actions
-              .d-flex.gap-1.flex-shrink-0
-                button.btn.btn-outline-primary.btn-sm[title="Edit alias"]
-                  i.bi.bi-pencil
-                button.btn.btn-outline-danger.btn-sm[title="Delete alias"]
-                  i.bi.bi-trash
-
-        .col-md-6
-          .card.bg-dark.border-secondary
-            .card-body.d-flex.align-items-center.justify-content-between
-              .d-flex.align-items-center.flex-fill
-                / Alias badge
-                .me-3
-                  span.badge.bg-warning.text-dark.fs-6.px-3.py-2.font-monospace main
-
-                / Type icon and target info
-                .d-flex.align-items-center.me-3
+        .card.bg-dark.border-secondary
+          .card-body
+            .row.align-items-center
+              .col-3
+                span.badge.bg-warning.text-dark.fs-6.px-3.py-2.font-monospace.text-wrap.text-break
+                  | main
+              .col
+                .d-flex.align-items-center
                   i.bi.bi-server.text-success.fs-4.me-2
                   div
                     .text-light.fw-medium Altis Main Server
                     small.text-muted abc4_altis_main
-
-              / Actions
-              .d-flex.gap-1.flex-shrink-0
-                button.btn.btn-outline-primary.btn-sm[title="Edit alias"]
-                  i.bi.bi-pencil
-                button.btn.btn-outline-danger.btn-sm[title="Delete alias"]
-                  i.bi.bi-trash
-
-        .col-md-6
-          .card.bg-dark.border-secondary.h-100
-            .card-body.d-flex.align-items-center.justify-content-between
-              .d-flex.align-items-center.flex-fill
-                / Alias badge
-                .me-3
-                  span.badge.bg-warning.text-dark.fs-6.px-3.py-2.font-monospace test
-
-                / Type icon and target info
-                .d-flex.align-items-center.me-3
-                  i.bi.bi-server.text-success.fs-4.me-2
-                  div
-                    .text-light.fw-medium Tanoa Test Server
-                    small.text-muted abc4_tanoa_test
-
-              / Actions
-              .d-flex.gap-1.flex-shrink-0
-                button.btn.btn-outline-primary.btn-sm[title="Edit alias"]
-                  i.bi.bi-pencil
-                button.btn.btn-outline-danger.btn-sm[title="Delete alias"]
-                  i.bi.bi-trash
+              .col-2
+                .d-flex.gap-1.justify-content-end
+                  button.btn.btn-outline-primary.btn-sm[title="Edit alias"]
+                    i.bi.bi-pencil
+                  button.btn.btn-outline-danger.btn-sm[title="Delete alias"]
+                    i.bi.bi-trash
 
   / Danger Zone Card
   .card.border-danger.bg-danger.bg-opacity-10
