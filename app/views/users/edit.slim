@@ -29,7 +29,7 @@
                 label.form-label.small.text-muted.fw-medium DISCORD ID
                 .text-light.font-monospace = current_user.discord_id
 
-          .alert.alert-info.border-info.bg-info.bg-opacity-10
+          .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-0
             h6.text-info.mb-2 Not the correct account?
             p.small.mb-2 Please follow these steps to switch accounts:
             ol.small.mb-0
@@ -59,7 +59,7 @@
                   .text-light.font-monospace
                     = link_to current_user.steam_uid, current_user.steam_data&.profile_url, target: "_blank", class: "text-light text-decoration-none"
 
-            .alert.alert-warning.border-warning.bg-warning.bg-opacity-10
+            .alert.alert-warning.border-warning.bg-warning.bg-opacity-10.mb-0
               h6.text-warning.mb-2 Danger Zone
               p.small.mb-3 This will unlink your Steam account but keep your Discord registration
               = link_to "Deregister", "#", class: "btn btn-outline-danger btn-sm", data: { confirm: "Are you sure you want to deregister?" }
@@ -149,8 +149,8 @@
             | Create alias "ex" for "exile" and use: #{command_usage(:servers, arguments: {community_id: "ex"})}
 
       / Aliases cards
-      .row.gap-3
-        .col.card.bg-dark.border-secondary
+      .d-flex.flex-column.gap-3
+        .card.bg-dark.border-secondary
           .card-body
             .row.align-items-center
               .col-3
@@ -168,7 +168,6 @@
                     i.bi.bi-pencil
                   button.btn.btn-outline-danger.btn-sm[title="Delete alias"]
                     i.bi.bi-trash
-
         .card.bg-dark.border-secondary
           .card-body
             .row.align-items-center
@@ -177,10 +176,10 @@
                   | main
               .col
                 .d-flex.align-items-center
-                  i.bi.bi-server.text-success.fs-4.me-2
+                  i.bi.bi-discord.text-primary.fs-4.me-2
                   div
-                    .text-light.fw-medium Altis Main Server
-                    small.text-muted abc4_altis_main
+                    .text-light.fw-medium Example Community
+                    small.text-muted abc4
               .col-2
                 .d-flex.gap-1.justify-content-end
                   button.btn.btn-outline-primary.btn-sm[title="Edit alias"]
