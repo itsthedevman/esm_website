@@ -96,6 +96,11 @@ Rails.application.routes.draw do
   # /register
   get :register, to: "user_controller#index"
 
+  # /tools
+  resource :tools, only: [] do
+    get :rpt_parser
+  end
+
   # /up
   get :up, to: "rails/health#show", as: :rails_health_check
 end
