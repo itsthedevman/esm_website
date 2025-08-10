@@ -3,20 +3,28 @@
 class UserNotificationRoutesController < AuthenticatedController
   # before_action :redirect_if_not_player_mode, if: -> { current_context == current_community }
 
-  def index
-    render locals: {}
+  def server_index
+    # render action_name, locals: {
+    #   servers: Community.servers_by_community,
+    #   channels: load_admin_channels,
+    #   pending_requests: load_pending_requests,
+    #   types: load_types,
+    #   users: load_users,
+    #   type_presets: load_type_presets,
+    #   view_path: "user_notification_routes/server"
+    # }
   end
 
   def player_index
-    render action_name, locals: {
-      user: current_user.clientize,
-      communities: load_player_communities_and_channels,
-      servers: Community.servers_by_community,
-      pending_requests: load_pending_requests,
-      types: load_types,
-      type_presets: load_type_presets,
-      view_path: "user_notification_routes/player"
-    }
+    # render action_name, locals: {
+    #   user: current_user.clientize,
+    #   communities: load_player_communities_and_channels,
+    #   servers: Community.servers_by_community,
+    #   pending_requests: load_pending_requests,
+    #   types: load_types,
+    #   type_presets: load_type_presets,
+    #   view_path: "user_notification_routes/player"
+    # }
   end
 
   def create
@@ -233,67 +241,6 @@ class UserNotificationRoutesController < AuthenticatedController
     @route_params ||= params.permit(:server_ids, :types, :community_id, :channel_id, user_ids: [], types: [], server_ids: [])
   end
 
-  def load_player_communities_and_channels
-    current_user.player_communities.map do |community|
-      {
-        id: community.community_id,
-        name: community.community_name,
-        channels: decorate_channels(community.player_channels(current_user))
-      }
-    end
-  end
-
-  def load_types
-    UserNotificationRoute::TYPES.sort.map { |type| {id: type, name: type.titleize} }
-  end
-
-  def load_type_presets
-    UserNotificationRoute::TYPE_PRESETS.transform_values { |v| v.map(&:titleize) }
-  end
-
-  def load_admin_channels
-    decorate_channels(current_community.admin_channels)
-  end
-
-  def load_users
-    user_discord_ids = ESM.community_users(current_community.id)&.map { |u| u[:id] }
-    users = User.order(:discord_username)
-      .select(:id, :discord_id, :steam_uid, :discord_username)
-      .where(discord_id: user_discord_ids)
-      .where.not(steam_uid: [nil, ""])
-
-    users.map do |user|
-      {
-        id: user.discord_id,
-        name: user.user_name
-      }
-    end
-  end
-
-  def load_pending_requests
-    requests =
-      if current_community
-        current_community.user_notification_routes.pending_community_acceptance
-      else
-        current_user.user_notification_routes.pending_user_acceptance
-      end
-
-    # requests are grouped by user and contain each server they have routes for
-    # Pending requests are by user, channel, and server so some data manipulation has to happen
-    requests.clientize.flat_map do |request|
-      request[:servers].map do |server|
-        {
-          server: server.except(:types),
-          user: request[:user],
-          channel: request[:channel],
-          types: server[:types],
-          community: request[:community],
-          types_expanded: false
-        }
-      end
-    end
-  end
-
   def notify_channel(routes)
     # Everything is grouped so all the requests are for one user, from one server, routing to one channel
     template_route = routes.first
@@ -319,16 +266,5 @@ class UserNotificationRoutesController < AuthenticatedController
         :incoming_envelope: #{user.mention}, this channel will now receive #{types_sentence} XM8 notifications sent to you from #{server}
       STRING
     )
-  end
-
-  def decorate_channels(channels)
-    channels.map do |category, category_channels|
-      category_channels.each do |channel|
-        channel[:routes] = current_context.user_notification_routes.where(channel_id: channel[:id]).clientize
-        channel[:name] = "##{channel[:name]}"
-      end
-
-      {category_name: category[:name], channels: category_channels}
-    end
   end
 end
