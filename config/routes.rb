@@ -39,8 +39,9 @@ Rails.application.routes.draw do
     resources :user_notification_routes,
       path: "notification_routing",
       as: "notification_routing",
-      only: %i[index create update destroy] do
+      only: %i[create update destroy] do
       collection do
+        get :/, action: :server_index
         patch "accept_requests"
         patch "decline_requests"
 
