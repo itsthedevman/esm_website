@@ -43,9 +43,9 @@
       data-bs-dismiss="modal"
     ] Cancel
 
-    = link_to users_path,
+    = button_to users_path,
         method: :delete,
         class: "btn btn-danger",
-        data: { turbo_method: :delete, confirm: "Type 'DELETE' to confirm:" }
+        data: { turbo: false }
       i.bi.bi-trash.me-2
       | Delete My Account

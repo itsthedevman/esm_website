@@ -59,21 +59,11 @@ class UsersController < AuthenticatedController
   # end
 
   def destroy
-    raise "destroy"
-    # return redirect_to root_path if !current_user
+    current_user.destroy!
+    sign_out(current_user)
 
-    # if current_user.destroy
-    #   sign_out(current_user)
-    #   flash[:success] = "Your account has been deleted"
-    # else
-    #   flash[:alert] = {
-    #     title: "Well... This is awkward",
-    #     message: "We failed to delete your account, please join our Discord and notify a developer so we can take care of it for you.",
-    #     hide_after: 8000
-    #   }
-    # end
-
-    # redirect_to root_path
+    flash[:success] = "Your account has been deleted"
+    redirect_to root_path
   end
 
   def register
