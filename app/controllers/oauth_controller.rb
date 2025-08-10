@@ -17,25 +17,25 @@ class OAuthController < Devise::OmniauthCallbacksController
         message: "If you would like to change your Steam account, click the 'Deregister' button",
         hide_after: 7000
       }
-      return redirect_to edit_user_path(current_user.discord_id)
+
+      return redirect_to edit_users_path
     end
 
     steam_info = request.env["omniauth.auth"]
 
-    if User.exists?(steam_uid: steam_info[:uid])
+    if ESM::User.exists?(steam_uid: steam_info[:uid])
       session[:transfer_steam_account] = steam_info[:uid]
-      return redirect_to edit_user_path(current_user.discord_id, already_registered: true)
+      return redirect_to edit_user_path(already_registered: true)
     end
 
     current_user.update(steam_uid: steam_info[:uid])
 
     flash[:success] = {
       title: "Welcome #{current_user.steam_data.username}!",
-      message: "You are now registered with ESM<br/>We've sent you a message via Discord to help you get started",
-      hide_after: 8000
+      body: "You are now registered with ESM<br/>We've sent you a message via Discord to help you get started"
     }
 
-    ESM.send_message(
+    ESM.bot.send_message(
       channel_id: current_user.discord_id,
       message: {
         author: {
@@ -44,7 +44,7 @@ class OAuthController < Devise::OmniauthCallbacksController
         },
         title: "Successfully Registered!",
         description: "You have been registered with Exile Server Manager. This allows you to use ESM on any server running ESM that you join. You don't even have to be in their Discord!\n**Below is some important information to get you started.**",
-        color: ESM::COLORS::GREEN,
+        color: :green,
         fields: [{
           name: "Getting Started",
           value: "First time using ESM or need a refresher? Come read the [Getting Started](https://www.esmbot.com/wiki) article to help get you acquainted"
@@ -55,7 +55,7 @@ class OAuthController < Devise::OmniauthCallbacksController
       }
     )
 
-    redirect_to edit_user_path(current_user.discord_id)
+    redirect_to edit_users_path
   end
 
   def failure
