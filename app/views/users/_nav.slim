@@ -1,8 +1,8 @@
-#user-sidebar.sidebar
+.sidebar
   / User Header
   .card.mb-4
     .card-body
-      .d-flex.align-items-center.mb-2
+      .d-flex.align-items-center
         img.rounded-circle.me-3 src=current_user.avatar_url alt=current_user.discord_username width="48" height="48"
         div
           h4.mb-1.fw-bold = current_user.discord_username
