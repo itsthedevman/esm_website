@@ -5,6 +5,12 @@ class UsersController < AuthenticatedController
   before_action :authenticate_user!, except: :register
 
   def edit
+    id_aliases = current_user.id_aliases
+      .includes(:community, :server)
+      .sort_by(:value).case_insensitive
+      .to_a
+
+    render locals: {id_aliases:}
   end
 
   # def transfer_account

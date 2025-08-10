@@ -77,117 +77,116 @@
 
   = form_with model: current_user, url: users_path, scope: :user, method: :patch do |f|
     / Defaults Card
-    .card.mb-4
-      .card-header
-        h4.mb-0
-          i.bi.bi-star.text-warning.me-2
-          | Defaults
+    = f.fields_for :defaults do |f|
+      .card.mb-4
+        .card-header
+          h4.mb-0
+            i.bi.bi-star.text-warning.me-2
+            | Defaults
 
-      .card-body
-        p.text-muted.small.mb-4
-          | These community and/or servers will be used if no community or server ID is provided for a command
-          small.text-muted.fst-italic.ms-1
-            | *with some exceptions
+        .card-body
+          p.text-muted.small.mb-4
+            | These community and/or servers will be used if no community or server ID is provided for a command
+            small.text-muted.fst-italic.ms-1
+              | *with some exceptions
 
-        .row.g-3
-          .col-md-6
-            = f.label :default_community_id, "Default Community", class: "form-label fw-medium"
-            = f.select :default_community_id,
-                options_for_select([ \
-                  ["Select a community...", ""],
-                  ["Example Community (abc4)", "1"],
-                  ["Test Server (xyz9)", "2"] \
-                ]),
-                {},
-                class: "form-select"
-            small.text-muted.mt-1 Used when no community ID is specified
+          .row.g-3
+            .col-md-6
+              = f.label :default_community_id, "Default Community", class: "form-label fw-medium"
+              = f.select :default_community_id,
+                  options_for_select([ \
+                    ["Select a community...", ""],
+                    ["Example Community (abc4)", "1"],
+                    ["Test Server (xyz9)", "2"] \
+                  ]),
+                  {},
+                  class: "form-select"
+              small.text-muted.mt-1 Used when no community ID is specified
 
-          .col-md-6
-            = f.label :default_server_id, "Default Server", class: "form-label fw-medium"
-            = f.select :default_server_id,
-                options_for_select([ \
-                  ["Select a server...", ""],
-                  ["abc4_altis_main", "1"],
-                  ["abc4_tanoa_test", "2"] \
-                ]),
-                {},
-                class: "form-select"
-            small.text-muted.mt-1 Used when no server ID is specified
+            .col-md-6
+              = f.label :default_server_id, "Default Server", class: "form-label fw-medium"
+              = f.select :default_server_id,
+                  options_for_select([ \
+                    ["Select a server...", ""],
+                    ["abc4_altis_main", "1"],
+                    ["abc4_tanoa_test", "2"] \
+                  ]),
+                  {},
+                  class: "form-select"
+              small.text-muted.mt-1 Used when no server ID is specified
 
     / Aliases Card
-    .card.mb-4
-      .card-header.d-flex.align-items-center.justify-content-between
-        h4.mb-0
-          i.bi.bi-bookmark.text-info.me-2
-          | Aliases
-          span.badge.bg-secondary.ms-2 3
-        button.btn.btn-outline-primary.btn-sm[
-          type="button"
-          data-bs-toggle="modal"
-          data-bs-target="#create_alias_modal"
-        ]
-          i.bi.bi-plus.me-1
-          | Add Alias
+    = f.fields_for :aliases do |f|
+      .card.mb-4
+        .card-header.d-flex.align-items-center.justify-content-between
+          h4.mb-0
+            i.bi.bi-bookmark.text-info.me-2
+            | Aliases
+            span.badge.bg-secondary.ms-2
+              = id_aliases.size
+          button.btn.btn-outline-primary.btn-sm[
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#create_alias_modal"
+          ]
+            i.bi.bi-plus.me-1
+            | Add Alias
 
-      .card-body
-        p.text-muted.small.mb-4
-          | Create shortcuts for frequently used communities and servers. Aliases are unique to you and can be used in place of community/server IDs.
+        .card-body
+          p.text-muted.small.mb-4
+            | Create shortcuts for frequently used communities and servers. Aliases are unique to you and can be used in place of community/server IDs.
 
-        .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-4
-          h6.text-info.mb-2 Alias Rules
-          ul.small.mb-0
-            li Up to 64 characters in length <em class="text-muted">(though why would you want one that long?)</em>
-            li Cannot already exist as an alias of the same type
-            li You can create the same alias for a community and a server, but not for two communities or two servers
+          .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-4
+            h6.text-info.mb-2 Alias Rules
+            ul.small.mb-0
+              li Up to 64 characters in length <em class="text-muted">(though why would you want one that long?)</em>
+              li Cannot already exist as an alias of the same type
+              li You can create the same alias for a community and a server, but not for two communities or two servers
 
-        / Example explanation
-        .card.bg-secondary.bg-opacity-10.border-secondary.mb-4
-          .card-body.py-3
-            h6.text-light.mb-2 Example Usage
-            p.small.mb-2
-              | Instead of typing: #{command_usage(:servers, arguments: {community_id: "exile"})}
-            p.small.mb-0
-              | Create alias "ex" for "exile" and use: #{command_usage(:servers, arguments: {community_id: "ex"})}
+          / Example explanation
+          .card.bg-secondary.bg-opacity-10.border-secondary.mb-4
+            .card-body.py-3
+              h6.text-light.mb-2 Example Usage
+              p.small.mb-2
+                | Instead of typing: #{command_usage(:servers, arguments: {community_id: "exile"})}
+              p.small.mb-0
+                | Create alias "ex" for "exile" and use: #{command_usage(:servers, arguments: {community_id: "ex"})}
 
-        / Aliases cards
-        .d-flex.flex-column.gap-3
-          .col.card.bg-dark.border-secondary
-            .card-body
-              .row.align-items-center
-                .col-2
-                  span.badge.bg-warning.text-dark.fs-6.px-3.py-2.font-monospace.text-wrap.text-break
-                    | ex
-                .col
-                  .d-flex.align-items-center
-                    i.bi.bi-discord.text-primary.fs-4.me-2
-                    div
-                      .text-light.fw-medium Example Community
-                      small.text-muted abc4
-                .col-2
-                  .d-flex.gap-1.justify-content-end
-                    button.btn.btn-outline-primary.btn-sm[type="button" title="Edit alias"]
-                      i.bi.bi-pencil
-                    button.btn.btn-outline-danger.btn-sm[type="button" title="Delete alias"]
-                      i.bi.bi-trash
+          / Aliases cards
+          .d-flex.flex-column.gap-3
+            - id_aliases.each do |aliases|
+              .card.bg-dark.border-secondary
+                .card-body
+                  .row.align-items-center
+                    .col-2
+                      span[
+                        class=class_names( \
+                          "badge",
+                          "fs-6", "px-3", "py-2",
+                          "font-monospace", "text-wrap", "text-break",
+                          "bg-primary" => aliases.community_id,
+                          "bg-success" => aliases.server_id \
+                        )
+                      ]
+                        = aliases.value
+                    .col
+                      .d-flex.align-items-center
+                        - if aliases.community
+                          i.bi.bi-discord.text-primary.fs-4.me-3
+                        - else
+                          i.bi.bi-server.text-success.fs-4.me-3
 
-          .card.bg-dark.border-secondary
-            .card-body
-              .row.align-items-center
-                .col-2
-                  span.badge.bg-warning.text-dark.fs-6.px-3.py-2.font-monospace.text-wrap.text-break
-                    | main
-                .col
-                  .d-flex.align-items-center
-                    i.bi.bi-server.text-success.fs-4.me-2
-                    div
-                      .text-light.fw-medium Altis Main Server
-                      small.text-muted abc4_altis_main
-                .col-2
-                  .d-flex.gap-1.justify-content-end
-                    button.btn.btn-outline-primary.btn-sm[type="button" title="Edit alias"]
-                      i.bi.bi-pencil
-                    button.btn.btn-outline-danger.btn-sm[type="button" title="Delete alias"]
-                      i.bi.bi-trash
+                        div
+                          .text-light.fw-medium
+                            = aliases.community&.community_name || aliases.server&.server_name
+                          small.text-muted
+                            = aliases.community&.community_id || aliases.server&.server_id
+                    .col-2
+                      .d-flex.gap-1.justify-content-end
+                        button.btn.btn-outline-primary.btn-sm[type="button" title="Edit alias"]
+                          i.bi.bi-pencil
+                        button.btn.btn-outline-danger.btn-sm[type="button" title="Delete alias"]
+                          i.bi.bi-trash
 
     / Notification Preferences Card
     .card.mb-4
