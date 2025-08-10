@@ -152,6 +152,8 @@
               p.small.mb-0
                 | Create alias "ex" for "exile" and use: #{command_usage(:servers, arguments: {community_id: "ex"})}
 
+          hr.pb-2
+
           / Aliases cards
           .d-flex.flex-column.gap-3
             - id_aliases.each do |aliases|
@@ -189,9 +191,8 @@
                           i.bi.bi-trash
 
     / Save Section
-    .d-flex.justify-content-between.align-items-center.py-4.my-4.border-top.border-bottom
-      .me-2
-        h5.mb-1.text-success Ready to save your changes!
+    .d-flex.justify-content-between.align-items-center.pb-4.mb-4.border-bottom
+      div
 
       .d-flex.gap-3
         = link_to "Cancel", edit_users_path, class: "btn btn-outline-secondary btn-lg"
