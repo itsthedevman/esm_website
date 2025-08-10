@@ -19,12 +19,10 @@ Rails.application.routes.draw do
   # /account
   resource :users, only: %i[edit destroy], path: "account" do
     collection do
+      get :deregister
       # post "cancel_transfer"
       # get "transfer_account"
-      # get "deregister"
     end
-
-    ###
 
     # /account/notification_routing
     resources :user_notification_routes,
@@ -43,12 +41,6 @@ Rails.application.routes.draw do
         delete :destroy_many
       end
     end
-
-    #   resources :user_aliases, path: "aliases", as: "aliases", only: [:create, :update, :destroy]
-
-    #   resources :user_defaults, path: "defaults", as: "defaults", only: [] do
-    #     patch "/", action: :update, on: :collection
-    #   end
   end
 
   # /communities

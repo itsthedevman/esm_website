@@ -83,12 +83,9 @@ class UsersController < AuthenticatedController
   end
 
   def deregister
-    raise "Deregister"
-    # return redirect_to root_path if !current_user
+    current_user.deregister!
 
-    # current_user.deregister!
-
-    # flash[:success] = "You've been deregistered.<br/>You can reregister via the Sign into Steam button"
-    # redirect_to edit_user_path(current_user.discord_id)
+    flash[:success] = "You've been deregistered.<br/>You can reregister via the Sign into Steam button"
+    redirect_to edit_users_path
   end
 end

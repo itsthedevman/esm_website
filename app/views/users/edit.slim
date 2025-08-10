@@ -63,14 +63,15 @@
               .alert.alert-warning.border-warning.bg-warning.bg-opacity-10.mb-0
                 h6.text-warning.mb-2 Danger Zone
                 p.small.mb-3 This will unlink your Steam account but keep your Discord registration
-                = link_to "Deregister", "#", class: "btn btn-outline-danger btn-sm", data: { confirm: "Are you sure you want to deregister?" }
+                = link_to "Deregister", deregister_users_path, class: "btn btn-outline-danger btn-sm", data: { confirm: "Are you sure you want to deregister?" }
 
             - else
               .text-center.py-4
                 i.bi.bi-steam.display-4.text-muted.mb-3
                 h6.text-light.mb-3 Link Your Steam Account
                 p.text-muted.mb-4 Connect your Steam account to use ESM to its fullest potential
-                = link_to "#", class: "btn btn-success"
+                = button_to user_steam_omniauth_authorize_path,
+                  class: "btn btn-success text-white", data: {turbo: false}
                   i.bi.bi-steam.me-2
                   | Sign in through Steam
 
@@ -333,7 +334,7 @@
       .d-flex.gap-3
         = link_to "Cancel", edit_users_path, class: "btn btn-outline-secondary btn-lg"
 
-        = f.submit "Save All Settings", class: "btn btn-success btn-lg"
+        = f.submit "Save All Settings", class: "btn btn-success text-white btn-lg"
           i.bi.bi-check-circle.me-2
           | Save All Settings
 
