@@ -4,188 +4,338 @@
     h1.mb-2 My Account
     p.lead.text-muted Manage your ESM profile and preferences
 
-  / Profile Card
-  .card.mb-4
-    .card-header
-      h4.mb-0
-        i.bi.bi-person.text-primary.me-2
-        | Profile
+  = form_with model: current_user, url: users_path, scope: :user, method: :patch do |f|
+    / Profile Card
+    .card.mb-4
+      .card-header
+        h4.mb-0
+          i.bi.bi-person.text-primary.me-2
+          | Profile
 
-    .card-body
-      .row.g-4
-        / Discord Profile
-        .col-md-6
-          h5.mb-3
-            i.bi.bi-discord.text-primary.me-2
-            | Discord Profile
+      .card-body
+        .row.g-4
+          / Discord Profile
+          .col-md-6
+            h5.mb-3
+              i.bi.bi-discord.text-primary.me-2
+              | Discord Profile
 
-          .d-flex.align-items-start.mb-3
-            img.rounded-circle.me-3 src=current_user.avatar_url alt=current_user.discord_username width="64" height="64"
-            div.flex-fill
-              .mb-2
-                label.form-label.small.text-muted.fw-medium USERNAME
-                .text-light = current_user.discord_username
-              .mb-2
-                label.form-label.small.text-muted.fw-medium DISCORD ID
-                .text-light.font-monospace = current_user.discord_id
-
-          .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-0
-            h6.text-info.mb-2 Not the correct account?
-            p.small.mb-2 Please follow these steps to switch accounts:
-            ol.small.mb-0
-              li Log out by clicking your avatar in the top right
-              li Click Login at the top right
-              li On Discord's login screen, click the "Not you?" link
-
-        / Steam Profile
-        .col-md-6
-          h5.mb-3
-            i.bi.bi-steam.text-success.me-2
-            | Steam Profile
-
-          - if current_user.registered?
             .d-flex.align-items-start.mb-3
-              - if current_user.steam_data&.avatar
-                img.rounded-circle.me-3 src=current_user.steam_data.avatar alt=current_user.steam_data.username width="64" height="64"
-              - else
-                img.rounded-circle.me-3 src="/default-steam-profile.png" alt="Default Steam Avatar" width="64" height="64"
-
+              img.rounded-circle.me-3 src=current_user.avatar_url alt=current_user.discord_username width="64" height="64"
               div.flex-fill
                 .mb-2
                   label.form-label.small.text-muted.fw-medium USERNAME
-                  .text-light = current_user.steam_data&.username
+                  .text-light = current_user.discord_username
                 .mb-2
-                  label.form-label.small.text-muted.fw-medium STEAM UID
-                  .text-light.font-monospace
-                    = link_to current_user.steam_uid, current_user.steam_data&.profile_url, target: "_blank", class: "text-light text-decoration-none"
+                  label.form-label.small.text-muted.fw-medium DISCORD ID
+                  .text-light.font-monospace = current_user.discord_id
 
-            .alert.alert-warning.border-warning.bg-warning.bg-opacity-10.mb-0
-              h6.text-warning.mb-2 Danger Zone
-              p.small.mb-3 This will unlink your Steam account but keep your Discord registration
-              = link_to "Deregister", "#", class: "btn btn-outline-danger btn-sm", data: { confirm: "Are you sure you want to deregister?" }
+            .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-0
+              h6.text-info.mb-2 Not the correct account?
+              p.small.mb-2 Please follow these steps to switch accounts:
+              ol.small.mb-0
+                li Log out by clicking your avatar in the top right
+                li Click Login at the top right
+                li On Discord's login screen, click the "Not you?" link
 
-          - else
-            .text-center.py-4
-              i.bi.bi-steam.display-4.text-muted.mb-3
-              h6.text-light.mb-3 Link Your Steam Account
-              p.text-muted.mb-4 Connect your Steam account to use ESM to its fullest potential
-              = link_to "#", class: "btn btn-success"
-                i.bi.bi-steam.me-2
-                | Sign in through Steam
+          / Steam Profile
+          .col-md-6
+            h5.mb-3
+              i.bi.bi-steam.text-success.me-2
+              | Steam Profile
 
-  / Defaults Card
-  .card.mb-4
-    .card-header
-      h4.mb-0
-        i.bi.bi-star.text-warning.me-2
-        | Defaults
+            - if current_user.registered?
+              .d-flex.align-items-start.mb-3
+                - if current_user.steam_data&.avatar
+                  img.rounded-circle.me-3 src=current_user.steam_data.avatar alt=current_user.steam_data.username width="64" height="64"
+                - else
+                  img.rounded-circle.me-3 src="/default-steam-profile.png" alt="Default Steam Avatar" width="64" height="64"
 
-    .card-body
-      p.text-muted.small.mb-4
-        | These community and/or servers will be used if no community or server ID is provided for a command
-        small.text-muted.fst-italic.ms-1
-          | *with some exceptions
+                div.flex-fill
+                  .mb-2
+                    label.form-label.small.text-muted.fw-medium USERNAME
+                    .text-light = current_user.steam_data&.username
+                  .mb-2
+                    label.form-label.small.text-muted.fw-medium STEAM UID
+                    .text-light.font-monospace
+                      = link_to current_user.steam_uid, current_user.steam_data&.profile_url, target: "_blank", class: "text-light text-decoration-none"
 
-      = form_with url: "#", method: :patch, class: "row g-3" do |f|
-        .col-md-6
-          = f.label :default_community_id, "Default Community", class: "form-label fw-medium"
-          = f.select :default_community_id,
-              options_for_select([ \
-                ["Select a community...", ""],
-                ["Example Community (abc4)", "1"],
-                ["Test Server (xyz9)", "2"] \
-              ]),
-              {},
-              class: "form-select"
-          small.text-muted.mt-1 Used when no community ID is specified
+              .alert.alert-warning.border-warning.bg-warning.bg-opacity-10.mb-0
+                h6.text-warning.mb-2 Danger Zone
+                p.small.mb-3 This will unlink your Steam account but keep your Discord registration
+                = link_to "Deregister", "#", class: "btn btn-outline-danger btn-sm", data: { confirm: "Are you sure you want to deregister?" }
 
-        .col-md-6
-          = f.label :default_server_id, "Default Server", class: "form-label fw-medium"
-          = f.select :default_server_id,
-              options_for_select([ \
-                ["Select a server...", ""],
-                ["abc4_altis_main", "1"],
-                ["abc4_tanoa_test", "2"] \
-              ]),
-              {},
-              class: "form-select"
-          small.text-muted.mt-1 Used when no server ID is specified
+            - else
+              .text-center.py-4
+                i.bi.bi-steam.display-4.text-muted.mb-3
+                h6.text-light.mb-3 Link Your Steam Account
+                p.text-muted.mb-4 Connect your Steam account to use ESM to its fullest potential
+                = link_to "#", class: "btn btn-success"
+                  i.bi.bi-steam.me-2
+                  | Sign in through Steam
 
-        .col-12
-          = f.submit "Save Defaults", class: "btn btn-success"
+    / Defaults Card
+    .card.mb-4
+      .card-header
+        h4.mb-0
+          i.bi.bi-star.text-warning.me-2
+          | Defaults
 
-  / Aliases Card
-  .card.mb-4
-    .card-header.d-flex.align-items-center.justify-content-between
-      h4.mb-0
-        i.bi.bi-bookmark.text-info.me-2
-        | Aliases
-        span.badge.bg-secondary.ms-2 3
-      button.btn.btn-outline-primary.btn-sm[
-        data-bs-toggle="modal"
-        data-bs-target="#create_alias_modal"
-      ]
-        i.bi.bi-plus.me-1
-        | Add Alias
+      .card-body
+        p.text-muted.small.mb-4
+          | These community and/or servers will be used if no community or server ID is provided for a command
+          small.text-muted.fst-italic.ms-1
+            | *with some exceptions
 
-    .card-body
-      p.text-muted.small.mb-4
-        | Create shortcuts for frequently used communities and servers. Aliases are unique to you and can be used in place of community/server IDs.
+        .row.g-3
+          .col-md-6
+            = f.label :default_community_id, "Default Community", class: "form-label fw-medium"
+            = f.select :default_community_id,
+                options_for_select([ \
+                  ["Select a community...", ""],
+                  ["Example Community (abc4)", "1"],
+                  ["Test Server (xyz9)", "2"] \
+                ]),
+                {},
+                class: "form-select"
+            small.text-muted.mt-1 Used when no community ID is specified
 
-      .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-4
-        h6.text-info.mb-2 Alias Rules
-        ul.small.mb-0
-          li Up to 64 characters in length <em class="text-muted">(though why would you want one that long?)</em>
-          li Cannot already exist as an alias of the same type
-          li You can create the same alias for a community and a server, but not for two communities or two servers
+          .col-md-6
+            = f.label :default_server_id, "Default Server", class: "form-label fw-medium"
+            = f.select :default_server_id,
+                options_for_select([ \
+                  ["Select a server...", ""],
+                  ["abc4_altis_main", "1"],
+                  ["abc4_tanoa_test", "2"] \
+                ]),
+                {},
+                class: "form-select"
+            small.text-muted.mt-1 Used when no server ID is specified
 
-      / Example explanation
-      .card.bg-secondary.bg-opacity-10.border-secondary.mb-4
-        .card-body.py-3
-          h6.text-light.mb-2 Example Usage
-          p.small.mb-2
-            | Instead of typing: #{command_usage(:servers, arguments: {community_id: "exile"})}
-          p.small.mb-0
-            | Create alias "ex" for "exile" and use: #{command_usage(:servers, arguments: {community_id: "ex"})}
+    / Aliases Card
+    .card.mb-4
+      .card-header.d-flex.align-items-center.justify-content-between
+        h4.mb-0
+          i.bi.bi-bookmark.text-info.me-2
+          | Aliases
+          span.badge.bg-secondary.ms-2 3
+        button.btn.btn-outline-primary.btn-sm[
+          type="button"
+          data-bs-toggle="modal"
+          data-bs-target="#create_alias_modal"
+        ]
+          i.bi.bi-plus.me-1
+          | Add Alias
 
-      / Aliases cards
-      .d-flex.flex-column.gap-3
-        .card.bg-dark.border-secondary
+      .card-body
+        p.text-muted.small.mb-4
+          | Create shortcuts for frequently used communities and servers. Aliases are unique to you and can be used in place of community/server IDs.
+
+        .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-4
+          h6.text-info.mb-2 Alias Rules
+          ul.small.mb-0
+            li Up to 64 characters in length <em class="text-muted">(though why would you want one that long?)</em>
+            li Cannot already exist as an alias of the same type
+            li You can create the same alias for a community and a server, but not for two communities or two servers
+
+        / Example explanation
+        .card.bg-secondary.bg-opacity-10.border-secondary.mb-4
+          .card-body.py-3
+            h6.text-light.mb-2 Example Usage
+            p.small.mb-2
+              | Instead of typing: #{command_usage(:servers, arguments: {community_id: "exile"})}
+            p.small.mb-0
+              | Create alias "ex" for "exile" and use: #{command_usage(:servers, arguments: {community_id: "ex"})}
+
+        / Aliases cards
+        .d-flex.flex-column.gap-3
+          .col.card.bg-dark.border-secondary
+            .card-body
+              .row.align-items-center
+                .col-2
+                  span.badge.bg-warning.text-dark.fs-6.px-3.py-2.font-monospace.text-wrap.text-break
+                    | ex
+                .col
+                  .d-flex.align-items-center
+                    i.bi.bi-discord.text-primary.fs-4.me-2
+                    div
+                      .text-light.fw-medium Example Community
+                      small.text-muted abc4
+                .col-2
+                  .d-flex.gap-1.justify-content-end
+                    button.btn.btn-outline-primary.btn-sm[type="button" title="Edit alias"]
+                      i.bi.bi-pencil
+                    button.btn.btn-outline-danger.btn-sm[type="button" title="Delete alias"]
+                      i.bi.bi-trash
+
+          .card.bg-dark.border-secondary
+            .card-body
+              .row.align-items-center
+                .col-2
+                  span.badge.bg-warning.text-dark.fs-6.px-3.py-2.font-monospace.text-wrap.text-break
+                    | main
+                .col
+                  .d-flex.align-items-center
+                    i.bi.bi-server.text-success.fs-4.me-2
+                    div
+                      .text-light.fw-medium Altis Main Server
+                      small.text-muted abc4_altis_main
+                .col-2
+                  .d-flex.gap-1.justify-content-end
+                    button.btn.btn-outline-primary.btn-sm[type="button" title="Edit alias"]
+                      i.bi.bi-pencil
+                    button.btn.btn-outline-danger.btn-sm[type="button" title="Delete alias"]
+                      i.bi.bi-trash
+
+    / Notification Preferences Card
+    .card.mb-4
+      .card-header
+        h4.mb-0
+          i.bi.bi-bell.text-warning.me-2
+          | XM8 Notification Preferences
+
+      .card-body
+        p.text-muted.small.mb-4
+          | Control which XM8 notifications you receive by default. These settings apply to all servers unless overridden by specific routing rules.
+
+        / Territory Events
+        .card.bg-dark.border-secondary.mb-4
           .card-body
-            .row.align-items-center
-              .col-3
-                span.badge.bg-warning.text-dark.fs-6.px-3.py-2.font-monospace.text-wrap.text-break
-                  | ex
-              .col
-                .d-flex.align-items-center
-                  i.bi.bi-discord.text-primary.fs-4.me-2
-                  div
-                    .text-light.fw-medium Example Community
-                    small.text-muted abc4
-              .col-2
-                .d-flex.gap-1.justify-content-end
-                  button.btn.btn-outline-primary.btn-sm[title="Edit alias"]
-                    i.bi.bi-pencil
-                  button.btn.btn-outline-danger.btn-sm[title="Delete alias"]
-                    i.bi.bi-trash
-        .card.bg-dark.border-secondary
+            h5.mb-3
+              i.bi.bi-house.text-success.me-2
+              | Territory Events
+            .row.g-3
+              .col-md-6
+                .form-check.form-switch
+                  = f.check_box :base_raid,
+                      class: "form-check-input",
+                      checked: true
+                  = f.label :base_raid, class: "form-check-label fw-medium" do
+                    | Base Raids
+                small.text-muted.d-block.mt-1 When your territory is under attack
+
+              .col-md-6
+                .form-check.form-switch
+                  = f.check_box :flag_stolen,
+                      class: "form-check-input",
+                      checked: true
+                  = f.label :flag_stolen, class: "form-check-label fw-medium" do
+                    | Flag Stolen
+                small.text-muted.d-block.mt-1 When your territory flag is stolen
+
+              .col-md-6
+                .form-check.form-switch
+                  = f.check_box :flag_restored,
+                      class: "form-check-input",
+                      checked: true
+                  = f.label :flag_restored, class: "form-check-label fw-medium" do
+                    | Flag Restored
+                small.text-muted.d-block.mt-1 When your territory flag is restored
+
+              .col-md-6
+                .form-check.form-switch
+                  = f.check_box :flag_steal_started,
+                      class: "form-check-input",
+                      checked: false
+                  = f.label :flag_steal_started, class: "form-check-label fw-medium" do
+                    | Flag Steal Started
+                small.text-muted.d-block.mt-1 When someone starts stealing your flag
+
+        / Combat Events
+        .card.bg-dark.border-secondary.mb-4
           .card-body
-            .row.align-items-center
-              .col-3
-                span.badge.bg-warning.text-dark.fs-6.px-3.py-2.font-monospace.text-wrap.text-break
-                  | main
-              .col
-                .d-flex.align-items-center
-                  i.bi.bi-discord.text-primary.fs-4.me-2
-                  div
-                    .text-light.fw-medium Example Community
-                    small.text-muted abc4
-              .col-2
-                .d-flex.gap-1.justify-content-end
-                  button.btn.btn-outline-primary.btn-sm[title="Edit alias"]
-                    i.bi.bi-pencil
-                  button.btn.btn-outline-danger.btn-sm[title="Delete alias"]
-                    i.bi.bi-trash
+            h5.mb-3
+              i.bi.bi-crosshair.text-danger.me-2
+              | Combat Events
+            .row.g-3
+              .col-md-6
+                .form-check.form-switch
+                  = f.check_box :grind_started,
+                      class: "form-check-input",
+                      checked: true
+                  = f.label :grind_started, class: "form-check-label fw-medium" do
+                    | Grind Started
+                small.text-muted.d-block.mt-1 When someone starts grinding your territory
+
+              .col-md-6
+                .form-check.form-switch
+                  = f.check_box :hack_started,
+                      class: "form-check-input",
+                      checked: true
+                  = f.label :hack_started, class: "form-check-label fw-medium" do
+                    | Hack Started
+                small.text-muted.d-block.mt-1 When someone starts hacking your territory
+
+              .col-md-6
+                .form-check.form-switch
+                  = f.check_box :charge_plant_started,
+                      class: "form-check-input",
+                      checked: false
+                  = f.label :charge_plant_started, class: "form-check-label fw-medium" do
+                    | Charge Plant Started
+                small.text-muted.d-block.mt-1 When explosives are planted at your territory
+
+        / Economy Events
+        .card.bg-dark.border-secondary.mb-4
+          .card-body
+            h5.mb-3
+              i.bi.bi-currency-dollar.text-warning.me-2
+              | Economy Events
+            .row.g-3
+              .col-md-6
+                .form-check.form-switch
+                  = f.check_box :protection_money_due,
+                      class: "form-check-input",
+                      checked: true
+                  = f.label :protection_money_due, class: "form-check-label fw-medium" do
+                    | Protection Money Due
+                small.text-muted.d-block.mt-1 When territory payments are due
+
+              .col-md-6
+                .form-check.form-switch
+                  = f.check_box :protection_money_paid,
+                      class: "form-check-input",
+                      checked: false
+                  = f.label :protection_money_paid, class: "form-check-label fw-medium" do
+                    | Protection Money Paid
+                small.text-muted.d-block.mt-1 When territory payments are made
+
+              .col-md-6
+                .form-check.form-switch
+                  = f.check_box :marxet_item_sold,
+                      class: "form-check-input",
+                      checked: true
+                  = f.label :marxet_item_sold, class: "form-check-label fw-medium" do
+                    | MarXet Item Sold
+                small.text-muted.d-block.mt-1 When your marketplace items sell
+
+        / Custom Events
+        .card.bg-dark.border-secondary.mb-0
+          .card-body
+            h5.mb-3
+              i.bi.bi-gear.text-info.me-2
+              | Custom Events
+            .row.g-3
+              .col-md-6
+                .form-check.form-switch
+                  = f.check_box :custom,
+                      class: "form-check-input",
+                      checked: true
+                  = f.label :custom, class: "form-check-label fw-medium" do
+                    | Custom Notifications
+                small.text-muted.d-block.mt-1 Server-defined custom notification events
+
+    / Save Section
+    .d-flex.justify-content-between.align-items-center.py-4.my-4.border-top.border-bottom
+      .me-2
+        h5.mb-1.text-success Ready to save your changes!
+
+      .d-flex.gap-3
+        = link_to "Cancel", edit_users_path, class: "btn btn-outline-secondary btn-lg"
+
+        = f.submit "Save All Settings", class: "btn btn-success btn-lg"
+          i.bi.bi-check-circle.me-2
+          | Save All Settings
 
   / Danger Zone Card
   .card.border-danger.bg-danger.bg-opacity-10
@@ -200,6 +350,7 @@
           h6.text-danger.mb-1 Delete Account
           p.text-muted.mb-0 You can delete your account at any time. Logging back into our website will re-create your account.
         button.btn.btn-danger[
+          type="button"
           data-bs-toggle="modal"
           data-bs-target="#delete_modal"
         ]
