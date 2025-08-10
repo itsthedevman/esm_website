@@ -148,63 +148,73 @@
           p.small.mb-0
             | Create alias "ex" for "exile" and use: #{command_usage(:servers, arguments: {community_id: "ex"})}
 
-      / Aliases table
-      .table-responsive
-        table.table.table-hover
-          thead
-            tr
-              th Alias
-              th
-              th Target
-              th.w-auto Actions
-          tbody
-            tr
-              td
-                code.text-warning.fw-bold ex
-              td
-                i.bi.bi-discord.text-primary title="Community"
-              td
-                span.text-light Example Community
-                br
-                small.text-muted abc4
-              td.text-end
-                .d-flex.gap-1.justify-content-end
-                  button.btn.btn-outline-primary.btn-sm
-                    i.bi.bi-pencil
-                  button.btn.btn-outline-danger.btn-sm
-                    i.bi.bi-trash
+      / Aliases cards
+      .row.g-3
+        .col-md-6
+          .card.bg-dark.border-secondary
+            .card-body.d-flex.align-items-center.justify-content-between
+              .d-flex.align-items-center.flex-fill
+                / Alias badge
+                .me-3
+                  span.badge.bg-warning.text-dark.fs-6.px-3.py-2.font-monospace ex
 
-            tr
-              td
-                code.text-warning.fw-bold main
-              td
-                i.bi.bi-server.text-success title="Server"
-              td
-                span.text-light Altis Main Server
-                br
-                small.text-muted abc4_altis_main
-              td.text-end
-                .d-flex.gap-1.justify-content-end
-                  button.btn.btn-outline-primary.btn-sm
-                    i.bi.bi-pencil
-                  button.btn.btn-outline-danger.btn-sm
-                    i.bi.bi-trash
+                / Type icon and target info
+                .d-flex.align-items-center.me-3
+                  i.bi.bi-discord.text-primary.fs-4.me-2
+                  div
+                    .text-light.fw-medium Example Community
+                    small.text-muted abc4
 
-            tr
-              td
-                code.text-warning.fw-bold test
-              td
-                i.bi.bi-server.text-success title="Server"
-              td
-                span.text-light Tanoa Test Server
-                br
-                small.text-muted abc4_tanoa_test
-              td.text-end
-                .d-flex.gap-1.justify-content-end
-                  button.btn.btn-outline-primary.btn-sm
-                    i.bi.bi-pencil
-                  button.btn.btn-outline-danger.btn-sm
-                    i.bi.bi-trash
+              / Actions
+              .d-flex.gap-1.flex-shrink-0
+                button.btn.btn-outline-primary.btn-sm[title="Edit alias"]
+                  i.bi.bi-pencil
+                button.btn.btn-outline-danger.btn-sm[title="Delete alias"]
+                  i.bi.bi-trash
+
+        .col-md-6
+          .card.bg-dark.border-secondary
+            .card-body.d-flex.align-items-center.justify-content-between
+              .d-flex.align-items-center.flex-fill
+                / Alias badge
+                .me-3
+                  span.badge.bg-warning.text-dark.fs-6.px-3.py-2.font-monospace main
+
+                / Type icon and target info
+                .d-flex.align-items-center.me-3
+                  i.bi.bi-server.text-success.fs-4.me-2
+                  div
+                    .text-light.fw-medium Altis Main Server
+                    small.text-muted abc4_altis_main
+
+              / Actions
+              .d-flex.gap-1.flex-shrink-0
+                button.btn.btn-outline-primary.btn-sm[title="Edit alias"]
+                  i.bi.bi-pencil
+                button.btn.btn-outline-danger.btn-sm[title="Delete alias"]
+                  i.bi.bi-trash
+
+        .col-md-6
+          .card.bg-dark.border-secondary.h-100
+            .card-body.d-flex.align-items-center.justify-content-between
+              .d-flex.align-items-center.flex-fill
+                / Alias badge
+                .me-3
+                  span.badge.bg-warning.text-dark.fs-6.px-3.py-2.font-monospace test
+
+                / Type icon and target info
+                .d-flex.align-items-center.me-3
+                  i.bi.bi-server.text-success.fs-4.me-2
+                  div
+                    .text-light.fw-medium Tanoa Test Server
+                    small.text-muted abc4_tanoa_test
+
+              / Actions
+              .d-flex.gap-1.flex-shrink-0
+                button.btn.btn-outline-primary.btn-sm[title="Edit alias"]
+                  i.bi.bi-pencil
+                button.btn.btn-outline-danger.btn-sm[title="Delete alias"]
+                  i.bi.bi-trash
 
   / Danger Zone Card
   .card.border-danger.bg-danger.bg-opacity-10
