@@ -51,6 +51,6 @@
     = link_to community_path(current_community.public_id),
         method: :delete,
         class: "btn btn-danger",
-        data: {confirm: "Type '#{current_community.community_id}' to confirm deletion:", turbo_method: :delete}
+        data: {turbo: false}
       i.bi.bi-trash.me-2
       | Delete #{current_community.community_id}

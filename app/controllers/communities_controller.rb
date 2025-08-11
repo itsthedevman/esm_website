@@ -76,14 +76,21 @@ class CommunitiesController < AuthenticatedController
   end
 
   def destroy
-    # if ESM.bot.delete_community(current_community.id, current_user.id)
-    #   flash[:success] = "ESM is no longer a member of #{current_community.community_name}, and any data related to #{current_community.community_id} has been deleted. If you'd like to re-create this community, please re-invite ESM your Discord"
-    #   redirect_to communities_path
-    # else
-    #   Rails.logger.error("ERROR: #{current_community.errors}")
+    success = ESM.bot.delete_community(current_community.id, current_user.id)
 
-    #   redirect_to communities_path, alert: "Failed to delete community<br><span class='esm-text-color-red'>Please log out and log back in again</span><br>If this error persists, please join our Discord and let us know."
-    # end
+    if !success
+      ESM.log!(error: {
+        message: "Failed to delete community",
+        community: current_community,
+        user: current_user,
+        errors: current_community.errors
+      })
+
+      not_found!
+    end
+
+    flash[:success] = "#{current_community.community_name} has been removed from ESM"
+    redirect_to communities_path
   end
 
   private
