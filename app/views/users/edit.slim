@@ -20,7 +20,12 @@
             | Discord Profile
 
           .d-flex.align-items-start.mb-3
-            img.rounded-circle.me-3 src=current_user.avatar_url alt=current_user.discord_username width="64" height="64"
+            img.rounded-circle.me-3.border.border-2.border-primary[
+              src=current_user.avatar_url
+              alt=current_user.discord_username
+              width="64"
+              height="64"
+            ]
             div.flex-fill
               .mb-2
                 label.form-label.small.text-muted.fw-medium USERNAME
@@ -46,9 +51,19 @@
           - if current_user.registered?
             .d-flex.align-items-start.mb-3
               - if current_user.steam_data&.avatar
-                img.rounded-circle.me-3 src=current_user.steam_data.avatar alt=current_user.steam_data.username width="64" height="64"
+                img.rounded-circle.me-3.border.border-2.border-success[
+                  src=current_user.steam_data.avatar
+                  alt=current_user.steam_data.username
+                  width="64"
+                  height="64"
+                ]
               - else
-                img.rounded-circle.me-3 src="/default-steam-profile.png" alt="Default Steam Avatar" width="64" height="64"
+                img.rounded-circle.me-3.border.border-2.border-success[
+                  src="/default-steam-profile.png"
+                  alt="Default Steam Avatar"
+                  width="64"
+                  height="64"
+                ]
 
               div.flex-fill
                 .mb-2
@@ -88,7 +103,7 @@
           p.text-muted.small.mb-4
             | These community and/or servers will be used if no community or server ID is provided for a command
             small.text-muted.fst-italic.ms-1
-              | *with some exceptions
+              | * with some exceptions
 
           .row.g-3
             .col-md-6
