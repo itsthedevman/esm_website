@@ -108,7 +108,7 @@ Rails.application.routes.draw do
   end
 
   # /invite
-  get :invite, to: redirect("https://discordapp.com/api/oauth2/authorize?client_id=417847994197737482&permissions=125952&redirect_uri=https%3A%2F%2Fwww.esmbot.com&scope=bot")
+  get :invite, to: redirect(ESM.bot.invite_url)
 
   # /join
   get :join, to: redirect("https://discord.gg/28Ttc2s")

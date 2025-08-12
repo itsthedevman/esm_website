@@ -2,6 +2,21 @@
 
 class Bot
   #
+  # Generates and returns the invite URL for the bot.
+  #
+  # @return [String] the invite URL for the bot
+  #
+  def self.invite_url
+    client_id = Rails.application.credentials.discord.id
+
+    redirect_uri = URI.encode_uri_component(
+      Rails.env.production? ? "https://esmbot.com" : "http://localhost:3000"
+    )
+
+    "https://discordapp.com/api/oauth2/authorize?client_id=#{client_id}&permissions=125952&redirect_uri=#{redirect_uri}&scope=bot"
+  end
+
+  #
   # @return [DRb::DRbObject] The DRb connection to the bot API server
   #
   def self.instance
