@@ -28,6 +28,7 @@ group :development do
   gem "capistrano-yarn", require: false
 
   # Code formatting and linting
+  gem "ruby-lsp"
   gem "standard"
   gem "rubocop-performance"
   gem "rubocop-rails"
