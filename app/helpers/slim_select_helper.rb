@@ -8,10 +8,47 @@ module SlimSelectHelper
     data << {text: "", value: "", placeholder: true} if placeholder
 
     collection.each do |item|
+      text =
+        if text_method.is_a?(Proc)
+          text_method.call(item)
+        else
+          item.public_send(text_method)
+        end
+
+      value =
+        if value_method.is_a?(Proc)
+          value_method.call(item)
+        else
+          item.public_send(value_method)
+        end
+
+      data << {text:, value:, **options}
+    end
+
+    data
+  end
+
+  def group_data_from_collection_for_slim_select(
+    collection, group_method, value_method, text_method, options = {}
+  )
+    placeholder = options.delete(:placeholder)
+
+    data = []
+    data << {text: "", value: "", placeholder: true} if placeholder
+
+    collection.each do |group, group_data|
+      label =
+        if group_method.is_a?(Proc)
+          group_method.call(group)
+        else
+          group.public_send(group_method)
+        end
+
       data << {
-        text: item.public_send(text_method),
-        value: item.public_send(value_method),
-        **options
+        label:,
+        options: data_from_collection_for_slim_select(
+          group_data, value_method, text_method, options
+        )
       }
     end
 

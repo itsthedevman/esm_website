@@ -7,18 +7,26 @@ class UsersController < AuthenticatedController
   def edit
     id_aliases = current_user.id_aliases
       .includes(:community, :server)
+      .load
       .sort_by(:value).case_insensitive
       .to_a
 
     id_defaults = current_user.id_defaults
 
-    all_communities = ESM::Community.select(:community_id, :community_name).order(:community_id)
-    # servers_by_community = ESM::Community.servers_by_community
+    all_communities = ESM::Community.select(:community_id, :community_name)
+      .order(:community_id)
+      .load
+
+    servers_by_community = ESM::Server.includes(:community).load.group_by(&:community)
+
+    default_community_select_data = generate_default_community_select_data(all_communities)
+    default_server_select_data = generate_default_server_select_data(servers_by_community)
 
     render locals: {
       id_aliases:,
       id_defaults:,
-      all_communities:
+      default_community_select_data:,
+      default_server_select_data:
     }
   end
 
@@ -92,5 +100,26 @@ class UsersController < AuthenticatedController
 
     flash[:success] = "You've been deregistered.<br/>You can reregister via the Sign into Steam button"
     redirect_to edit_users_path
+  end
+
+  private
+
+  def generate_default_community_select_data(all_communities)
+    helpers.data_from_collection_for_slim_select(
+      all_communities,
+      :community_id,
+      ->(community) { "[#{community.community_id}] #{community.community_name}" },
+      placeholder: true
+    )
+  end
+
+  def generate_default_server_select_data(servers_by_community)
+    helpers.group_data_from_collection_for_slim_select(
+      servers_by_community,
+      ->(community) { "[#{community.community_id}] #{community.community_name}" },
+      :server_id,
+      ->(server) { "[#{server.server_id}] #{server.server_name || "Name not provided"}" },
+      placeholder: true
+    )
   end
 end
