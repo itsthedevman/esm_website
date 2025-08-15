@@ -3,6 +3,7 @@
 @import "vendor/bootstrap";
 @import "vendor/choices";
 @import "vendor/just_validate";
+@import "vendor/slim_select";
 
 $nav-offset: calc(map-get($spacers, 5) + map-get($spacers, 4));
 

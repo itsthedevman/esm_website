@@ -33,5 +33,8 @@ application.register("server-new", ServerNewController);
 import ServerRewardsController from "./server_rewards_controller";
 application.register("server-rewards", ServerRewardsController);
 
+import SlimSelectController from "./slim_select_controller";
+application.register("slim-select", SlimSelectController);
+
 import ToastsController from "./toasts_controller";
 application.register("toasts", ToastsController);

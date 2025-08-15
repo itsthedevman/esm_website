@@ -25,7 +25,8 @@
     "postcss-cli": "^11.0.1",
     "ramda": "^0.31.3",
     "rollup": "^4.45.1",
-    "sass": "^1.89.2"
+    "sass": "^1.89.2",
+    "slim-select": "^2.12.1"
   },
   "browserslist": [
     "defaults"
