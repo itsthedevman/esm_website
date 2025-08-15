@@ -30,19 +30,6 @@ module ESM
     # CLASS METHODS
     # =============================================================================
 
-    def self.servers_by_community
-      communities = Community.includes(:servers).joins(:servers).order(:community_id)
-
-      communities.map do |community|
-        servers = community.servers.order(:server_id).select(:server_id, :server_name)
-
-        {
-          name: "[#{community.community_id}] #{community.community_name}",
-          servers: servers.map(&:clientize)
-        }
-      end
-    end
-
     # =============================================================================
     # INSTANCE METHODS
     # =============================================================================

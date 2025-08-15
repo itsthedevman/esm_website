@@ -109,25 +109,31 @@
             .col-md-6
               = f.label :default_community_id, "Default Community", class: "form-label fw-medium"
               = f.select :default_community_id,
-                  options_for_select([ \
-                    ["Select a community...", ""],
-                    ["Example Community (abc4)", "1"],
-                    ["Test Server (xyz9)", "2"] \
-                  ]),
+                  [],
                   {},
-                  class: "form-select"
+                  class: "form-select",
+                  data: { \
+                    controller: "slim-select",
+                    slim_select_placeholder_value: "Select Community",
+                    slim_select_allow_deselect_value: true,
+                    slim_select_data_value: data_from_collection_for_slim_select( \
+                      all_communities,
+                      :community_id, :community_name,
+                      placeholder: true,
+                    ),
+                  }
               small.text-muted.mt-1 Used when no community ID is specified
 
             .col-md-6
               = f.label :default_server_id, "Default Server", class: "form-label fw-medium"
               = f.select :default_server_id,
                   options_for_select([ \
-                    ["Select a server...", ""],
                     ["abc4_altis_main", "1"],
                     ["abc4_tanoa_test", "2"] \
                   ]),
                   {},
-                  class: "form-select"
+                  class: "form-select",
+                  data: {controller: "slim-select"}
               small.text-muted.mt-1 Used when no server ID is specified
 
     / Aliases Card

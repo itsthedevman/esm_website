@@ -4,6 +4,7 @@ import SlimSelect from "slim-select";
 export default class extends Controller {
   static targets = ["select"];
   static values = {
+    data: Array,
     placeholder: String,
     searchText: String,
     allowDeselect: Boolean,
@@ -23,29 +24,17 @@ export default class extends Controller {
   initializeSlimSelect() {
     const config = {
       select: this.hasSelectTarget ? this.selectTarget : this.element,
+      data: this.dataValue || [],
       settings: {
-        searchText: this.searchTextValue || "Search...",
-        searchPlaceholder: this.searchTextValue || "Search...",
+        searchText: this.searchTextValue || "No results",
+        searchPlaceholder: this.searchTextValue || "Search",
         closeOnSelect: this.closeOnSelectValue ?? true,
         allowDeselect: this.allowDeselectValue ?? false,
+        placeholderText: this.placeholderValue || "Select value",
         showSearch: true,
       },
     };
 
-    // Add placeholder if provided
-    if (this.placeholderValue) {
-      config.settings.placeholderText = this.placeholderValue;
-    }
-
     this.slimSelect = new SlimSelect(config);
-  }
-
-  // Helper method to get/set selected value if needed
-  get selectedValue() {
-    return this.slimSelect?.selected();
-  }
-
-  set selectedValue(value) {
-    this.slimSelect?.setSelected(value);
   }
 }

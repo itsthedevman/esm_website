@@ -10,7 +10,16 @@ class UsersController < AuthenticatedController
       .sort_by(:value).case_insensitive
       .to_a
 
-    render locals: {id_aliases:}
+    id_defaults = current_user.id_defaults
+
+    all_communities = ESM::Community.select(:community_id, :community_name).order(:community_id)
+    # servers_by_community = ESM::Community.servers_by_community
+
+    render locals: {
+      id_aliases:,
+      id_defaults:,
+      all_communities:
+    }
   end
 
   # def transfer_account
