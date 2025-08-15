@@ -36,5 +36,20 @@ export default class extends Controller {
     };
 
     this.slimSelect = new SlimSelect(config);
+
+    this.slimSelect.onChange = (info) => {
+      const selectElement = this.hasSelectTarget
+        ? this.selectTarget
+        : this.element;
+
+      if (info.length > 0) {
+        selectElement.value = info[0].value;
+      } else {
+        selectElement.value = "";
+      }
+
+      // Trigger a change event so other listeners know about it
+      selectElement.dispatchEvent(new Event("change", { bubbles: true }));
+    };
   }
 }
