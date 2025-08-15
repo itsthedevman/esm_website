@@ -41,10 +41,10 @@
 
     .ss-search {
         @extend .px-0;
-        @extend .py-2;
+        @extend .pt-2;
+        @extend .pb-1;
 
         background-color: var(--ss-bg-color);
-        border-bottom: 1px solid var(--ss-border-color);
 
         input {
             background-color: #{$input-bg};
@@ -68,42 +68,35 @@
         }
     }
 
-    .ss-optgroup-label {
-        // The gradient approach - much more sophisticated
-        background: linear-gradient(135deg, #{$dark} 0%, #{mix($primary, $dark, 15%)} 100%);
-        color: #{$light};
-        font-weight: 600;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
+    .ss-list {
+        .ss-option {
+            &.ss-selected,
+            &:not(.ss-disabled).ss-selected {
+                background-color: #{rgba($primary, 0.1)} !important;
+                color: #{$white} !important;
+                border-left: 3px solid #{$primary};
+                padding-left: calc(var(--ss-spacing-l) * 3 - 3px);
+            }
 
-        .ss-optgroup-label-text {
-            color: inherit;
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.08) !important;
+                color: #{$light} !important;
+                border-left: 3px solid transparent;
+                padding-left: calc(var(--ss-spacing-l) * 3 - 3px);
+            }
+        }
+
+        // Also target the more specific optgroup version
+        .ss-optgroup .ss-option {
+            &:not(.ss-disabled).ss-selected {
+                background-color: #{rgba($primary, 0.3)} !important;
+                color: #{$white} !important;
+            }
+
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.08) !important;
+                color: #{$light} !important;
+            }
         }
     }
-
-    .ss-option {
-        color: var(--ss-font-color);
-
-        &:hover,
-        &.ss-highlighted {
-            // Way more subtle - just a gentle hint
-            background-color: #{rgba($light, 0.08)};
-            color: #{$light};
-        }
-
-        &.ss-selected {
-            // Selected is still clear but not retina-burning
-            background-color: #{rgba($primary, 0.3)};
-            color: #{$light};
-            border-left: 3px solid #{$primary}; // Subtle indicator
-        }
-    }
-}
-
-// Remove extra arrows
-.ss-optgroup-actions,
-.ss-option .ss-arrow,
-.ss-optgroup .ss-arrow {
-    display: none !important;
 }
