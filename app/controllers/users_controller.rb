@@ -11,16 +11,24 @@ class UsersController < AuthenticatedController
       .sort_by(:value).case_insensitive
       .to_a
 
-    id_defaults = current_user.id_defaults
-
-    all_communities = ESM::Community.select(:community_id, :community_name)
+    all_communities = ESM::Community.select(:id, :community_id, :community_name)
       .order(:community_id)
       .load
 
-    servers_by_community = ESM::Server.includes(:community).load.group_by(&:community)
+    servers_by_community = ESM::Server.select(:id, :community_id, :server_id, :server_name)
+      .includes(:community)
+      .order(:server_id)
+      .load
+      .group_by(&:community)
 
-    default_community_select_data = generate_default_community_select_data(all_communities)
-    default_server_select_data = generate_default_server_select_data(servers_by_community)
+    id_defaults = current_user.id_defaults
+    default_community_select_data = generate_default_community_select_data(
+      all_communities, id_defaults.community_id
+    )
+
+    default_server_select_data = generate_default_server_select_data(
+      servers_by_community, id_defaults.server_id
+    )
 
     render locals: {
       id_aliases:,
@@ -28,6 +36,16 @@ class UsersController < AuthenticatedController
       default_community_select_data:,
       default_server_select_data:
     }
+  end
+
+  def update
+    permitted_params = permit_update_params!
+
+    if (id_defaults = permitted_params[:defaults])
+      update_id_defaults!(id_defaults)
+    end
+
+    render turbo_stream: create_success_toast("Your settings have been updated")
   end
 
   # def transfer_account
@@ -104,22 +122,47 @@ class UsersController < AuthenticatedController
 
   private
 
-  def generate_default_community_select_data(all_communities)
+  def generate_default_community_select_data(all_communities, selected_id)
     helpers.data_from_collection_for_slim_select(
       all_communities,
+      # value
       :community_id,
+      # text
       ->(community) { "[#{community.community_id}] #{community.community_name}" },
+      selected: ->(item, _value) { item.id == selected_id },
       placeholder: true
     )
   end
 
-  def generate_default_server_select_data(servers_by_community)
+  def generate_default_server_select_data(servers_by_community, selected_id)
     helpers.group_data_from_collection_for_slim_select(
       servers_by_community,
+      # group label
       ->(community) { "[#{community.community_id}] #{community.community_name}" },
+      # value
       :server_id,
+      # text
       ->(server) { "[#{server.server_id}] #{server.server_name || "Name not provided"}" },
+      selected: ->(item, _value) { item.id == selected_id },
       placeholder: true
     )
+  end
+
+  def permit_update_params!
+    params.require(:user).permit(
+      defaults: [:community_id, :server_id]
+    )
+  end
+
+  def update_id_defaults!(id_defaults)
+    if (community_id = id_defaults.delete(:community_id))
+      id_defaults[:community_id] = ESM::Community.with_community_id(community_id).pick(:id)
+    end
+
+    if (server_id = id_defaults.delete(:server_id))
+      id_defaults[:server_id] = ESM::Server.with_server_id(server_id).pick(:id)
+    end
+
+    ESM::UserDefault.where(user_id: current_user.id).update!(id_defaults)
   end
 end

@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   root "home#index"
 
   # /account
-  resource :users, only: %i[edit destroy], path: "account" do
+  resource :users, only: %i[edit update destroy], path: "account" do
     collection do
       get :deregister
       # post "cancel_transfer"

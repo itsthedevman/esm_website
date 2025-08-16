@@ -3,6 +3,7 @@
 module SlimSelectHelper
   def data_from_collection_for_slim_select(collection, value_method, text_method, options = {})
     placeholder = options.delete(:placeholder)
+    selected_value = options.delete(:selected)
 
     data = []
     data << {text: "", value: "", placeholder: true} if placeholder
@@ -22,7 +23,14 @@ module SlimSelectHelper
           item.public_send(value_method)
         end
 
-      data << {text:, value:, **options}
+      selected =
+        if selected_value.is_a?(Proc)
+          selected_value.call(item, value)
+        else
+          selected_value
+        end
+
+      data << {text:, value:, selected:, **options}
     end
 
     data

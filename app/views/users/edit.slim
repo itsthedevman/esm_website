@@ -107,8 +107,8 @@
 
           .row.g-3
             .col-md-6
-              = f.label :default_community_id, "Default Community", class: "form-label fw-medium"
-              = f.select :default_community_id, [], {}, class: "form-select",
+              = f.label :community_id, "Default Community", class: "form-label fw-medium"
+              = f.select :community_id, [], {}, class: "form-select",
                   data: { \
                     controller: "slim-select",
                     slim_select_placeholder_value: "Select Community",
@@ -118,8 +118,8 @@
               small.text-muted.mt-1 Used when no community ID is specified
 
             .col-md-6
-              = f.label :default_server_id, "Default Server", class: "form-label fw-medium"
-              = f.select :default_server_id, [], {}, class: "form-select",
+              = f.label :server_id, "Default Server", class: "form-label fw-medium"
+              = f.select :server_id, [], {}, class: "form-select",
                   data: { \
                     controller: "slim-select",
                     slim_select_placeholder_value: "Select Server",
