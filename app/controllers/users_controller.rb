@@ -12,14 +12,17 @@ class UsersController < AuthenticatedController
       .to_a
 
     all_communities = ESM::Community.select(:id, :community_id, :community_name)
-      .order(:community_id)
+      .order("UPPER(community_id)")
       .load
 
     servers_by_community = ESM::Server.select(:id, :community_id, :server_id, :server_name)
       .includes(:community)
-      .order(:server_id)
+      .order("UPPER(server_id)")
       .load
       .group_by(&:community)
+      .sort_by.method(:first).case_insensitive
+      .to_a
+      .to_h
 
     id_defaults = current_user.id_defaults
     default_community_select_data = generate_default_community_select_data(
