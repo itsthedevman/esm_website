@@ -48,6 +48,9 @@ Rails.application.routes.draw do
     # /communities/:community_id/commands
     resources :commands, only: %i[index update], param: :name
 
+    # /communities/:community_id/logs/:log_id
+    resources :logs, only: [:show], param: :log_id
+
     # /communities/:community_id/notifications
     resources :notifications, param: :notification_id, except: [:show]
 

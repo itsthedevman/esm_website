@@ -1,0 +1,144 @@
+/ Simple standalone logs viewer
+.container.window
+  / Header section
+  .text-center.mb-4
+    h1.mb-2 Server Logs
+    p.lead.text-muted Search results for "#{log.search_text}"
+
+  .mb-4
+    = link_to community_path(log.server.community), class: "btn btn-outline-primary"
+      i.bi.bi-arrow-left.me-2
+      | Back to #{log.server.community.community_name}
+
+  .row.g-4
+    / Sidebar - Search Info & Log Files by Date
+    .col-lg-3
+      / Search Details Card
+      .card.bg-dark.border-secondary.mb-4
+        .card-header.border-secondary
+          h5.mb-0.text-light
+            i.bi.bi-search.me-2
+            | Search Details
+
+        .card-body
+          .mb-3
+            label.form-label.small.text-muted.fw-medium REQUESTED BY
+            .text-light = log.user.discord_username
+
+          .mb-3
+            label.form-label.small.text-muted.fw-medium SERVER
+            .text-light = log.server.server_id
+
+          .mb-3
+            label.form-label.small.text-muted.fw-medium SEARCH QUERY
+            .bg-dark.rounded.p-2
+              code.text-warning = log.search_text
+
+          .mb-0
+            label.form-label.small.text-muted.fw-medium EXECUTED
+            .text-light = log.created_at.strftime("%B %d, %Y")
+            small.text-muted.d-block = log.created_at.strftime("at %I:%M %p UTC")
+
+      / Log Files by Date
+      .card.bg-dark.border-secondary
+        .card-header.border-secondary
+          h5.mb-0.text-light
+            i.bi.bi-calendar.me-2
+            | Results by Date
+
+        .card-body.p-0
+          .list-group.list-group-flush[data-controller="log-file-switcher"]
+            - log.log_entries.each_with_index do |entry, index|
+              .list-group-item.log-file-item.bg-transparent.border-secondary[
+                class=("active" if index == 0)
+                data-log-file-switcher-target="fileItem"
+                data-action="click->log-file-switcher#switchFile"
+                data-entry-id=entry.uuid
+              ]
+                .d-flex.align-items-center.justify-content-between
+                  div
+                    h6.mb-1.text-light
+                      - if entry.log_date
+                        = entry.log_date.strftime("%B %d, %Y")
+                      - else
+                        | Unknown Date
+                    small.text-muted = entry.file_name
+                  span.badge.bg-primary = "#{entry.entries.size} entries"
+
+    / Main log viewer
+    .col-lg-9
+      .card.bg-dark.border-secondary
+        .card-header.border-secondary.d-flex.align-items-center.justify-content-between
+          .d-flex.align-items-center
+            h5.mb-0.text-light.me-3[data-log-file-switcher-target="currentFileName"]
+              i.bi.bi-file-code.me-2
+              = log.log_entries.first&.file_name || "No File"
+            span.badge.bg-success[data-log-file-switcher-target="currentDate"]
+              - if log.log_entries.first&.log_date
+                = log.log_entries.first.log_date.strftime("%Y-%m-%d")
+              - else
+                | Unknown
+
+          .d-flex.align-items-center.gap-3
+            small.text-muted[data-log-file-switcher-target="currentEntryCount"]
+              i.bi.bi-eye.me-1
+              | #{log.log_entries.first&.entries&.size || 0} entries
+            small.text-muted
+              i.bi.bi-search.me-1
+              | "#{log.search_text}"
+
+        .card-body.p-0
+          / Log content
+          .position-relative[data-log-file-switcher-target="contentArea"]
+            .table-responsive[style="max-height: 70vh; overflow-y: auto;"]
+              table.table.table-sm.table-dark.mb-0.font-monospace
+                tbody[data-log-file-switcher-target="logContent"]
+                  - if log.log_entries.first&.entries
+                    - log.log_entries.first.entries.each do |entry|
+                      tr.log-entry[data-line-number=entry["line_number"]]
+                        td.text-end.pe-3.text-muted.user-select-none[style="width: 80px; cursor: pointer;" title="Line #{entry['line_number']}"]
+                          = entry["line_number"]
+                        td.log-content[style="font-size: 0.85rem; line-height: 1.4;"]
+                          span.text-info
+                            = Time.parse(entry["timestamp"]).strftime("%Y-%m-%d at %I:%M:%S %p UTC")
+                          |
+                          = render_component(LogEntryComponent, entry: entry["entry"])
+
+          / Hidden data for Stimulus controller
+          script[type="application/json" data-log-file-switcher-target="logData"]
+            = log.log_entries.to_json.html_safe
+
+/ Custom styles
+css:
+  .log-entry {
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+  }
+
+  .log-entry:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-left-color: var(--bs-primary);
+  }
+
+  .log-entry.selected {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+    border-left-color: var(--bs-primary);
+  }
+
+  .log-entry td:first-child:hover {
+    color: var(--bs-primary) !important;
+  }
+
+  .log-file-item {
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .log-file-item:hover:not(.active) {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+  }
+
+  .log-file-item.active {
+    background-color: rgba(var(--bs-primary-rgb), 0.2);
+    border-left: 3px solid var(--bs-primary);
+  }
