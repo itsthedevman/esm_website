@@ -38,7 +38,39 @@
                   data-alias-type="server"
                 ] Select
 
-      / Alias Name Input - Now feels more natural after selection
+      / Community Selection
+      .mb-4
+        = f.label :community_id, class: "form-label h6 fw-medium"
+          i.bi.bi-discord.text-primary.me-2
+          | Select Community
+        = f.select :community_id,
+            [], {},
+            class: "form-select",
+            data: { \
+              controller: "slim-select",
+              slim_select_placeholder_value: "Choose a community...",
+              slim_select_allow_deselect_value: true,
+              slim_select_data_value: alias_community_select_data \
+            }
+        small.form-text.text-muted.mt-1 Choose the Discord community this alias will represent
+
+      / Server Selection (hidden by default)
+      .mb-4.d-none
+        = f.label :server_id, class: "form-label h6 fw-medium"
+          i.bi.bi-server.text-success.me-2
+          | Select Server
+        = f.select :server_id,
+            [], {},
+            class: "form-select",
+            data: { \
+              controller: "slim-select",
+              slim_select_placeholder_value: "Choose a server...",
+              slim_select_allow_deselect_value: true,
+              slim_select_data_value: alias_server_select_data \
+            }
+        small.form-text.text-muted.mt-1 Choose the game server this alias will represent
+
+      / Alias Name Input
       .mb-4
         = f.label :alias_value, class: "form-label h5 fw-medium"
           span.text-danger.me-1 *
@@ -54,42 +86,6 @@
         .d-flex.justify-content-between.mt-2
           small.form-text.text-muted Keep it short and memorable!
           small.form-text.text-muted 0/64 characters
-
-      / Community Selection
-      .mb-4
-        = f.label :community_id, class: "form-label h6 fw-medium"
-          i.bi.bi-discord.text-primary.me-2
-          | Select Community
-        = f.select :community_id,
-            [],
-            { prompt: "Choose a community..." },
-            class: "form-select",
-            data: { \
-              controller: "slim-select",
-              slim_select_placeholder_value: "Choose a community...",
-              slim_select_allow_deselect_value: true \
-            }
-        small.form-text.text-muted.mt-1 Choose the Discord community this alias will represent
-
-      / Server Selection (hidden by default)
-      .mb-4.d-none
-        = f.label :server_id, class: "form-label h6 fw-medium"
-          i.bi.bi-server.text-success.me-2
-          | Select Server
-        = f.select :server_id,
-            options_for_select([ \
-              ["abc4_altis_main", "abc4_altis_main"],
-              ["abc4_tanoa_test", "abc4_tanoa_test"],
-              ["xyz9_malden_dev", "xyz9_malden_dev"] \
-            ]),
-            { prompt: "Choose a server..." },
-            class: "form-select",
-            data: { \
-              controller: "slim-select",
-              slim_select_placeholder_value: "Choose a server...",
-              slim_select_allow_deselect_value: true \
-            }
-        small.form-text.text-muted.mt-1 Choose the game server this alias will represent
 
       / Preview Card
       .card.bg-secondary.bg-opacity-10.border-secondary

@@ -25,19 +25,24 @@ class UsersController < AuthenticatedController
       .to_h
 
     id_defaults = current_user.id_defaults
-    default_community_select_data = generate_default_community_select_data(
+    default_community_select_data = generate_community_select_data(
       all_communities, id_defaults.community_id
     )
 
-    default_server_select_data = generate_default_server_select_data(
+    default_server_select_data = generate_server_select_data(
       servers_by_community, id_defaults.server_id
     )
+
+    alias_community_select_data = generate_community_select_data(all_communities)
+    alias_server_select_data = generate_server_select_data(servers_by_community)
 
     render locals: {
       id_aliases:,
       id_defaults:,
       default_community_select_data:,
-      default_server_select_data:
+      default_server_select_data:,
+      alias_community_select_data:,
+      alias_server_select_data:
     }
   end
 
@@ -125,29 +130,32 @@ class UsersController < AuthenticatedController
 
   private
 
-  def generate_default_community_select_data(all_communities, selected_id)
+  def generate_community_select_data(all_communities, selected_id = nil)
+    value_method = :community_id
+
+    text_method = ->(community) { "[#{community.community_id}] #{community.community_name}" }
+    selected = selected_id ? ->(item, _value) { item.id == selected_id } : false
+
     helpers.data_from_collection_for_slim_select(
-      all_communities,
-      # value
-      :community_id,
-      # text
-      ->(community) { "[#{community.community_id}] #{community.community_name}" },
-      selected: ->(item, _value) { item.id == selected_id },
-      placeholder: true
+      all_communities, value_method, text_method,
+      selected:, placeholder: true
     )
   end
 
-  def generate_default_server_select_data(servers_by_community, selected_id)
+  def generate_server_select_data(servers_by_community, selected_id = nil)
+    group_label_method = ->(community) { "[#{community.community_id}] #{community.community_name}" }
+
+    value_method = :server_id
+
+    text_method = lambda do |server|
+      "[#{server.server_id}] #{server.server_name || "Name not provided"}"
+    end
+
+    selected = selected_id ? ->(item, _value) { item.id == selected_id } : false
+
     helpers.group_data_from_collection_for_slim_select(
-      servers_by_community,
-      # group label
-      ->(community) { "[#{community.community_id}] #{community.community_name}" },
-      # value
-      :server_id,
-      # text
-      ->(server) { "[#{server.server_id}] #{server.server_name || "Name not provided"}" },
-      selected: ->(item, _value) { item.id == selected_id },
-      placeholder: true
+      servers_by_community, group_label_method, value_method, text_method,
+      selected:, placeholder: true
     )
   end
 
