@@ -6,8 +6,20 @@
         i.bi.bi-arrow-left.me-2
         span Back to Communities
 
-      h4.mb-2.fw-bold = current_community.community_name
-      small.text-muted.fw-medium = current_community.community_id
+      .d-flex.align-items-center
+        / Community logo
+        .me-3.flex-shrink-0
+          - if current_community.icon_url.present?
+            img.rounded src=current_community.icon_url alt=current_community.community_name width="48" height="48"
+          - elsif current_community.player_mode_enabled?
+            .bg-info.rounded.d-flex.align-items-center.justify-content-center style="width: 48px; height: 48px;"
+              i.bi.bi-people.text-white.fs-4
+          - else
+            .bg-primary.rounded.d-flex.align-items-center.justify-content-center style="width: 48px; height: 48px;"
+              i.bi.bi-hdd-network.text-white.fs-4
+        div
+          h4.mb-1.fw-bold = current_community.community_name
+          small.text-muted.fw-medium = current_community.community_id
 
   - if current_community.server_mode_enabled?
     / Servers Section
