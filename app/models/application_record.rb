@@ -5,6 +5,8 @@ class ApplicationRecord < ActiveRecord::Base
   # INITIALIZE
   # =============================================================================
 
+  include PublicAttributes
+
   primary_abstract_class
 
   # =============================================================================
