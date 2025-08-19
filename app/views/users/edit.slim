@@ -170,8 +170,21 @@
             hr.pb-2
 
             / Aliases cards
-            .d-flex.flex-column.gap-3[data-aliases-target="container"]
-              / Filled in by stimulus
+            / Placeholders (shown initially)
+            .d-flex.flex-column.gap-3[data-aliases-target="placeholder"]
+              - id_aliases.size.times do
+                .card.bg-secondary.bg-opacity-10.border-secondary
+                  .card-body.d-flex.align-items-center.justify-content-between
+                    .d-flex.align-items-center.gap-3
+                      .bg-secondary.rounded.placeholder-glow style="width: 40px; height: 40px;"
+                      div
+                        .placeholder.bg-secondary style="width: 120px; height: 20px;"
+                        .placeholder.bg-secondary.mt-1 style="width: 80px; height: 16px;"
+                    .placeholder.bg-secondary style="width: 60px; height: 32px;"
+
+            / Real content (hidden initially)
+            .d-flex.flex-column.gap-3.d-none[data-aliases-target="container"]
+
 
     / Save Section
     .d-flex.justify-content-between.align-items-center.pb-4.mb-4.border-bottom

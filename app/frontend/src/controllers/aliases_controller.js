@@ -4,7 +4,7 @@ import * as R from "ramda";
 
 // Connects to data-controller="aliases"
 export default class extends Controller {
-  static targets = ["container"];
+  static targets = ["container", "placeholder"];
 
   static values = { data: Array };
 
@@ -71,6 +71,7 @@ export default class extends Controller {
       .map((alias) => this.#renderAlias(alias))
       .join("");
 
-    $(this.containerTarget).html(aliasesHtml);
+    $(this.containerTarget).html(aliasesHtml).show();
+    $(this.placeholderTarget).hide();
   }
 }
