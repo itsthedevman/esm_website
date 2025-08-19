@@ -5,12 +5,6 @@ class UsersController < AuthenticatedController
   before_action :authenticate_user!, except: :register
 
   def edit
-    id_aliases = current_user.id_aliases
-      .includes(:community, :server)
-      .load
-      .sort_by(:value).case_insensitive
-      .to_a
-
     all_communities = ESM::Community.select(:id, :community_id, :community_name)
       .order("UPPER(community_id)")
       .load
@@ -25,24 +19,24 @@ class UsersController < AuthenticatedController
       .to_h
 
     id_defaults = current_user.id_defaults
-    default_community_select_data = generate_community_select_data(
-      all_communities, id_defaults.community_id
-    )
-
-    default_server_select_data = generate_server_select_data(
-      servers_by_community, id_defaults.server_id
-    )
-
-    alias_community_select_data = generate_community_select_data(all_communities)
-    alias_server_select_data = generate_server_select_data(servers_by_community)
+    id_aliases = current_user.id_aliases
+      .includes(:community, :server)
+      .load
+      .sort_by(:value).case_insensitive
+      .map(&:public_attributes)
 
     render locals: {
-      id_aliases:,
+      # Defaults
       id_defaults:,
-      default_community_select_data:,
-      default_server_select_data:,
-      alias_community_select_data:,
-      alias_server_select_data:
+      default_community_select_data:
+      generate_community_select_data(all_communities, id_defaults.community_id),
+      default_server_select_data:
+      generate_server_select_data(servers_by_community, id_defaults.server_id),
+
+      # Aliases
+      id_aliases:,
+      alias_community_select_data: generate_community_select_data(all_communities),
+      alias_server_select_data: generate_server_select_data(servers_by_community)
     }
   end
 
