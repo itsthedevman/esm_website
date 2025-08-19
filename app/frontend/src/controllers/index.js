@@ -3,6 +3,9 @@ import { application } from "./application";
 import AdditionalLogsController from "./additional_logs_controller";
 application.register("additional-logs", AdditionalLogsController);
 
+import AliasesController from "./aliases_controller";
+application.register("aliases", AliasesController);
+
 import CollapseToggleController from "./collapse_toggle_controller";
 application.register("collapse-toggle", CollapseToggleController);
 
