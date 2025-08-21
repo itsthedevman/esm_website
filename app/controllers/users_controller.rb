@@ -24,14 +24,15 @@ class UsersController < AuthenticatedController
       .load
       .sort_by(:value).case_insensitive
       .map(&:public_attributes)
+      .index_by { |a| a["public_id"] }
 
     render locals: {
       # Defaults
       id_defaults:,
       default_community_select_data:
-      generate_community_select_data(all_communities, id_defaults.community_id),
+        generate_community_select_data(all_communities, id_defaults.community_id),
       default_server_select_data:
-      generate_server_select_data(servers_by_community, id_defaults.server_id),
+        generate_server_select_data(servers_by_community, id_defaults.server_id),
 
       # Aliases
       id_aliases:,

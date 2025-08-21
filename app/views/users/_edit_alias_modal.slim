@@ -1,0 +1,125 @@
+= render "shared/modal", id: "edit_alias_modal", class: "modal-lg" do
+  .modal-header.border-warning.bg-warning.bg-opacity-10
+    h4.modal-title.text-warning.mb-0
+      i.bi.bi-pencil-square.me-2
+      | Edit Alias
+    button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
+
+  div[data-aliases-target="editForm"]
+    .modal-body
+      / Current alias info - read-only display
+      .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-4
+        .d-flex.align-items-center
+          i.bi.bi-info-circle.text-info.me-3.fs-4
+          div
+            h6.mb-1.text-info Currently editing
+            .d-flex.align-items-center.gap-2
+              span.badge.bg-info[data-aliases-target="editCurrentType"] Community
+              code.text-info[data-aliases-target="editCurrentValue"] main
+              i.bi.bi-arrow-right.text-muted
+              span.text-light[data-aliases-target="editCurrentTarget"] [abc4] Example Community
+
+      / Type Selection - Disabled for existing aliases
+      .mb-4
+        h5.fw-medium.mb-2 Alias Type
+        p.text-muted.small.mb-3
+          | Alias type cannot be changed after creation. Delete and recreate if you need to change the type.
+
+        = hidden_field_tag "edit_alias_type", "", data: {aliases_target: "editType"}
+
+        .row.g-3
+          .col-md-6
+            .card.border-2.alias-type-card
+              .card-body.text-center.py-3
+                i.bi.bi-discord.text-primary.fs-3.mb-2
+                h6.mb-1.text-primary Community
+                small.text-muted.mb-0.d-block A Discord server with ESM
+
+          .col-md-6
+            .card.border-2.alias-type-card
+              .card-body.text-center.py-3
+                i.bi.bi-server.text-success.fs-3.mb-2
+                h6.mb-1.text-success Arma Server
+                small.text-muted.mb-0.d-block A specific game server
+
+      / Target Selection
+      .mb-4[data-aliases-target="editCommunitySection"]
+        = label_tag "edit_alias_community_id", class: "form-label h6 fw-medium" do
+          i.bi.bi-discord.text-primary.me-2
+          | Select Community
+        = select_tag "edit_alias_community_id",
+            [],
+            class: "form-select",
+            data: { \
+              controller: "slim-select",
+              slim_select_placeholder_value: "Choose a community...",
+              slim_select_allow_deselect_value: true,
+              aliases_target: "editCommunitySelect" \
+            }
+
+      .mb-4[data-aliases-target="editServerSection" style="display: none;"]
+        = label_tag "edit_alias_server_id", class: "form-label h6 fw-medium" do
+          i.bi.bi-server.text-success.me-2
+          | Select Server
+        = select_tag "edit_alias_server_id",
+            [],
+            class: "form-select",
+            data: { \
+              controller: "slim-select",
+              slim_select_placeholder_value: "Choose a server...",
+              slim_select_allow_deselect_value: true,
+              aliases_target: "editServerSelect" \
+            }
+
+      / Alias Name Input
+      .mb-4
+        = label_tag "edit_alias_value", class: "form-label h5 fw-medium" do
+          span.text-danger.me-1 *
+          | Alias Name
+        .input-group.input-group-lg
+          span.input-group-text.bg-warning.text-dark
+            i.bi.bi-bookmark
+          = text_field_tag "edit_alias_value", "",
+              class: "form-control",
+              placeholder: "main",
+              maxlength: 64,
+              required: true,
+              data: {aliases_target: "editAliasValue"}
+        .d-flex.justify-content-between.mt-2
+          small.form-text.text-muted Keep it short and memorable!
+          small.form-text.text-muted[data-aliases-target="editCharCount"] 0/64 characters
+
+      / Preview Card
+      .card.bg-secondary.bg-opacity-10.border-secondary
+        .card-header.py-2
+          h6.mb-0.text-light
+            i.bi.bi-eye.me-2
+            | Command Preview
+        .card-body.py-3[data-aliases-target="editPreview"]
+          .mb-3
+            small.text-muted.mb-2.d-block Instead of typing:
+            .bg-dark.rounded.p-3
+              = command_usage(:servers, arguments: {community_id: "community_id"})
+          .mb-0
+            small.text-muted.mb-2.d-block You'll type:
+            .bg-dark.rounded.p-3
+              = command_usage(:servers, arguments: {community_id: "main"})
+
+    .modal-footer.border-top
+      .d-flex.align-items-center.justify-content-between.w-100
+        button.btn.btn-outline-danger[
+          type="button"
+          data-action="click->aliases#deleteAlias"
+          data-aliases-target="editDeleteButton"
+        ]
+          i.bi.bi-trash.me-2
+          | Delete Alias
+        .d-flex.gap-2
+          button.btn.btn-outline-secondary[type="button" data-bs-dismiss="modal"]
+            | Cancel
+          button.btn.btn-warning.px-4[
+            type="button"
+            data-action="click->aliases#updateAlias"
+          ]
+            i.bi.bi-check-circle.me-2
+            | Save Changes

@@ -131,18 +131,19 @@
     / Aliases Card
     = f.fields_for :aliases do |f|
       = content_tag :div, nil, data: {controller: "aliases", aliases_data_value: id_aliases}
-        = render "users/create_alias_modal", **local_assigns
+        = render "users/add_alias_modal", **local_assigns
+        = render "users/edit_alias_modal", **local_assigns
         .card.mb-4
           .card-header.d-flex.align-items-center.justify-content-between
             h4.mb-0
               i.bi.bi-bookmark.text-info.me-2
               | Aliases
-              span.badge.bg-secondary.ms-2
+              span.badge.bg-secondary.ms-2[data-aliases-target="count"]
                 = id_aliases.size
             button.btn.btn-outline-primary.btn-sm[
               type="button"
               data-bs-toggle="modal"
-              data-bs-target="#create_alias_modal"
+              data-bs-target="#add_alias_modal"
             ]
               i.bi.bi-plus.me-1
               | Add Alias
@@ -170,21 +171,38 @@
             hr.pb-2
 
             / Aliases cards
-            / Placeholders (shown initially)
-            .d-flex.flex-column.gap-3[data-aliases-target="placeholder"]
-              - id_aliases.size.times do
-                .card.bg-secondary.bg-opacity-10.border-secondary
-                  .card-body.d-flex.align-items-center.justify-content-between
-                    .d-flex.align-items-center.gap-3
-                      .bg-secondary.rounded.placeholder-glow style="width: 40px; height: 40px;"
-                      div
-                        .placeholder.bg-secondary style="width: 120px; height: 20px;"
-                        .placeholder.bg-secondary.mt-1 style="width: 80px; height: 16px;"
-                    .placeholder.bg-secondary style="width: 60px; height: 32px;"
+            / Placeholders or empty state (shown initially)
+            .d-flex.flex-column.gap-3
+              div[data-aliases-target="placeholder"]
+                - id_aliases.size.times do
+                  .card.bg-secondary.bg-opacity-10.border-secondary
+                    .card-body.d-flex.align-items-center.justify-content-between
+                      .d-flex.align-items-center.gap-3
+                        .bg-secondary.rounded.placeholder-glow style="width: 40px; height: 40px;"
+                        div
+                          .placeholder.bg-secondary style="width: 120px; height: 20px;"
+                          .placeholder.bg-secondary.mt-1 style="width: 80px; height: 16px;"
+                      .placeholder.bg-secondary style="width: 60px; height: 32px;"
+              = content_tag :div, nil, class: class_names( \
+                "text-center", "py-5",
+                "d-none" => id_aliases.size > 0 \
+              ), data: {aliases_target: "emptyState"}
+                i.bi.bi-bookmark.display-4.text-muted.mb-3.d-block
+                h5.text-muted.mb-3 No Aliases Created Yet
+                p.text-muted.mb-4
+                  | Create shortcuts for your favorite communities and servers to make commands faster and easier.
+                  br
+                  | Instead of typing long IDs, use simple names like "main" or "home"!
+                button.btn.btn-primary[
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#create_alias_modal"
+                ]
+                  i.bi.bi-plus.me-2
+                  | Create Your First Alias
 
             / Real content (hidden initially)
             .d-flex.flex-column.gap-3.d-none[data-aliases-target="container"]
-
 
     / Save Section
     .d-flex.justify-content-between.align-items-center.pb-4.mb-4.border-bottom
