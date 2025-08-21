@@ -26,6 +26,45 @@
         stroke: #{$input-color};
         opacity: 0.75;
     }
+
+    // Validation states
+    &.is-invalid {
+        padding-right: #{$input-padding-x} !important;
+        border-color: #{$danger} !important;
+        box-shadow: 0 0 0 0.25rem #{rgba($danger, 0.25)} !important;
+
+        &:focus-within {
+            border-color: #{$danger} !important;
+            box-shadow: 0 0 0 0.25rem #{rgba($danger, 0.25)} !important;
+        }
+    }
+
+    &.is-valid {
+        padding-right: #{$input-padding-x} !important;
+        border-color: #{$success} !important;
+
+        &:focus-within {
+            border-color: #{$success} !important;
+            box-shadow: 0 0 0 0.25rem #{rgba($success, 0.25)} !important;
+        }
+    }
+
+    // Disabled state styling
+    &.ss-disabled {
+        padding-right: #{$input-padding-x} !important;
+        background-color: #{$input-disabled-bg} !important;
+        border-color: #{$input-disabled-border-color} !important;
+        opacity: 1;
+
+        .ss-single {
+            color: #{$input-disabled-color} !important;
+        }
+
+        .ss-arrow path {
+            stroke: #{$input-disabled-color} !important;
+            opacity: 0.5;
+        }
+    }
 }
 
 .ss-content {

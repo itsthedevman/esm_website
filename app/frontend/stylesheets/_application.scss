@@ -4,10 +4,11 @@
 @import "vendor/choices";
 @import "vendor/just_validate";
 @import "vendor/slim_select";
+@import "color_classes";
 
 $nav-offset: calc(map-get($spacers, 5) + map-get($spacers, 4));
 
-@import "color_classes";
+@import "accounts";
 @import "dashboard";
 @import "notifications";
 @import "toast";

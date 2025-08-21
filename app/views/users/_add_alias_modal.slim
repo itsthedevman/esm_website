@@ -14,30 +14,31 @@
 
       .row.g-3
         .col-md-6
-          .card.border-2.alias-type-card.border-primary.bg-primary.bg-opacity-10
+          .card.border-2.alias-type-card[data-aliases-target="communityButton"]
             .card-body.text-center.py-3
               i.bi.bi-discord.text-primary.fs-3.mb-2
               h6.mb-1.text-primary Community
               small.text-muted.mb-3.d-block A Discord server with ESM
-              button.btn.btn-primary.btn-sm.w-100[
+              button.btn.btn-outline-primary.btn-sm.w-100[
                 type="button"
                 data-type="community"
-                data-aliases-community-type-target
+                data-action="click->aliases#showSection"
               ] Select
 
         .col-md-6
-          .card.border-2.alias-type-card
+          .card.border-2.alias-type-card[data-aliases-target="serverButton"]
             .card-body.text-center.py-3
               i.bi.bi-server.text-success.fs-3.mb-2
               h6.mb-1.text-success Arma Server
               small.text-muted.mb-3.d-block A specific game server
               button.btn.btn-outline-success.btn-sm.w-100[
                 type="button"
-                data-alias-type="server"
+                data-type="server"
+                data-action="click->aliases#showSection"
               ] Select
 
     / Community Selection
-    .mb-4
+    .mb-4[data-aliases-target="communitySection"]
       = label_tag "add_alias_community_id", class: "form-label h6 fw-medium"
         i.bi.bi-discord.text-primary.me-2
         | Select Community
@@ -53,7 +54,7 @@
       small.form-text.text-muted.mt-1 Choose the Discord community this alias will represent
 
     / Server Selection (hidden by default)
-    .mb-4.d-none
+    .mb-4.d-none[data-aliases-target="serverSection"]
       = label_tag "add_alias_server_id", class: "form-label h6 fw-medium"
         i.bi.bi-server.text-success.me-2
         | Select Server

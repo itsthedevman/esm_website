@@ -4,31 +4,63 @@ import $ from "../helpers/cash_dom";
 import Validate from "../helpers/validator";
 import * as bootstrap from "bootstrap";
 import { Serializer } from "../helpers/forms";
+import { onModalHidden } from "../helpers/modals";
 
 // Connects to data-controller="aliases"
 export default class extends ApplicationController {
-  static targets = ["placeholder", "emptyState", "container", "count"];
+  static targets = [
+    "placeholder",
+    "emptyState",
+    "container",
+    "count",
+    "communityButton",
+    "serverButton",
+    "communitySection",
+    "serverSection",
+  ];
 
   static values = { data: Object };
 
   connect() {
-    this.addValidator = new Validate();
-    this.editValidator = new Validate();
     this.serializer = new Serializer("form[data-aliases-target]", "aliases");
 
+    // Prepare validators
+    this.addValidator = new Validate();
+    this.editValidator = new Validate();
     this.#initializeValidators();
 
+    // Prepare existing aliases
     this.aliases = R.clone(this.dataValue);
     this.#renderAliases();
 
-    // Cash's #on method wasn't firing...
-    $("#add_alias_modal")[0].addEventListener("hidden.bs.modal", (_event) =>
-      this.#clearAddModal()
-    );
+    // Prepare the new alias cards
+    this.cards = {
+      community: $(this.communityButtonTarget),
+      server: $(this.serverButtonTarget),
+    };
 
-    $("#edit_alias_modal")[0].addEventListener("hidden.bs.modal", (_event) =>
-      this.#clearEditModal()
-    );
+    this.#setActiveCard("community");
+
+    // Prepare the modals
+    onModalHidden("#add_alias_modal", () => this.#clearAddModal());
+    onModalHidden("#edit_alias_modal", () => this.#clearEditModal());
+  }
+
+  showSection(event) {
+    const targetElem = $(event.currentTarget);
+    const communitySectionElem = $(this.communitySectionTarget);
+    const serverSectionElem = $(this.serverSectionTarget);
+
+    const type = targetElem.data("type");
+    this.#setActiveCard(type);
+
+    if (type === "server") {
+      communitySectionElem.hide();
+      serverSectionElem.show();
+    } else {
+      communitySectionElem.show();
+      serverSectionElem.hide();
+    }
   }
 
   create(_event) {
@@ -64,13 +96,49 @@ export default class extends ApplicationController {
   #initializeValidators() {
     this.addValidator
       .addField("#add_alias_value", [{ rule: "required" }])
-      .addField("#add_alias_community_id");
+      .addField("#add_alias_community_id", [
+        {
+          validator: (value, _context) => {
+            if (this.selectedType !== "community") return true;
 
-    this.editValidator.addField("#edit_alias_value", [{ rule: "required" }]);
-  }
+            return !R.isEmpty(value);
+          },
+          errorMessage: "Please select a community",
+        },
+      ])
+      .addField("#add_alias_server_id", [
+        {
+          validator: (value, _context) => {
+            if (this.selectedType !== "server") return true;
 
-  #setMod({ id, name, version, link, required }) {
-    this.mods[id] = { name, version, link, required };
+            return !R.isEmpty(value);
+          },
+          errorMessage: "Please select a server",
+        },
+      ]);
+
+    this.editValidator
+      .addField("#edit_alias_value", [{ rule: "required" }])
+      .addField("#edit_alias_community_id", [
+        {
+          validator: (value, _context) => {
+            if (this.selectedType !== "community") return true;
+
+            return !R.isEmpty(value);
+          },
+          errorMessage: "Please select a community",
+        },
+      ])
+      .addField("#edit_alias_server_id", [
+        {
+          validator: (value, _context) => {
+            if (this.selectedType !== "server") return true;
+
+            return !R.isEmpty(value);
+          },
+          errorMessage: "Please select a server",
+        },
+      ]);
   }
 
   #clearAddModal() {
@@ -87,6 +155,29 @@ export default class extends ApplicationController {
     $("#edit_alias_server_id").val("");
 
     this.editValidator.clearAllErrors();
+  }
+
+  #setActiveCard(id) {
+    this.selectedType = id;
+    this.#resetCards();
+
+    // Now select the one that was picked
+    const selectedCard = this.cards[id];
+    selectedCard.addClass("selected");
+
+    const button = selectedCard.find("button");
+    button.addClass("selected");
+    button.html("SELECTED");
+  }
+
+  #resetCards() {
+    R.values(this.cards).map((card, _) => {
+      card.removeClass("selected");
+
+      const button = card.find("button");
+      button.removeClass("selected");
+      button.html("Select");
+    });
   }
 
   #createAliasCard(alias, id) {

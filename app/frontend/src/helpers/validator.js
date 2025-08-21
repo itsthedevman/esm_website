@@ -44,12 +44,18 @@ class Validator {
       if (this.options.validateOnBlur) {
         $(el).on("blur", () => this.validateField(field));
       }
+
       if (this.options.validateOnInput) {
         $(el).on(
           "input",
           debounce(() => this.validateField(field), 300)
         );
       }
+
+      $(el).on("validation:trigger", () => {
+        console.log("validate");
+        this.validateField(field); // Immediate validation, no debounce
+      });
     }
 
     return this;

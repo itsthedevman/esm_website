@@ -1,0 +1,17 @@
+.alias-type-card {
+    &.selected {
+        @extend .border-primary;
+        @extend .bg-primary;
+        @extend .bg-opacity-10;
+    }
+
+    button {
+        &.btn-outline-primary.selected {
+            @extend .btn-primary;
+        }
+
+        &.btn-outline-success.selected {
+            @extend .btn-success;
+        }
+    }
+}
