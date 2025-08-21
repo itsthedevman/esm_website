@@ -4,6 +4,7 @@ import $ from "../helpers/cash_dom";
 import Validate from "../helpers/validator";
 import * as bootstrap from "bootstrap";
 import { Serializer } from "../helpers/forms";
+import { onModalHidden } from "../helpers/modals";
 
 // Connects to data-controller="server-mods"
 export default class extends ApplicationController {
@@ -30,14 +31,8 @@ export default class extends ApplicationController {
     this.mods = R.clone(this.modsValue);
     this.#renderMods();
 
-    // Cash's #on method wasn't firing...
-    $("#add_mod_modal")[0].addEventListener("hidden.bs.modal", (_event) =>
-      this.#clearAddModal()
-    );
-
-    $("#edit_mod_modal")[0].addEventListener("hidden.bs.modal", (_event) =>
-      this.#clearEditModal()
-    );
+    onModalHidden("#add_mod_modal", () => this.#clearAddModal());
+    onModalHidden("#edit_mod_modal", () => this.#clearEditModal());
   }
 
   create(_event) {
