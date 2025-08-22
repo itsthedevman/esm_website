@@ -11,8 +11,8 @@ module ESM
     # =============================================================================
 
     public_attributes(
-      :public_id,
       :value,
+      id: ->(user_alias) { user_alias.public_id },
       community: ->(user_alias) { user_alias.community&.public_attributes },
       server: ->(user_alias) { user_alias.server&.public_attributes }
     )

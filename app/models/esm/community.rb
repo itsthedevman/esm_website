@@ -10,7 +10,10 @@ module ESM
     # DATA STRUCTURE
     # =============================================================================
 
-    public_attributes(:public_id, :community_id, :community_name)
+    public_attributes(
+      :community_id, :community_name,
+      id: ->(community) { community.public_id }
+    )
 
     # =============================================================================
     # ASSOCIATIONS
