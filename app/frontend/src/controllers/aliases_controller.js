@@ -22,7 +22,7 @@ export default class extends ApplicationController {
   static values = { data: Object };
 
   connect() {
-    this.serializer = new Serializer("form[data-aliases-target]", "aliases");
+    this.serializer = new Serializer("div[data-controller]", "aliases");
 
     // Prepare validators
     this.addValidator = new Validate();
@@ -39,6 +39,7 @@ export default class extends ApplicationController {
       server: $(this.serverButtonTarget),
     };
 
+    this.selectedType = "community";
     this.#setActiveCard("community");
 
     // Prepare the modals
@@ -52,6 +53,8 @@ export default class extends ApplicationController {
     const serverSectionElem = $(this.serverSectionTarget);
 
     const type = targetElem.data("type");
+
+    this.selectedType = type;
     this.#setActiveCard(type);
 
     if (type === "server") {
@@ -67,6 +70,27 @@ export default class extends ApplicationController {
     this.addValidator.validate().then((isValid) => {
       if (!isValid) return;
 
+      let community = null;
+      let server = null;
+
+      if (this.selectedType === "server") {
+        const [server_id, server_name] = $("#add_alias_server_id")
+          .val()
+          .split(":", 2);
+
+        server = { server_id, server_name };
+      } else {
+        const [community_id, community_name] = $("#add_alias_community_id")
+          .val()
+          .split(":", 2);
+
+        community = { community_id, community_name };
+      }
+
+      const id = crypto.randomUUID();
+      const value = $("#add_alias_value").val();
+
+      this.#setAlias({ id, server, community, value });
       this.#renderAliases();
 
       bootstrap.Modal.getOrCreateInstance("#add_alias_modal").hide();
@@ -157,8 +181,11 @@ export default class extends ApplicationController {
     this.editValidator.clearAllErrors();
   }
 
+  #setAlias({ id, server, community, value }) {
+    this.aliases[id] = { id, server, community, value };
+  }
+
   #setActiveCard(id) {
-    this.selectedType = id;
     this.#resetCards();
 
     // Now select the one that was picked

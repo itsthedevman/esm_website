@@ -24,7 +24,7 @@ class UsersController < AuthenticatedController
       .load
       .sort_by(:value).case_insensitive
       .map(&:public_attributes)
-      .index_by { |a| a["public_id"] }
+      .index_by { |a| a["id"] }
 
     render locals: {
       # Defaults
@@ -36,8 +36,14 @@ class UsersController < AuthenticatedController
 
       # Aliases
       id_aliases:,
-      alias_community_select_data: generate_community_select_data(all_communities),
-      alias_server_select_data: generate_server_select_data(servers_by_community)
+      alias_community_select_data: generate_community_select_data(
+        all_communities,
+        value_method: ->(community) { "#{community.community_id}:#{community.community_name}" }
+      ),
+      alias_server_select_data: generate_server_select_data(
+        servers_by_community,
+        value_method: ->(server) { "#{server.server_id}:#{server.server_name}" }
+      )
     }
   end
 
@@ -47,6 +53,8 @@ class UsersController < AuthenticatedController
     if (id_defaults = permitted_params[:defaults])
       update_id_defaults!(id_defaults)
     end
+
+    binding.pry
 
     render turbo_stream: create_success_toast("Your settings have been updated")
   end
@@ -125,8 +133,8 @@ class UsersController < AuthenticatedController
 
   private
 
-  def generate_community_select_data(all_communities, selected_id = nil)
-    value_method = :community_id
+  def generate_community_select_data(all_communities, selected_id = nil, value_method: nil)
+    value_method ||= :community_id
 
     text_method = ->(community) { "[#{community.community_id}] #{community.community_name}" }
     selected = selected_id ? ->(item, _value) { item.id == selected_id } : false
@@ -137,10 +145,10 @@ class UsersController < AuthenticatedController
     )
   end
 
-  def generate_server_select_data(servers_by_community, selected_id = nil)
+  def generate_server_select_data(servers_by_community, selected_id = nil, value_method: nil)
     group_label_method = ->(community) { "[#{community.community_id}] #{community.community_name}" }
 
-    value_method = :server_id
+    value_method ||= :server_id
 
     text_method = lambda do |server|
       "[#{server.server_id}] #{server.server_name || "Name not provided"}"
