@@ -37,8 +37,8 @@ export default class extends ApplicationController {
       settings: {
         searchText: this.searchTextValue || "No results",
         searchPlaceholder: this.searchTextValue || "Search",
-        closeOnSelect: this.closeOnSelectValue ?? true,
-        allowDeselect: this.allowDeselectValue ?? false,
+        closeOnSelect: this.closeOnSelectValue,
+        allowDeselect: this.allowDeselectValue,
         placeholderText: this.placeholderValue || "Select value",
         showSearch: true,
         disabled: this.disabledValue || selectElement.disabled,
@@ -99,6 +99,12 @@ export default class extends ApplicationController {
       } else {
         this.slimSelect.enable();
       }
+    }
+  }
+
+  clearSelection() {
+    if (this.slimSelect) {
+      this.slimSelect.setSelected([], false);
     }
   }
 }
