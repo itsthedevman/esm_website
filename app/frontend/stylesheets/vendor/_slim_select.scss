@@ -16,6 +16,11 @@
     border-color: var(--ss-border-color);
     padding: #{$input-padding-y} #{$input-padding-x};
 
+    // Add smooth transitions for validation states
+    transition:
+        border-color 0.15s ease-in-out,
+        box-shadow 0.15s ease-in-out;
+
     .ss-single {
         color: var(--ss-font-color);
         margin: 0;
@@ -25,17 +30,23 @@
     .ss-arrow path {
         stroke: #{$input-color};
         opacity: 0.75;
+        transition: stroke 0.15s ease-in-out;
     }
 
     // Validation states
     &.is-invalid {
         padding-right: #{$input-padding-x} !important;
         border-color: #{$danger} !important;
-        box-shadow: 0 0 0 0.25rem #{rgba($danger, 0.25)} !important;
 
+        // Match Bootstrap's invalid focus state
         &:focus-within {
             border-color: #{$danger} !important;
             box-shadow: 0 0 0 0.25rem #{rgba($danger, 0.25)} !important;
+        }
+
+        // Make the arrow red too for consistency
+        .ss-arrow path {
+            stroke: #{$danger} !important;
         }
     }
 
@@ -46,6 +57,11 @@
         &:focus-within {
             border-color: #{$success} !important;
             box-shadow: 0 0 0 0.25rem #{rgba($success, 0.25)} !important;
+        }
+
+        // Make the arrow green too
+        .ss-arrow path {
+            stroke: #{$success} !important;
         }
     }
 
@@ -138,4 +154,9 @@
             }
         }
     }
+}
+
+// Make sure invalid-feedback shows properly after Slim Select
+.ss-main + .invalid-feedback {
+    display: block !important;
 }

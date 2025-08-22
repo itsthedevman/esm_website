@@ -53,8 +53,13 @@ export default class extends ApplicationController {
           }
 
           // Trigger change event for other listeners (including validation)
-          selectElement.dispatchEvent(new Event("change", { bubbles: true }));
-          selectElement.dispatchEvent(new Event("input", { bubbles: true }));
+          this.nextTick(() => {
+            selectElement.dispatchEvent(new Event("change", { bubbles: true }));
+            selectElement.dispatchEvent(new Event("input", { bubbles: true }));
+
+            // Also trigger blur to force immediate validation if configured
+            selectElement.dispatchEvent(new Event("blur", { bubbles: true }));
+          });
         },
       },
     };
@@ -94,35 +99,6 @@ export default class extends ApplicationController {
       } else {
         this.slimSelect.enable();
       }
-    }
-  }
-
-  // Public methods for external control
-  enable() {
-    const selectElement = this.hasSelectTarget
-      ? this.selectTarget
-      : this.element;
-    selectElement.disabled = false;
-    if (this.slimSelect) {
-      this.slimSelect.enable();
-    }
-  }
-
-  disable() {
-    const selectElement = this.hasSelectTarget
-      ? this.selectTarget
-      : this.element;
-    selectElement.disabled = true;
-    if (this.slimSelect) {
-      this.slimSelect.disable();
-    }
-  }
-
-  // Refresh the SlimSelect instance (useful if options change)
-  refresh() {
-    if (this.slimSelect) {
-      this.slimSelect.destroy();
-      this.initializeSlimSelect();
     }
   }
 }
