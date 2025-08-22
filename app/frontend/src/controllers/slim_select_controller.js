@@ -1,8 +1,7 @@
-import { Controller } from "@hotwired/stimulus";
+import ApplicationController from "./application_controller";
 import SlimSelect from "slim-select";
-import $ from "../helpers/cash_dom";
 
-export default class extends Controller {
+export default class extends ApplicationController {
   static targets = ["select"];
   static values = {
     data: Array,
@@ -14,9 +13,7 @@ export default class extends Controller {
   };
 
   connect() {
-    this.hasBeenValidated = false; // Track if user has interacted with field
     this.initializeSlimSelect();
-    this.setupValidationIntegration();
     this.setupAttributeWatcher();
   }
 
@@ -26,9 +23,6 @@ export default class extends Controller {
     }
     if (this.observer) {
       this.observer.disconnect();
-    }
-    if (this.validationObserver) {
-      this.validationObserver.disconnect();
     }
   }
 
@@ -51,10 +45,8 @@ export default class extends Controller {
       },
       events: {
         afterChange: (newVal) => {
-          console.log("🎉 afterChange fired!", newVal);
-          this.hasBeenValidated = true;
-
-          if (newVal.length > 0) {
+          // Update the underlying select element
+          if (newVal && newVal.length > 0) {
             selectElement.value = newVal[0].value;
           } else {
             selectElement.value = "";
@@ -63,49 +55,11 @@ export default class extends Controller {
           // Trigger change event for other listeners (including validation)
           selectElement.dispatchEvent(new Event("change", { bubbles: true }));
           selectElement.dispatchEvent(new Event("input", { bubbles: true }));
-
-          // Trigger immediate validation - but give DOM a moment to settle
-          this.nextTick(() => {
-            selectElement.dispatchEvent(
-              new CustomEvent("validation:trigger", {
-                bubbles: true,
-              })
-            );
-          });
         },
       },
     };
 
     this.slimSelect = new SlimSelect(config);
-
-    // Move the error message to appear after SlimSelect UI
-    this.nextTick(() => this.repositionErrorMessage());
-  }
-
-  setupValidationIntegration() {
-    const selectElement = this.hasSelectTarget
-      ? this.selectTarget
-      : this.element;
-
-    // Listen for validation events
-    selectElement.addEventListener("invalid", this.handleInvalid.bind(this));
-    selectElement.addEventListener("input", this.handleInput.bind(this));
-
-    // Watch for class changes from your Validator
-    this.validationObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === "class") {
-          this.syncValidationFromOriginalSelect();
-        }
-      });
-    });
-
-    this.validationObserver.observe(selectElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-
-    // Don't sync validation state on connect - wait for user interaction
   }
 
   setupAttributeWatcher() {
@@ -113,33 +67,19 @@ export default class extends Controller {
       ? this.selectTarget
       : this.element;
 
-    // Watch for changes to disabled, required, etc.
+    // Watch for changes to disabled attribute
     this.observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === "disabled") {
           this.handleDisabledChange();
-        } else if (mutation.attributeName === "required") {
-          this.syncValidationState();
         }
       });
     });
 
     this.observer.observe(selectElement, {
       attributes: true,
-      attributeFilter: ["disabled", "required"],
+      attributeFilter: ["disabled"],
     });
-  }
-
-  handleInput() {
-    this.hasBeenValidated = true; // Mark as touched
-    this.syncValidationState();
-  }
-
-  handleInvalid(event) {
-    // Prevent browser validation popup
-    event.preventDefault();
-    this.hasBeenValidated = true; // Mark as touched
-    this.syncValidationState();
   }
 
   handleDisabledChange() {
@@ -157,99 +97,12 @@ export default class extends Controller {
     }
   }
 
-  syncValidationState() {
-    const selectElement = this.hasSelectTarget
-      ? this.selectTarget
-      : this.element;
-    const slimSelectMain = $(selectElement).siblings(".ss-main")[0];
-    const feedbackElement = this.getErrorElement();
-
-    if (!slimSelectMain) return;
-
-    const $slimSelectMain = $(slimSelectMain);
-
-    // Clear existing validation classes first
-    $slimSelectMain.removeClass("is-invalid is-valid");
-
-    // Only apply validation styling if the field has been interacted with
-    if (this.hasBeenValidated) {
-      // Don't show valid state for empty required fields
-      const isEmpty = !selectElement.value || selectElement.value === "";
-      const isRequired = selectElement.hasAttribute("required");
-
-      if (selectElement.validity.valid && !(isEmpty && isRequired)) {
-        $slimSelectMain.addClass("is-valid");
-        if (feedbackElement) $(feedbackElement).hide();
-      } else {
-        $slimSelectMain.addClass("is-invalid");
-        if (feedbackElement) $(feedbackElement).show();
-      }
-    }
-  }
-
-  syncValidationFromOriginalSelect() {
-    const selectElement = this.hasSelectTarget
-      ? this.selectTarget
-      : this.element;
-    const slimSelectMain = $(selectElement).siblings(".ss-main")[0];
-    const feedbackElement = this.getErrorElement();
-
-    if (!slimSelectMain) return;
-
-    const $slimSelectMain = $(slimSelectMain);
-
-    // Mirror the validation classes from original select to SlimSelect UI
-    if ($(selectElement).hasClass("is-invalid")) {
-      $slimSelectMain.removeClass("is-valid").addClass("is-invalid");
-      if (feedbackElement) $(feedbackElement).show();
-    } else if ($(selectElement).hasClass("is-valid")) {
-      $slimSelectMain.removeClass("is-invalid").addClass("is-valid");
-      if (feedbackElement) $(feedbackElement).hide();
-    } else {
-      $slimSelectMain.removeClass("is-invalid is-valid");
-      if (feedbackElement) $(feedbackElement).hide();
-    }
-  }
-
-  repositionErrorMessage() {
-    const selectElement = this.hasSelectTarget
-      ? this.selectTarget
-      : this.element;
-    const slimSelectMain = $(selectElement).siblings(".ss-main")[0];
-    const originalFeedback = $(selectElement).siblings(".invalid-feedback")[0];
-
-    if (originalFeedback && slimSelectMain) {
-      // Only move if it's not already in the right place
-      const currentNext = $(slimSelectMain).next(".invalid-feedback")[0];
-      if (currentNext !== originalFeedback) {
-        $(originalFeedback).insertAfter(slimSelectMain);
-      }
-    }
-  }
-
-  getErrorElement() {
-    const selectElement = this.hasSelectTarget
-      ? this.selectTarget
-      : this.element;
-    const slimSelectMain = $(selectElement).siblings(".ss-main")[0];
-
-    if (slimSelectMain) {
-      // Look for error message after SlimSelect UI first
-      return (
-        $(slimSelectMain).siblings(".invalid-feedback")[0] ||
-        $(selectElement).siblings(".invalid-feedback")[0]
-      );
-    }
-
-    return $(selectElement).siblings(".invalid-feedback")[0];
-  }
-
-  // Public method to enable/disable from other controllers
+  // Public methods for external control
   enable() {
     const selectElement = this.hasSelectTarget
       ? this.selectTarget
       : this.element;
-    $(selectElement).prop("disabled", false);
+    selectElement.disabled = false;
     if (this.slimSelect) {
       this.slimSelect.enable();
     }
@@ -259,14 +112,17 @@ export default class extends Controller {
     const selectElement = this.hasSelectTarget
       ? this.selectTarget
       : this.element;
-    $(selectElement).prop("disabled", true);
+    selectElement.disabled = true;
     if (this.slimSelect) {
       this.slimSelect.disable();
     }
   }
 
-  // Helper method for timing issues
-  nextTick(callback) {
-    setTimeout(callback, 0);
+  // Refresh the SlimSelect instance (useful if options change)
+  refresh() {
+    if (this.slimSelect) {
+      this.slimSelect.destroy();
+      this.initializeSlimSelect();
+    }
   }
 }

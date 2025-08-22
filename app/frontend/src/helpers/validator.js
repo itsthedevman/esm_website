@@ -51,11 +51,6 @@ class Validator {
           debounce(() => this.validateField(field), 300)
         );
       }
-
-      $(el).on("validation:trigger", () => {
-        console.log("validation:trigger fired for", selector); // Debug log
-        this.validateField(field);
-      });
     }
 
     return this;
