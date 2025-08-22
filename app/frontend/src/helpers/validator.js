@@ -53,8 +53,8 @@ class Validator {
       }
 
       $(el).on("validation:trigger", () => {
-        console.log("validate");
-        this.validateField(field); // Immediate validation, no debounce
+        console.log("validation:trigger fired for", selector); // Debug log
+        this.validateField(field);
       });
     }
 

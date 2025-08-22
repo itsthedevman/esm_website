@@ -15,7 +15,6 @@ export default class extends Controller {
 
   connect() {
     this.hasBeenValidated = false; // Track if user has interacted with field
-
     this.initializeSlimSelect();
     this.setupValidationIntegration();
     this.setupAttributeWatcher();
@@ -25,11 +24,9 @@ export default class extends Controller {
     if (this.slimSelect) {
       this.slimSelect.destroy();
     }
-
     if (this.observer) {
       this.observer.disconnect();
     }
-
     if (this.validationObserver) {
       this.validationObserver.disconnect();
     }
@@ -52,29 +49,37 @@ export default class extends Controller {
         showSearch: true,
         disabled: this.disabledValue || selectElement.disabled,
       },
+      events: {
+        afterChange: (newVal) => {
+          console.log("🎉 afterChange fired!", newVal);
+          this.hasBeenValidated = true;
+
+          if (newVal.length > 0) {
+            selectElement.value = newVal[0].value;
+          } else {
+            selectElement.value = "";
+          }
+
+          // Trigger change event for other listeners (including validation)
+          selectElement.dispatchEvent(new Event("change", { bubbles: true }));
+          selectElement.dispatchEvent(new Event("input", { bubbles: true }));
+
+          // Trigger immediate validation - but give DOM a moment to settle
+          this.nextTick(() => {
+            selectElement.dispatchEvent(
+              new CustomEvent("validation:trigger", {
+                bubbles: true,
+              })
+            );
+          });
+        },
+      },
     };
 
     this.slimSelect = new SlimSelect(config);
 
-    this.slimSelect.onChange = (info) => {
-      this.hasBeenValidated = true; // Mark as touched when user makes selection
-
-      if (info.length > 0) {
-        selectElement.value = info[0].value;
-      } else {
-        selectElement.value = "";
-      }
-
-      // Trigger change event for other listeners (including validation)
-      selectElement.dispatchEvent(new Event("change", { bubbles: true }));
-      selectElement.dispatchEvent(new Event("input", { bubbles: true }));
-
-      selectElement.dispatchEvent(
-        new CustomEvent("validation:trigger", {
-          bubbles: true,
-        })
-      );
-    };
+    // Move the error message to appear after SlimSelect UI
+    this.nextTick(() => this.repositionErrorMessage());
   }
 
   setupValidationIntegration() {
@@ -157,7 +162,7 @@ export default class extends Controller {
       ? this.selectTarget
       : this.element;
     const slimSelectMain = $(selectElement).siblings(".ss-main")[0];
-    const feedbackElement = $(selectElement).siblings(".invalid-feedback")[0];
+    const feedbackElement = this.getErrorElement();
 
     if (!slimSelectMain) return;
 
@@ -168,7 +173,11 @@ export default class extends Controller {
 
     // Only apply validation styling if the field has been interacted with
     if (this.hasBeenValidated) {
-      if (selectElement.validity.valid) {
+      // Don't show valid state for empty required fields
+      const isEmpty = !selectElement.value || selectElement.value === "";
+      const isRequired = selectElement.hasAttribute("required");
+
+      if (selectElement.validity.valid && !(isEmpty && isRequired)) {
         $slimSelectMain.addClass("is-valid");
         if (feedbackElement) $(feedbackElement).hide();
       } else {
@@ -183,7 +192,7 @@ export default class extends Controller {
       ? this.selectTarget
       : this.element;
     const slimSelectMain = $(selectElement).siblings(".ss-main")[0];
-    const feedbackElement = $(selectElement).siblings(".invalid-feedback")[0];
+    const feedbackElement = this.getErrorElement();
 
     if (!slimSelectMain) return;
 
@@ -200,6 +209,39 @@ export default class extends Controller {
       $slimSelectMain.removeClass("is-invalid is-valid");
       if (feedbackElement) $(feedbackElement).hide();
     }
+  }
+
+  repositionErrorMessage() {
+    const selectElement = this.hasSelectTarget
+      ? this.selectTarget
+      : this.element;
+    const slimSelectMain = $(selectElement).siblings(".ss-main")[0];
+    const originalFeedback = $(selectElement).siblings(".invalid-feedback")[0];
+
+    if (originalFeedback && slimSelectMain) {
+      // Only move if it's not already in the right place
+      const currentNext = $(slimSelectMain).next(".invalid-feedback")[0];
+      if (currentNext !== originalFeedback) {
+        $(originalFeedback).insertAfter(slimSelectMain);
+      }
+    }
+  }
+
+  getErrorElement() {
+    const selectElement = this.hasSelectTarget
+      ? this.selectTarget
+      : this.element;
+    const slimSelectMain = $(selectElement).siblings(".ss-main")[0];
+
+    if (slimSelectMain) {
+      // Look for error message after SlimSelect UI first
+      return (
+        $(slimSelectMain).siblings(".invalid-feedback")[0] ||
+        $(selectElement).siblings(".invalid-feedback")[0]
+      );
+    }
+
+    return $(selectElement).siblings(".invalid-feedback")[0];
   }
 
   // Public method to enable/disable from other controllers
