@@ -1,125 +1,19 @@
 import ApplicationController from "./application_controller";
 import * as R from "ramda";
 import $ from "../helpers/cash_dom";
-import Validate from "../helpers/validator";
 import * as bootstrap from "bootstrap";
 import { Serializer } from "../helpers/forms";
-import { onModalHidden } from "../helpers/modals";
 
 // Connects to data-controller="aliases"
 export default class extends ApplicationController {
-  static targets = [
-    // edit.slim
-    "placeholder",
-    "emptyState",
-    "container",
-    "count",
-
-    // add/edit modals
-    "communityButton",
-    "communitySection",
-    "serverButton",
-    "serverSection",
-    "communityPreviewSection",
-    "communityPreview",
-    "serverPreviewSection",
-    "serverPreview",
-  ];
-
+  static targets = ["placeholder", "emptyState", "container", "count"];
   static values = { data: Object };
 
   connect() {
     this.serializer = new Serializer("div[data-controller]", "user[aliases]");
 
-    // Prepare validators
-    this.addValidator = new Validate();
-    this.editValidator = new Validate();
-    this.#initializeValidators();
-
-    // Prepare existing aliases
     this.aliases = R.clone(this.dataValue);
     this.#renderAliases();
-
-    // Prepare the new alias cards
-    this.cards = {
-      community: $(this.communityButtonTarget),
-      server: $(this.serverButtonTarget),
-    };
-
-    this.selectedType = "community";
-    this.#setActiveCard("community");
-
-    // Prepare the previews
-    this.previews = {
-      community: $(this.communityPreviewTarget),
-      server: $(this.serverPreviewTarget),
-    };
-
-    // Prepare the modals
-    onModalHidden("#add_alias_modal", () => this.#clearAddModal());
-    onModalHidden("#edit_alias_modal", () => this.#clearEditModal());
-  }
-
-  showSection(event) {
-    const targetElem = $(event.currentTarget);
-    const type = targetElem.data("type");
-
-    this.selectedType = type;
-    this.#setActiveCard(type);
-
-    const communitySectionElem = $(this.communitySectionTarget);
-    const serverSectionElem = $(this.serverSectionTarget);
-    const communityPreviewElem = $(this.communityPreviewSectionTarget);
-    const serverPreviewElem = $(this.serverPreviewSectionTarget);
-
-    if (this.selectedType === "server") {
-      // Change the preview
-      communityPreviewElem.hide();
-      serverPreviewElem.show();
-
-      // Toggle the sections
-      communitySectionElem.hide();
-      serverSectionElem.show();
-    } else {
-      // Change the preview
-      communityPreviewElem.show();
-      serverPreviewElem.hide();
-
-      // Toggle the sections
-      communitySectionElem.show();
-      serverSectionElem.hide();
-    }
-  }
-
-  create(_event) {
-    this.addValidator.validate().then((isValid) => {
-      if (!isValid) return;
-
-      let community = null;
-      let server = null;
-
-      if (this.selectedType === "server") {
-        const [server_id, server_name] = $("#add_alias_server_id")
-          .val()
-          .split(":", 2);
-
-        server = { server_id, server_name };
-      } else {
-        const [community_id, community_name] = $("#add_alias_community_id")
-          .val()
-          .split(":", 2);
-
-        community = { community_id, community_name };
-      }
-
-      const id = crypto.randomUUID();
-      const value = $("#add_alias_value").val();
-
-      this.#setAlias({ id, server, community, value });
-      this.#renderAliases();
-
-      bootstrap.Modal.getOrCreateInstance("#add_alias_modal").hide();
-    });
   }
 
   edit(event) {
@@ -138,126 +32,12 @@ export default class extends ApplicationController {
 
   delete(event) {
     const id = $(event.currentTarget).data("id");
-
     delete this.aliases[id];
 
     this.#renderAliases();
   }
 
-  //////////////////////////////////////////////////////////////////////////////////////////////////
-
-  #initializeValidators() {
-    this.addValidator
-      .addField("#add_alias_value", [
-        { rule: "required" },
-        {
-          validator: (value, _context) => {
-            value = R.toLower(value);
-
-            const exists =
-              R.find(
-                R.where({
-                  value: R.equals(value),
-                  type: R.equals(this.selectedType),
-                })
-              )(R.values(this.aliases)) ?? false;
-
-            return !exists;
-          },
-          errorMessage: "Alias already exists",
-        },
-      ])
-      .addField("#add_alias_community_id", [
-        {
-          validator: (value, _context) => {
-            if (this.selectedType !== "community") return true;
-
-            return !R.isEmpty(value);
-          },
-          errorMessage: "Please select a community",
-        },
-      ])
-      .addField("#add_alias_server_id", [
-        {
-          validator: (value, _context) => {
-            if (this.selectedType !== "server") return true;
-
-            return !R.isEmpty(value);
-          },
-          errorMessage: "Please select a server",
-        },
-      ]);
-
-    this.editValidator
-      .addField("#edit_alias_value", [{ rule: "required" }])
-      .addField("#edit_alias_community_id", [
-        {
-          validator: (value, _context) => {
-            if (this.selectedType !== "community") return true;
-
-            return !R.isEmpty(value);
-          },
-          errorMessage: "Please select a community",
-        },
-      ])
-      .addField("#edit_alias_server_id", [
-        {
-          validator: (value, _context) => {
-            if (this.selectedType !== "server") return true;
-
-            return !R.isEmpty(value);
-          },
-          errorMessage: "Please select a server",
-        },
-      ]);
-  }
-
-  #clearAddModal() {
-    $("#add_alias_value").val("");
-
-    this.#clearSelection("#add_alias_community_id");
-    this.#clearSelection("#add_alias_server_id");
-
-    this.addValidator.clearAllErrors();
-  }
-
-  #clearEditModal() {
-    $("#edit_alias_value").val("");
-    $("#edit_alias_community_id").val("");
-    $("#edit_alias_server_id").val("");
-
-    this.editValidator.clearAllErrors();
-  }
-
-  #setAlias({ id, server, community, value }) {
-    this.aliases[id] = { id, server, community, value: R.toLower(value) };
-  }
-
-  #clearSelection(selector) {
-    this.dispatch("clearSelection", { target: $(selector)[0] });
-  }
-
-  #setActiveCard(id) {
-    this.#resetCards();
-
-    // Now select the one that was picked
-    const selectedCard = this.cards[id];
-    selectedCard.addClass("selected");
-
-    const button = selectedCard.find("button");
-    button.addClass("selected");
-    button.html("SELECTED");
-  }
-
-  #resetCards() {
-    R.values(this.cards).map((card, _) => {
-      card.removeClass("selected");
-
-      const button = card.find("button");
-      button.removeClass("selected");
-      button.html("Select");
-    });
-  }
+  //////////////////////////////////////////////////////////////////////////////
 
   #createAliasCard(alias, id) {
     const isServer = alias.server !== null;
@@ -349,8 +129,4 @@ export default class extends ApplicationController {
       }, this.aliases);
     }
   }
-
-  #renderPreview() {}
-
-  #getCurrentAliasValue() {}
 }
