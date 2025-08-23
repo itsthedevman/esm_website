@@ -37,6 +37,16 @@
                 data-action="click->aliases#showSection"
               ] Select
 
+    / Alias Rules
+    .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-4
+      h6.text-info.mb-2
+        i.bi.bi-info-circle.me-2
+        | Alias Rules
+      ul.small.mb-0
+        li Up to 64 characters in length <em class="text-muted">(though why would you want one that long?)</em>
+        li Cannot already exist as an alias of the same type
+        li You can create the same alias for a community and a server, but not for two communities or two servers
+
     / Community Selection
     .mb-4[data-aliases-target="communitySection"]
       = label_tag "add_alias_community_id", class: "form-label h6 fw-medium"
