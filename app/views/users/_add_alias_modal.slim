@@ -102,7 +102,7 @@
           i.bi.bi-eye.me-2
           | Command Preview
       / Community preview
-      .card-body.py-3[data-aliases-target="communityPreview"]
+      .card-body.py-3[data-aliases-target="communityPreviewSection"]
         .mb-3
           small.text-muted.mb-2.d-block Instead of typing:
           .bg-dark.rounded.p-3
@@ -113,8 +113,8 @@
                 | for
               span.text-secondary
                 | :
-              span.arg.identifier[data-aliases-target="communityPreviewBefore"]
-                | community_id
+              span.arg.identifier
+                | &lt;community&gt;
         .mb-0
           small.text-muted.mb-2.d-block You'll type:
           .bg-dark.rounded.p-3
@@ -125,11 +125,10 @@
                 | for
               span.text-secondary
                 | :
-              span.arg.identifier[data-aliases-target="communityPreviewAfter"]
-                | community_id
+              span.arg.identifier.d-none[data-aliases-target="communityPreview"]
 
       / Server preview
-      .card-body.py-3.d-none[data-aliases-target="serverPreview"]
+      .card-body.py-3.d-none[data-aliases-target="serverPreviewSection"]
         .mb-3
           small.text-muted.mb-2.d-block Instead of typing:
           .bg-dark.rounded.p-3
@@ -140,8 +139,8 @@
                 | on
               span.text-secondary
                 | :
-              span.arg.identifier[data-aliases-target="serverPreviewBefore"]
-                | server_id
+              span.arg.identifier
+                | &lt;server&gt;
         .mb-0
           small.text-muted.mb-2.d-block You'll type:
           .bg-dark.rounded.p-3
@@ -152,8 +151,7 @@
                 | on
               span.text-secondary
                 | :
-              span.arg.identifier[data-aliases-target="serverPreviewAfter"]
-                | server_id
+              span.arg.identifier.d-none[data-aliases-target="serverPreview"]
 
   .modal-footer.border-top
     .d-flex.align-items-center.justify-content-between.w-100

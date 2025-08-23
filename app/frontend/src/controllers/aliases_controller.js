@@ -20,12 +20,10 @@ export default class extends ApplicationController {
     "communitySection",
     "serverButton",
     "serverSection",
+    "communityPreviewSection",
     "communityPreview",
-    "communityPreviewBefore",
-    "communityPreviewAfter",
+    "serverPreviewSection",
     "serverPreview",
-    "serverPreviewBefore",
-    "serverPreviewAfter",
   ];
 
   static values = { data: Object };
@@ -51,6 +49,12 @@ export default class extends ApplicationController {
     this.selectedType = "community";
     this.#setActiveCard("community");
 
+    // Prepare the previews
+    this.previews = {
+      community: $(this.communityPreviewTarget),
+      server: $(this.serverPreviewTarget),
+    };
+
     // Prepare the modals
     onModalHidden("#add_alias_modal", () => this.#clearAddModal());
     onModalHidden("#edit_alias_modal", () => this.#clearEditModal());
@@ -65,8 +69,8 @@ export default class extends ApplicationController {
 
     const communitySectionElem = $(this.communitySectionTarget);
     const serverSectionElem = $(this.serverSectionTarget);
-    const communityPreviewElem = $(this.communityPreviewTarget);
-    const serverPreviewElem = $(this.serverPreviewTarget);
+    const communityPreviewElem = $(this.communityPreviewSectionTarget);
+    const serverPreviewElem = $(this.serverPreviewSectionTarget);
 
     if (this.selectedType === "server") {
       // Change the preview
@@ -347,4 +351,6 @@ export default class extends ApplicationController {
   }
 
   #renderPreview() {}
+
+  #getCurrentAliasValue() {}
 }
