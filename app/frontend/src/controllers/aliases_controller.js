@@ -9,14 +9,23 @@ import { onModalHidden } from "../helpers/modals";
 // Connects to data-controller="aliases"
 export default class extends ApplicationController {
   static targets = [
+    // edit.slim
     "placeholder",
     "emptyState",
     "container",
     "count",
+
+    // add/edit modals
     "communityButton",
-    "serverButton",
     "communitySection",
+    "serverButton",
     "serverSection",
+    "communityPreview",
+    "communityPreviewBefore",
+    "communityPreviewAfter",
+    "serverPreview",
+    "serverPreviewBefore",
+    "serverPreviewAfter",
   ];
 
   static values = { data: Object };
@@ -49,18 +58,30 @@ export default class extends ApplicationController {
 
   showSection(event) {
     const targetElem = $(event.currentTarget);
-    const communitySectionElem = $(this.communitySectionTarget);
-    const serverSectionElem = $(this.serverSectionTarget);
-
     const type = targetElem.data("type");
 
     this.selectedType = type;
     this.#setActiveCard(type);
 
-    if (type === "server") {
+    const communitySectionElem = $(this.communitySectionTarget);
+    const serverSectionElem = $(this.serverSectionTarget);
+    const communityPreviewElem = $(this.communityPreviewTarget);
+    const serverPreviewElem = $(this.serverPreviewTarget);
+
+    if (this.selectedType === "server") {
+      // Change the preview
+      communityPreviewElem.hide();
+      serverPreviewElem.show();
+
+      // Toggle the sections
       communitySectionElem.hide();
       serverSectionElem.show();
     } else {
+      // Change the preview
+      communityPreviewElem.show();
+      serverPreviewElem.hide();
+
+      // Toggle the sections
       communitySectionElem.show();
       serverSectionElem.hide();
     }
@@ -324,4 +345,6 @@ export default class extends ApplicationController {
       }, this.aliases);
     }
   }
+
+  #renderPreview() {}
 }

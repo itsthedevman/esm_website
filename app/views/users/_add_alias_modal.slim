@@ -9,8 +9,6 @@
     / Type Selection
     .mb-4
       h5.fw-medium.mb-2 What does this alias represent?
-      p.text-muted.small.mb-3
-        | Aliases are shortcuts that let you use simple names instead of long IDs in commands.
 
       .row.g-3
         .col-md-6
@@ -103,15 +101,59 @@
         h6.mb-0.text-light
           i.bi.bi-eye.me-2
           | Command Preview
-      .card-body.py-3
+      / Community preview
+      .card-body.py-3[data-aliases-target="communityPreview"]
         .mb-3
           small.text-muted.mb-2.d-block Instead of typing:
           .bg-dark.rounded.p-3
-            = command_usage(:servers, arguments: {community_id: "community_id"})
+            span.command
+              span
+                |> /community servers
+              span.arg.identifier
+                | for
+              span.text-secondary
+                | :
+              span.arg.identifier[data-aliases-target="communityPreviewBefore"]
+                | community_id
         .mb-0
           small.text-muted.mb-2.d-block You'll type:
           .bg-dark.rounded.p-3
-            = command_usage(:servers, arguments: {community_id: "main"})
+            span.command
+              span
+                |> /community servers
+              span.arg.identifier
+                | for
+              span.text-secondary
+                | :
+              span.arg.identifier[data-aliases-target="communityPreviewAfter"]
+                | community_id
+
+      / Server preview
+      .card-body.py-3.d-none[data-aliases-target="serverPreview"]
+        .mb-3
+          small.text-muted.mb-2.d-block Instead of typing:
+          .bg-dark.rounded.p-3
+            span.command
+              span
+                |> /server reward
+              span.arg.identifier
+                | on
+              span.text-secondary
+                | :
+              span.arg.identifier[data-aliases-target="serverPreviewBefore"]
+                | server_id
+        .mb-0
+          small.text-muted.mb-2.d-block You'll type:
+          .bg-dark.rounded.p-3
+            span.command
+              span
+                |> /server reward
+              span.arg.identifier
+                | on
+              span.text-secondary
+                | :
+              span.arg.identifier[data-aliases-target="serverPreviewAfter"]
+                | server_id
 
   .modal-footer.border-top
     .d-flex.align-items-center.justify-content-between.w-100
