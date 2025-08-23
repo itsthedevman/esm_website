@@ -58,7 +58,10 @@
               slim_select_placeholder_value: "Choose a community...",
               slim_select_allow_deselect_value: true,
               slim_select_data_value: alias_community_select_data,
-              action: "aliases:clearSelection@window->slim-select#clearSelection",
+              action: [ \
+                "alias:clearSelection@window->slim-select#clearSelection",
+                "change->alias#onIDChanged",
+              ].join(" "),
               alias_target: "communityID",
             }
         small.form-text.text-muted.mt-1 Choose the Discord community this alias will represent
@@ -76,7 +79,10 @@
               slim_select_placeholder_value: "Choose a server...",
               slim_select_allow_deselect_value: true,
               slim_select_data_value: alias_server_select_data,
-              action: "aliases:clearSelection@window->slim-select#clearSelection",
+              action: [ \
+                "alias:clearSelection@window->slim-select#clearSelection",
+                "change->alias#onIDChanged",
+              ].join(" "),
               alias_target: "serverID",
             }
         small.form-text.text-muted.mt-1 Choose the game server this alias will represent
@@ -93,7 +99,7 @@
               class: "form-control",
               placeholder: "main",
               maxlength: 64,
-              data: {alias_target: "value"}
+              data: {alias_target: "value", action: "input->alias#onValueInput"}
         .d-flex.justify-content-between.mt-2
           small.form-text.text-muted Keep it short and memorable!
           small.form-text.text-muted 0/64 characters
@@ -116,7 +122,7 @@
                   | for
                 span.text-secondary
                   | :
-                span.arg.identifier
+                span.arg.identifier[data-alias-target="communityPreviewBefore"]
                   | &lt;community&gt;
           .mb-0
             small.text-muted.mb-2.d-block You'll type:
@@ -128,7 +134,7 @@
                   | for
                 span.text-secondary
                   | :
-                span.arg.identifier.d-none[data-alias-target="communityPreview"]
+                span.arg.identifier.d-none[data-alias-target="communityPreviewAfter"]
 
         / Server preview
         .card-body.py-3.d-none[data-alias-target="serverPreviewSection"]
@@ -142,7 +148,7 @@
                   | on
                 span.text-secondary
                   | :
-                span.arg.identifier
+                span.arg.identifier[data-alias-target="serverPreviewBefore"]
                   | &lt;server&gt;
           .mb-0
             small.text-muted.mb-2.d-block You'll type:
@@ -154,7 +160,7 @@
                   | on
                 span.text-secondary
                   | :
-                span.arg.identifier.d-none[data-alias-target="serverPreview"]
+                span.arg.identifier.d-none[data-alias-target="serverPreviewAfter"]
 
     .modal-footer.border-top
       .d-flex.align-items-center.justify-content-between.w-100

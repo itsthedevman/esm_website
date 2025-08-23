@@ -3,6 +3,7 @@ import $ from "cash-dom";
 import * as R from "ramda";
 import Validate from "../helpers/validator";
 import { onModalHidden } from "../helpers/modals";
+import * as bootstrap from "bootstrap";
 
 // Connects to data-controller="alias"
 export default class extends Controller {
@@ -18,15 +19,38 @@ export default class extends Controller {
     "value",
 
     "communityPreviewSection",
-    "communityPreview",
+    "communityPreviewBefore",
+    "communityPreviewAfter",
 
     "serverPreviewSection",
-    "serverPreview",
+    "serverPreviewBefore",
+    "serverPreviewAfter",
   ];
 
   connect() {
-    console.log("Connected");
     this.modal = this.element;
+
+    const modal = bootstrap.Modal.getOrCreateInstance(this.element);
+
+    modal._element.addEventListener("shown.bs.modal", () => {
+      console.log("shown");
+      // Patch Bootstrap's focus enforcement
+      const originalEnforceFocus = modal._enforceFocus;
+
+      modal._enforceFocus = function () {
+        console.log("enforce focus");
+        const activeElement = document.activeElement;
+
+        console.log(activeElement);
+        // Allow focus on SlimSelect search inputs
+        if (activeElement?.matches(".ss-search input")) {
+          return;
+        }
+
+        // Otherwise, use Bootstrap's default behavior
+        originalEnforceFocus.call(this);
+      };
+    });
     this.validator = new Validate();
     this.#initializeValidator();
 
@@ -41,9 +65,17 @@ export default class extends Controller {
 
     // Prepare the previews
     this.previews = {
-      community: $(this.communityPreviewTarget),
-      server: $(this.serverPreviewTarget),
+      community: {
+        before: $(this.communityPreviewBeforeTarget),
+        after: $(this.communityPreviewAfterTarget),
+      },
+      server: {
+        before: $(this.serverPreviewBeforeTarget),
+        after: $(this.serverPreviewAfterTarget),
+      },
     };
+
+    this.#renderPreview();
 
     // Prepare the modal
     onModalHidden(this.modal, () => this.#clearModal());
@@ -60,6 +92,8 @@ export default class extends Controller {
     const serverSectionElem = $(this.serverSectionTarget);
     const communityPreviewElem = $(this.communityPreviewSectionTarget);
     const serverPreviewElem = $(this.serverPreviewSectionTarget);
+
+    this.#renderPreview();
 
     if (this.selectedType === "server") {
       // Change the preview
@@ -78,6 +112,14 @@ export default class extends Controller {
       communitySectionElem.show();
       serverSectionElem.hide();
     }
+  }
+
+  onValueInput(_event) {
+    this.#renderPreview();
+  }
+
+  onIDChanged(_event) {
+    this.#renderPreview();
   }
 
   create(_event) {
@@ -192,5 +234,34 @@ export default class extends Controller {
       button.removeClass("selected");
       button.html("Select");
     });
+  }
+
+  #renderPreview() {
+    const previews = this.previews[this.selectedType];
+
+    // Preview the selected server
+    const beforeElem = previews.before;
+
+    if (this.selectedType === "server") {
+      const [server_id, _] = $(this.serverIDTarget).val().split(":", 2);
+
+      beforeElem.html(server_id?.trim() || "&lt;server&gt;");
+    } else {
+      const [community_id, _] = $(this.communityIDTarget).val().split(":", 2);
+
+      beforeElem.html(community_id?.trim() || "&lt;community&gt;");
+    }
+
+    // Preview the alias value
+    const afterElem = previews.after;
+    const value = $(this.valueTarget).val();
+
+    if (R.isEmpty(value)) {
+      afterElem.hide();
+    } else {
+      afterElem.show();
+    }
+
+    afterElem.html(value);
   }
 }
