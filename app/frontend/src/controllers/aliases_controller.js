@@ -22,7 +22,7 @@ export default class extends ApplicationController {
   static values = { data: Object };
 
   connect() {
-    this.serializer = new Serializer("div[data-controller]", "aliases");
+    this.serializer = new Serializer("div[data-controller]", "user[aliases]");
 
     // Prepare validators
     this.addValidator = new Validate();
@@ -112,6 +112,10 @@ export default class extends ApplicationController {
   }
 
   delete(event) {
+    const id = $(event.currentTarget).data("id");
+
+    delete this.aliases[id];
+
     this.#renderAliases();
   }
 
@@ -119,7 +123,25 @@ export default class extends ApplicationController {
 
   #initializeValidators() {
     this.addValidator
-      .addField("#add_alias_value", [{ rule: "required" }])
+      .addField("#add_alias_value", [
+        { rule: "required" },
+        {
+          validator: (value, _context) => {
+            value = R.toLower(value);
+
+            const exists =
+              R.find(
+                R.where({
+                  value: R.equals(value),
+                  type: R.equals(this.selectedType),
+                })
+              )(R.values(this.aliases)) ?? false;
+
+            return !exists;
+          },
+          errorMessage: "Alias already exists",
+        },
+      ])
       .addField("#add_alias_community_id", [
         {
           validator: (value, _context) => {
@@ -167,8 +189,9 @@ export default class extends ApplicationController {
 
   #clearAddModal() {
     $("#add_alias_value").val("");
-    $("#add_alias_community_id").val("");
-    $("#add_alias_server_id").val("");
+
+    this.#clearSelection("#add_alias_community_id");
+    this.#clearSelection("#add_alias_server_id");
 
     this.addValidator.clearAllErrors();
   }
@@ -182,7 +205,11 @@ export default class extends ApplicationController {
   }
 
   #setAlias({ id, server, community, value }) {
-    this.aliases[id] = { id, server, community, value };
+    this.aliases[id] = { id, server, community, value: R.toLower(value) };
+  }
+
+  #clearSelection(selector) {
+    this.dispatch("clearSelection", { target: $(selector)[0] });
   }
 
   #setActiveCard(id) {
@@ -243,14 +270,14 @@ export default class extends ApplicationController {
                       type="button"
                       title="Edit alias"
                       data-action="click->aliases#edit"
-                      data-alias-id="${id}">
+                      data-id="${id}">
                 <i class="bi bi-pencil"></i>
               </button>
               <button class="btn btn-outline-danger btn-sm"
                       type="button"
                       title="Delete alias"
                       data-action="click->aliases#delete"
-                      data-alias-id="${id}">
+                      data-id="${id}">
                 <i class="bi bi-trash"></i>
               </button>
             </div>
@@ -269,8 +296,16 @@ export default class extends ApplicationController {
     const aliases = R.values(this.aliases);
     const length = aliases.length;
 
-    // Write the mods to the form
-    this.serializer.serialize(aliases);
+    // Clean up the data
+    let serializedData = aliases.map((alias) => {
+      alias = R.omit(["id", "type"], alias);
+      alias.community_id = alias.community?.community_id;
+      alias.server_id = alias.server?.server_id;
+      return R.omit(["server", "community"], alias);
+    });
+
+    // Write the aliases to the form
+    this.serializer.serialize(serializedData);
 
     $(this.placeholderTarget).hide();
 

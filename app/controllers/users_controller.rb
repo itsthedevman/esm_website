@@ -54,7 +54,9 @@ class UsersController < AuthenticatedController
       update_id_defaults!(id_defaults)
     end
 
-    binding.pry
+    if (id_aliases = permitted_params[:aliases])
+      update_id_aliases!(id_aliases)
+    end
 
     render turbo_stream: create_success_toast("Your settings have been updated")
   end
@@ -164,7 +166,8 @@ class UsersController < AuthenticatedController
 
   def permit_update_params!
     params.require(:user).permit(
-      defaults: [:community_id, :server_id]
+      defaults: [:community_id, :server_id],
+      aliases: [:value, :community_id, :server_id]
     )
   end
 
@@ -178,5 +181,33 @@ class UsersController < AuthenticatedController
     end
 
     ESM::UserDefault.where(user_id: current_user.id).update!(id_defaults)
+  end
+
+  def update_id_aliases!(id_aliases)
+    community_lookup = ESM::Community.all.pluck(:community_id, :id)
+      .to_h
+      .transform_keys(&:downcase)
+
+    server_lookup = ESM::Server.all.pluck(:server_id, :id)
+      .to_h
+      .transform_keys(&:downcase)
+
+    ESM::UserAlias.transaction do
+      current_user.id_aliases.delete_all
+
+      id_aliases.each do |ali|
+        if (community_id = ali.delete(:community_id))
+          ali[:community_id] = community_lookup[community_id]
+        end
+
+        if (server_id = ali.delete(:server_id))
+          ali[:server_id] = server_lookup[server_id]
+        end
+
+        ali[:user_id] = current_user.id
+
+        ESM::UserAlias.create!(ali)
+      end
+    end
   end
 end
