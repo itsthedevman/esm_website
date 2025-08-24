@@ -125,7 +125,7 @@ Rails.application.routes.draw do
   end
 
   # /register
-  get :register, to: "user_controller#index"
+  get :register, to: "users#edit"
 
   # /tools
   resource :tools, only: [] do

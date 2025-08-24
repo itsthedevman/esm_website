@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 class UsersController < AuthenticatedController
-  skip_before_action :authenticate_user!
-  before_action :authenticate_user!, except: :register
-
   def edit
     all_communities = ESM::Community.select(:id, :community_id, :community_name)
       .order("UPPER(community_id)")
