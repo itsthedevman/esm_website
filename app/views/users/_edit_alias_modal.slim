@@ -67,8 +67,8 @@
               slim_select_allow_deselect_value: true,
               slim_select_data_value: alias_community_select_data,
               action: [ \
-                "alias-edit:clearSelection@window->slim-select#clearSelection",
-                "alias-edit:setSelection@window->slim-select#setSelection",
+                "alias-edit:clearSelection->slim-select#clearSelection",
+                "alias-edit:setSelection->slim-select#setSelection",
                 "change->alias-edit#onIDChanged",
               ].join(" "),
               alias_edit_target: "communityID",
@@ -89,8 +89,8 @@
               slim_select_allow_deselect_value: true,
               slim_select_data_value: alias_server_select_data,
               action: [ \
-                "alias-edit:clearSelection@window->slim-select#clearSelection",
-                "alias-edit:setSelection@window->slim-select#setSelection",
+                "alias-edit:clearSelection->slim-select#clearSelection",
+                "alias-edit:setSelection->slim-select#setSelection",
                 "change->alias-edit#onIDChanged",
               ].join(" "),
               alias_edit_target: "serverID",
