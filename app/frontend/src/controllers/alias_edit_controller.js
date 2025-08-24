@@ -19,8 +19,15 @@ export default class extends AliasController {
 
     $(this.valueTarget).val(alias.value);
 
-    this.#setSelection(this.communityIDTarget, alias.community?.community_id);
-    this.#setSelection(this.serverIDTarget, alias.server?.server_id);
+    this.#setSelection(
+      this.communityIDTarget,
+      `${alias.community?.community_id}:${alias.community?.community_name}`
+    );
+
+    this.#setSelection(
+      this.serverIDTarget,
+      `${alias.server?.server_id}:${alias.server?.server_name}`
+    );
   }
 
   update(event) {
