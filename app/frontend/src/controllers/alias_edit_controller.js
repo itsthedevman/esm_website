@@ -30,9 +30,37 @@ export default class extends AliasController {
     );
   }
 
-  update(event) {
+  update(_event) {
     this.validator.validate().then((isValid) => {
       if (!isValid) return;
+
+      let community = null;
+      let server = null;
+
+      if (this.selectedType === "server") {
+        const [server_id, server_name] = $(this.serverIDTarget)
+          .val()
+          .split(":", 2);
+
+        server = { server_id, server_name };
+      } else {
+        const [community_id, community_name] = $(this.communityIDTarget)
+          .val()
+          .split(":", 2);
+
+        community = { community_id, community_name };
+      }
+
+      const value = $(this.valueTarget).val();
+
+      this.dispatch("update", {
+        detail: {
+          id: this.alias.id,
+          server,
+          community,
+          value: R.toLower(value),
+        },
+      });
 
       bootstrap.Modal.getOrCreateInstance(this.modal).hide();
     });
@@ -53,6 +81,7 @@ export default class extends AliasController {
               R.where({
                 value: R.equals(value),
                 type: R.equals(this.selectedType),
+                id: R.complement(R.equals(this.alias.id)),
               })
             )(R.values(this.aliasesOutlet.aliases)) ?? false;
 
@@ -64,8 +93,6 @@ export default class extends AliasController {
   }
 
   #setSelection(target, value) {
-    console.log("Dispatch to:", target);
-    console.log("Value:", value);
     this.dispatch("setSelection", {
       target,
       detail: { value, validate: true },

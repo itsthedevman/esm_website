@@ -133,7 +133,10 @@
       = content_tag :div, nil, data: { \
         controller: "aliases",
         aliases_data_value: id_aliases,
-        action: "alias-new:create->aliases#set",
+        action: [\
+          "alias-new:create->aliases#set",
+          "alias-edit:update->aliases#set",
+        ].join(" "),
       }
         = render "users/add_alias_modal", **local_assigns
         = render "users/edit_alias_modal", **local_assigns
