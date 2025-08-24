@@ -7,6 +7,8 @@ import * as bootstrap from "bootstrap";
 
 // Connects to data-controller="alias"
 export default class extends Controller {
+  static outlets = ["aliases"];
+
   static targets = [
     "communityButton",
     "communitySection",
@@ -133,7 +135,7 @@ export default class extends Controller {
     });
   }
 
-  //////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
 
   #initializeValidator() {
     this.validator
@@ -149,7 +151,7 @@ export default class extends Controller {
                   value: R.equals(value),
                   type: R.equals(this.selectedType),
                 })
-              )(R.values(this.aliases)) ?? false;
+              )(R.values(this.aliasesOutlet.aliases)) ?? false;
 
             return !exists;
           },
