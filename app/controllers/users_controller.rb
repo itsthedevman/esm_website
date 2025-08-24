@@ -56,6 +56,8 @@ class UsersController < AuthenticatedController
 
     if (id_aliases = permitted_params[:aliases])
       update_id_aliases!(id_aliases)
+    else
+      current_user.id_aliases.delete_all
     end
 
     render turbo_stream: create_success_toast("Your settings have been updated")
