@@ -16,6 +16,11 @@ export default class extends ApplicationController {
     this.#renderAliases();
   }
 
+  create({ detail: { id, server, community, value } }) {
+    this.aliases[id] = { id, server, community, value };
+    this.#renderAliases();
+  }
+
   edit(event) {
     bootstrap.Modal.getOrCreateInstance("#edit_alias_modal").show();
   }

@@ -130,9 +130,14 @@
 
     / Aliases Card
     = f.fields_for :aliases do |f|
-      = content_tag :div, nil, data: {controller: "aliases", aliases_data_value: id_aliases}
+      = content_tag :div, nil, data: { \
+        controller: "aliases",
+        aliases_data_value: id_aliases,
+        action: "alias:create->aliases#create",
+      }
         = render "users/add_alias_modal", **local_assigns
         = render "users/edit_alias_modal", **local_assigns
+
         .card.mb-4
           .card-header.d-flex.align-items-center.justify-content-between
             h4.mb-0

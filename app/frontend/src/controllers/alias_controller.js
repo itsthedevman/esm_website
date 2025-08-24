@@ -30,27 +30,6 @@ export default class extends Controller {
   connect() {
     this.modal = this.element;
 
-    const modal = bootstrap.Modal.getOrCreateInstance(this.element);
-
-    modal._element.addEventListener("shown.bs.modal", () => {
-      console.log("shown");
-      // Patch Bootstrap's focus enforcement
-      const originalEnforceFocus = modal._enforceFocus;
-
-      modal._enforceFocus = function () {
-        console.log("enforce focus");
-        const activeElement = document.activeElement;
-
-        console.log(activeElement);
-        // Allow focus on SlimSelect search inputs
-        if (activeElement?.matches(".ss-search input")) {
-          return;
-        }
-
-        // Otherwise, use Bootstrap's default behavior
-        originalEnforceFocus.call(this);
-      };
-    });
     this.validator = new Validate();
     this.#initializeValidator();
 
@@ -144,9 +123,11 @@ export default class extends Controller {
       }
 
       const id = crypto.randomUUID();
-      const value = $("#add_alias_value").val();
+      const value = $(this.valueTarget).val();
 
-      this.#setAlias({ id, server, community, value });
+      this.dispatch("create", {
+        detail: { id, server, community, value: R.toLower(value) },
+      });
 
       bootstrap.Modal.getOrCreateInstance(this.modal).hide();
     });
@@ -208,10 +189,6 @@ export default class extends Controller {
 
   #clearSelection(selector) {
     this.dispatch("clearSelection", { target: $(selector)[0] });
-  }
-
-  #setAlias({ id, server, community, value }) {
-    this.aliases[id] = { id, server, community, value: R.toLower(value) };
   }
 
   #setActiveCard(id) {
