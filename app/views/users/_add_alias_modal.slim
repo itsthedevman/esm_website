@@ -109,7 +109,10 @@
               data: {alias_target: "value", action: "input->alias#onValueInput"}
         .d-flex.justify-content-between.mt-2
           small.form-text.text-muted Keep it short and memorable!
-          small.form-text.text-muted 0/64 characters
+          small.form-text.text-muted
+            span[data-alias-target="valueCount"]
+              | 0
+            | /64 characters
 
       / Preview Card
       .card.bg-secondary.bg-opacity-10.border-secondary

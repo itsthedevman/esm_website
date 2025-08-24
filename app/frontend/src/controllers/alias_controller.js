@@ -19,6 +19,7 @@ export default class extends Controller {
     "serverID",
 
     "value",
+    "valueCount",
 
     "communityPreviewSection",
     "communityPreviewBefore",
@@ -96,6 +97,8 @@ export default class extends Controller {
   }
 
   onValueInput(_event) {
+    $(this.valueCountTarget).html($(this.valueTarget).val().length);
+
     this.#renderPreview();
   }
 
@@ -141,6 +144,7 @@ export default class extends Controller {
     this.validator
       .addField(this.valueTarget, [
         { rule: "required" },
+        { rule: "maxLength", value: 64 },
         {
           validator: (value, _context) => {
             value = R.toLower(value);
