@@ -1,12 +1,11 @@
-import { Controller } from "@hotwired/stimulus";
+import ApplicationController from "./application_controller";
 import $ from "cash-dom";
 import * as R from "ramda";
 import Validate from "../helpers/validator";
 import { onModalHidden } from "../helpers/modals";
-import * as bootstrap from "bootstrap";
 
-// Connects to data-controller="alias"
-export default class extends Controller {
+// Base controller - see alias_new_controller/alias_edit_controller
+export default class extends ApplicationController {
   static outlets = ["aliases"];
 
   static targets = [
@@ -106,62 +105,10 @@ export default class extends Controller {
     this.#renderPreview();
   }
 
-  create(_event) {
-    this.validator.validate().then((isValid) => {
-      if (!isValid) return;
-
-      let community = null;
-      let server = null;
-
-      if (this.selectedType === "server") {
-        const [server_id, server_name] = $(this.serverIDTarget)
-          .val()
-          .split(":", 2);
-
-        server = { server_id, server_name };
-      } else {
-        const [community_id, community_name] = $(this.communityIDTarget)
-          .val()
-          .split(":", 2);
-
-        community = { community_id, community_name };
-      }
-
-      const id = crypto.randomUUID();
-      const value = $(this.valueTarget).val();
-
-      this.dispatch("create", {
-        detail: { id, server, community, value: R.toLower(value) },
-      });
-
-      bootstrap.Modal.getOrCreateInstance(this.modal).hide();
-    });
-  }
-
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
   #initializeValidator() {
     this.validator
-      .addField(this.valueTarget, [
-        { rule: "required" },
-        { rule: "maxLength", value: 64 },
-        {
-          validator: (value, _context) => {
-            value = R.toLower(value);
-
-            const exists =
-              R.find(
-                R.where({
-                  value: R.equals(value),
-                  type: R.equals(this.selectedType),
-                })
-              )(R.values(this.aliasesOutlet.aliases)) ?? false;
-
-            return !exists;
-          },
-          errorMessage: "Alias already exists",
-        },
-      ])
       .addField(this.communityIDTarget, [
         {
           validator: (value, _context) => {
