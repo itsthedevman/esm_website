@@ -10,7 +10,10 @@ export default class extends ApplicationController {
   static values = { data: Object };
 
   connect() {
-    this.serializer = new Serializer("div[data-controller]", "user[aliases]");
+    this.serializer = new Serializer(
+      "div[data-controller='aliases']",
+      "user[aliases]"
+    );
 
     this.aliases = R.clone(this.dataValue);
     this.#renderAliases();
