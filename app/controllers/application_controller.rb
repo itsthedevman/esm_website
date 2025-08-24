@@ -16,4 +16,16 @@ class ApplicationController < ActionController::Base
   def not_found!
     raise NotFoundError.new
   end
+
+  private
+
+  # Forward the login request if the user isn't logged in yet
+  def authenticate_user!
+    return super if user_signed_in?
+
+    # Store where they were trying to go
+    store_location_for(:user, request.fullpath)
+
+    redirect_to login_path
+  end
 end

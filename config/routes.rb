@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   # Devise shit
   devise_for :users, class_name: "ESM::User", controllers: {omniauth_callbacks: "oauth"}
   devise_scope :user do
+    # /login
+    get :login, to: "oauth#login"
+
+    # /logout
     delete :logout, to: "devise/sessions#destroy", as: :logout
   end
 
@@ -125,7 +129,7 @@ Rails.application.routes.draw do
   end
 
   # /register
-  get :register, to: "users#edit"
+  get :register, to: redirect("/account/edit")
 
   # /tools
   resource :tools, only: [] do
