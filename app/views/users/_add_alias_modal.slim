@@ -2,7 +2,7 @@
   id: "add_alias_modal",
   class: "modal-lg",
   data: { \
-    bs_focus: false,
+    bs_focus: false, bs_backdrop: "static", bs_keyboard: "false",
     controller: "alias-new",
     alias_new_aliases_outlet: "[data-controller='aliases']",
   } do
@@ -27,7 +27,7 @@
                 button.btn.btn-outline-primary.btn-sm.w-100[
                   type="button"
                   data-type="community"
-                  data-action="click->alias-new#showSection"
+                  data-action="click->alias-new#onSectionChanged"
                 ] Select
 
           .col-md-6
@@ -39,7 +39,7 @@
                 button.btn.btn-outline-success.btn-sm.w-100[
                   type="button"
                   data-type="server"
-                  data-action="click->alias-new#showSection"
+                  data-action="click->alias-new#onSectionChanged"
                 ] Select
 
       / Alias Rules
@@ -66,7 +66,7 @@
               slim_select_allow_deselect_value: true,
               slim_select_data_value: alias_community_select_data,
               action: [ \
-                "alias:clearSelection@window->slim-select#clearSelection",
+                "alias-new:clearSelection@window->slim-select#clearSelection",
                 "change->alias-new#onIDChanged",
               ].join(" "),
               alias_new_target: "communityID",
@@ -87,7 +87,7 @@
               slim_select_allow_deselect_value: true,
               slim_select_data_value: alias_server_select_data,
               action: [ \
-                "alias:clearSelection@window->slim-select#clearSelection",
+                "alias-new:clearSelection@window->slim-select#clearSelection",
                 "change->alias-new#onIDChanged",
               ].join(" "),
               alias_new_target: "serverID",

@@ -102,9 +102,14 @@ export default class extends ApplicationController {
     }
   }
 
+  setSelection({ detail: { value, validate = false } }) {
+    console.log("Received value:", value);
+    console.log("Received validate:", validate);
+
+    this.slimSelect?.setSelected(value, validate);
+  }
+
   clearSelection() {
-    if (this.slimSelect) {
-      this.slimSelect.setSelected([], false);
-    }
+    this.slimSelect?.setSelected([], false);
   }
 }

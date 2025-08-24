@@ -1,92 +1,121 @@
-= render "shared/modal", id: "edit_alias_modal", class: "modal-lg" do
-  .modal-header.border-warning.bg-warning.bg-opacity-10
-    h4.modal-title.text-warning.mb-0
-      i.bi.bi-pencil-square.me-2
-      | Edit Alias
-    button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
+= render "shared/modal",
+  id: "edit_alias_modal",
+  class: "modal-lg",
+  data: { \
+    bs_focus: false, bs_backdrop: "static", bs_keyboard: "false",
+    controller: "alias-edit",
+    alias_edit_aliases_outlet: "[data-controller='aliases']",
+    action: "aliases:edit@window->alias-edit#edit",
+  } do
+    .modal-header.border-warning.bg-warning.bg-opacity-10
+      h4.modal-title.text-warning.mb-0
+        i.bi.bi-pencil-square.me-2
+        | Edit Alias
+      button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
 
-  div[data-aliases-target="editForm"]
     .modal-body
-      / Current alias info - read-only display
-      .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-4
-        .d-flex.align-items-center
-          i.bi.bi-info-circle.text-info.me-3.fs-4
-          div
-            h6.mb-1.text-info Currently editing
-            .d-flex.align-items-center.gap-2
-              span.badge.bg-info[data-aliases-target="editCurrentType"] Community
-              code.text-info[data-aliases-target="editCurrentValue"] main
-              i.bi.bi-arrow-right.text-muted
-              span.text-light[data-aliases-target="editCurrentTarget"] [abc4] Example Community
-
-      / Type Selection - Disabled for existing aliases
+      / Type Selection
       .mb-4
-        h5.fw-medium.mb-2 Alias Type
-        p.text-muted.small.mb-3
-          | Alias type cannot be changed after creation. Delete and recreate if you need to change the type.
-
-        = hidden_field_tag "edit_alias_type", "", data: {aliases_target: "editType"}
+        h5.fw-medium.mb-2 What does this alias represent?
 
         .row.g-3
           .col-md-6
-            .card.border-2.alias-type-card
+            .card.border-2.alias-type-card.community[data-alias-edit-target="communityButton"]
               .card-body.text-center.py-3
                 i.bi.bi-discord.text-primary.fs-3.mb-2
                 h6.mb-1.text-primary Community
-                small.text-muted.mb-0.d-block A Discord server with ESM
+                small.text-muted.mb-3.d-block A Discord server with ESM
+                button.btn.btn-outline-primary.btn-sm.w-100[
+                  type="button"
+                  data-type="community"
+                  data-action="click->alias-edit#onSectionChanged"
+                ] Select
 
           .col-md-6
-            .card.border-2.alias-type-card
+            .card.border-2.alias-type-card.server[data-alias-edit-target="serverButton"]
               .card-body.text-center.py-3
                 i.bi.bi-server.text-success.fs-3.mb-2
                 h6.mb-1.text-success Arma Server
-                small.text-muted.mb-0.d-block A specific game server
+                small.text-muted.mb-3.d-block A specific game server
+                button.btn.btn-outline-success.btn-sm.w-100[
+                  type="button"
+                  data-type="server"
+                  data-action="click->alias-edit#onSectionChanged"
+                ] Select
 
-      / Target Selection
-      .mb-4[data-aliases-target="editCommunitySection"]
-        = label_tag "edit_alias_community_id", class: "form-label h6 fw-medium" do
+      / Alias Rules
+      .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-4
+        h6.text-info.mb-2
+          i.bi.bi-info-circle.me-2
+          | Alias Rules
+        ul.small.mb-0
+          li Up to 64 characters in length <em class="text-muted">(though why would you want one that long?)</em>
+          li Cannot already exist as an alias of the same type
+          li You can create the same alias for a community and a server, but not for two communities or two servers
+
+      / Community Selection
+      .mb-4[data-alias-edit-target="communitySection"]
+        = label_tag "community_id", class: "form-label h6 fw-medium"
           i.bi.bi-discord.text-primary.me-2
           | Select Community
-        = select_tag "edit_alias_community_id",
+        = select_tag "community_id",
             [],
             class: "form-select",
             data: { \
               controller: "slim-select",
               slim_select_placeholder_value: "Choose a community...",
               slim_select_allow_deselect_value: true,
-              aliases_target: "editCommunitySelect" \
+              slim_select_data_value: alias_community_select_data,
+              action: [ \
+                "alias-edit:clearSelection@window->slim-select#clearSelection",
+                "alias-edit:setSelection@window->slim-select#setSelection",
+                "change->alias-edit#onIDChanged",
+              ].join(" "),
+              alias_edit_target: "communityID",
             }
+        small.form-text.text-muted.mt-1 Choose the Discord community this alias will represent
 
-      .mb-4[data-aliases-target="editServerSection" style="display: none;"]
-        = label_tag "edit_alias_server_id", class: "form-label h6 fw-medium" do
+      / Server Selection (hidden by default)
+      .mb-4.d-none[data-alias-edit-target="serverSection"]
+        = label_tag "server_id", class: "form-label h6 fw-medium"
           i.bi.bi-server.text-success.me-2
           | Select Server
-        = select_tag "edit_alias_server_id",
+        = select_tag "server_id",
             [],
             class: "form-select",
             data: { \
               controller: "slim-select",
               slim_select_placeholder_value: "Choose a server...",
               slim_select_allow_deselect_value: true,
-              aliases_target: "editServerSelect" \
+              slim_select_data_value: alias_server_select_data,
+              action: [ \
+                "alias-edit:clearSelection@window->slim-select#clearSelection",
+                "alias-edit:setSelection@window->slim-select#setSelection",
+                "change->alias-edit#onIDChanged",
+              ].join(" "),
+              alias_edit_target: "serverID",
             }
+        small.form-text.text-muted.mt-1 Choose the game server this alias will represent
 
       / Alias Name Input
       .mb-4
-        = label_tag "edit_alias_value", class: "form-label h5 fw-medium" do
+        = label_tag "value", class: "form-label h5 fw-medium"
           span.text-danger.me-1 *
           | Alias Name
         .input-group.input-group-lg
-          span.input-group-text.bg-warning.text-dark
+          span.input-group-text.bg-warning.text-white
             i.bi.bi-bookmark
-          = text_field_tag "edit_alias_value", "",
+          = text_field_tag "value", "",
               class: "form-control",
               placeholder: "main",
               maxlength: 64,
-              data: {aliases_target: "editAliasValue"}
+              data: {alias_edit_target: "value", action: "input->alias-edit#onValueInput"}
         .d-flex.justify-content-between.mt-2
           small.form-text.text-muted Keep it short and memorable!
-          small.form-text.text-muted[data-aliases-target="editCharCount"] 0/64 characters
+          small.form-text.text-muted
+            span[data-alias-edit-target="valueCount"]
+              | 0
+            | /64 characters
 
       / Preview Card
       .card.bg-secondary.bg-opacity-10.border-secondary
@@ -94,31 +123,68 @@
           h6.mb-0.text-light
             i.bi.bi-eye.me-2
             | Command Preview
-        .card-body.py-3[data-aliases-target="editPreview"]
+        / Community preview
+        .card-body.py-3[data-alias-edit-target="communityPreviewSection"]
           .mb-3
             small.text-muted.mb-2.d-block Instead of typing:
             .bg-dark.rounded.p-3
-              = command_usage(:servers, arguments: {community_id: "community_id"})
+              span.command
+                span
+                  |> /community servers
+                span.arg.identifier
+                  | for
+                span.text-secondary
+                  | :
+                span.arg.identifier[data-alias-edit-target="communityPreviewBefore"]
+                  | &lt;community&gt;
           .mb-0
             small.text-muted.mb-2.d-block You'll type:
             .bg-dark.rounded.p-3
-              = command_usage(:servers, arguments: {community_id: "main"})
+              span.command
+                span
+                  |> /community servers
+                span.arg.identifier
+                  | for
+                span.text-secondary
+                  | :
+                span.arg.identifier.d-none[data-alias-edit-target="communityPreviewAfter"]
+
+        / Server preview
+        .card-body.py-3.d-none[data-alias-edit-target="serverPreviewSection"]
+          .mb-3
+            small.text-muted.mb-2.d-block Instead of typing:
+            .bg-dark.rounded.p-3
+              span.command
+                span
+                  |> /server reward
+                span.arg.identifier
+                  | on
+                span.text-secondary
+                  | :
+                span.arg.identifier[data-alias-edit-target="serverPreviewBefore"]
+                  | &lt;server&gt;
+          .mb-0
+            small.text-muted.mb-2.d-block You'll type:
+            .bg-dark.rounded.p-3
+              span.command
+                span
+                  |> /server reward
+                span.arg.identifier
+                  | on
+                span.text-secondary
+                  | :
+                span.arg.identifier.d-none[data-alias-edit-target="serverPreviewAfter"]
 
     .modal-footer.border-top
       .d-flex.align-items-center.justify-content-between.w-100
-        button.btn.btn-outline-danger[
-          type="button"
-          data-action="click->aliases#deleteAlias"
-          data-aliases-target="editDeleteButton"
-        ]
-          i.bi.bi-trash.me-2
-          | Delete Alias
+        small.text-muted
+          i.bi.bi-info-circle.text-info.me-1
+          | You can edit or delete aliases later
         .d-flex.gap-2
           button.btn.btn-outline-secondary[type="button" data-bs-dismiss="modal"]
             | Cancel
-          button.btn.btn-warning.px-4[
-            type="button"
-            data-action="click->aliases#updateAlias"
-          ]
-            i.bi.bi-check-circle.me-2
-            | Save Changes
+          = button_tag type: "button",
+              class: "btn btn-success ms-2",
+              data: { action: "click->alias-edit#create" } do
+            i.bi.bi-plus-circle.me-2
+            | Add Alias

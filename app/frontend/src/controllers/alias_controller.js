@@ -42,7 +42,7 @@ export default class extends ApplicationController {
     };
 
     this.selectedType = "community";
-    this.#setActiveCard("community");
+    this._setActiveCard();
 
     // Prepare the previews
     this.previews = {
@@ -62,12 +62,39 @@ export default class extends ApplicationController {
     onModalHidden(this.modal, () => this.#clearModal());
   }
 
-  showSection(event) {
+  onSectionChanged(event) {
     const targetElem = $(event.currentTarget);
     const type = targetElem.data("type");
+    this._showSection(type);
+  }
 
+  onValueInput(_event) {
+    $(this.valueCountTarget).html($(this.valueTarget).val().length);
+
+    this.#renderPreview();
+  }
+
+  onIDChanged(_event) {
+    this.#renderPreview();
+  }
+
+  // protected
+
+  _setActiveCard() {
+    this.#resetCards();
+
+    // Now select the one that was picked
+    const selectedCard = this.cards[this.selectedType];
+    selectedCard.addClass("selected");
+
+    const button = selectedCard.find("button");
+    button.addClass("selected");
+    button.html("SELECTED");
+  }
+
+  _showSection(type) {
     this.selectedType = type;
-    this.#setActiveCard(type);
+    this._setActiveCard();
 
     const communitySectionElem = $(this.communitySectionTarget);
     const serverSectionElem = $(this.serverSectionTarget);
@@ -95,17 +122,7 @@ export default class extends ApplicationController {
     }
   }
 
-  onValueInput(_event) {
-    $(this.valueCountTarget).html($(this.valueTarget).val().length);
-
-    this.#renderPreview();
-  }
-
-  onIDChanged(_event) {
-    this.#renderPreview();
-  }
-
-  /////////////////////////////////////////////////////////////////////////////////////////////////
+  // private
 
   #initializeValidator() {
     this.validator
@@ -142,18 +159,6 @@ export default class extends ApplicationController {
 
   #clearSelection(selector) {
     this.dispatch("clearSelection", { target: $(selector)[0] });
-  }
-
-  #setActiveCard(id) {
-    this.#resetCards();
-
-    // Now select the one that was picked
-    const selectedCard = this.cards[id];
-    selectedCard.addClass("selected");
-
-    const button = selectedCard.find("button");
-    button.addClass("selected");
-    button.html("SELECTED");
   }
 
   #resetCards() {

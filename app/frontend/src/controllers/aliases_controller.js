@@ -19,23 +19,18 @@ export default class extends ApplicationController {
     this.#renderAliases();
   }
 
-  create({ detail: { id, server, community, value } }) {
+  set({ detail: { id, server, community, value } }) {
     this.aliases[id] = { id, server, community, value };
     this.#renderAliases();
   }
 
   edit(event) {
+    const id = $(event.currentTarget).data("id");
+
+    const alias = this.aliases[id];
+    this.dispatch("edit", { detail: { alias } });
+
     bootstrap.Modal.getOrCreateInstance("#edit_alias_modal").show();
-  }
-
-  update(event) {
-    this.editValidator.validate().then((isValid) => {
-      if (!isValid) return;
-
-      this.#renderAliases();
-
-      bootstrap.Modal.getOrCreateInstance("#edit_alias_modal").hide();
-    });
   }
 
   delete(event) {
