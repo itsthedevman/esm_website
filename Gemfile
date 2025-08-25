@@ -115,3 +115,5 @@ gem "sass-embedded"
 gem "semantic"
 
 gem "faker"
+
+gem "dotenv"
