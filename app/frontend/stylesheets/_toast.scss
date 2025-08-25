@@ -1,8 +1,10 @@
 @use "./colors" as *;
 
 #toast-container {
-    top: $nav-offset !important;
+    position: fixed !important;
+    top: calc($nav-offset + 2em) !important;
     right: 1em;
+    z-index: 1050;
 }
 
 $toast-bg: $esm-warm-gray-800;
