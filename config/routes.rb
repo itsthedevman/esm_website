@@ -99,10 +99,22 @@ Rails.application.routes.draw do
     end
   end
 
-  # /downloads/@esm/latest
-  get "downloads/@esm/latest",
-    to: redirect("https://github.com/itsthedevman/esm_arma/releases/latest"),
-    as: :latest_download
+  # /downloads/classic
+  get "downloads/classic", to: redirect("/downloads/@ESM.zip"), as: :classic_download
+
+  # /downloads/latest
+  get(
+    "downloads/latest",
+    as: :latest_download,
+    to: redirect(
+      # https://github.com/itsthedevman/esm_arma/releases/download/v2.0.1/@esm-201.zip
+      [
+        "https://github.com/itsthedevman/esm_arma/releases/download",
+        "/v#{ENV["MOD_VERSION"]}",
+        "/@esm-#{ENV["MOD_VERSION"].delete(".")}.zip"
+      ].join
+    )
+  )
 
   # /guides
   resources :guides, only: [] do

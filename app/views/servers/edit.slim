@@ -17,6 +17,16 @@
         ul.dropdown-menu
           - if server.ui_v2?
             li
+              = link_to latest_download_path,
+                class: "dropdown-item",
+                data: {turbo: false}
+                i.bi.bi-file-zip.text-primary.me-2
+                | @esm
+                small.text-muted
+                  |< (v#{ENV["MOD_VERSION"]})
+            li
+              hr.dropdown-divider
+            li
               = link_to server_token_community_server_path(current_community, server),
                 class: "dropdown-item",
                 data: {turbo: false}
@@ -29,6 +39,14 @@
                 i.bi.bi-file-code.text-info.me-2
                 | config.yml
           - else
+            li
+              = link_to classic_download_path,
+                class: "dropdown-item",
+                data: {turbo: false}
+                i.bi.bi-file-zip.text-primary.me-2
+                | @ESM
+            li
+              hr.dropdown-divider
             li
               = link_to key_community_server_path(current_community, server),
                 class: "dropdown-item",
