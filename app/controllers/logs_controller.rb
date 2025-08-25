@@ -11,6 +11,9 @@ class LogsController < ApplicationController
 
     not_found! if log.nil?
 
+    # Auto select the first log
+    params[:file_id] = log.log_entries.first.public_id if params[:file_id].blank?
+
     render locals: {
       current_community:,
       log:
