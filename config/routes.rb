@@ -131,6 +131,17 @@ Rails.application.routes.draw do
   # /register
   get :register, to: redirect("/account/edit")
 
+  # /requests
+  resources :requests, only: [] do
+    member do
+      # /requests/:id/accept
+      get "accept"
+
+      # /requests/:id/decline
+      get "decline"
+    end
+  end
+
   # /tools
   resource :tools, only: [] do
     get :rpt_parser
@@ -161,14 +172,6 @@ end
 # resources :communities, only: %i[index edit update destroy] do
 #   member do
 #     get "can_change_id"
-#   end
-# end
-
-# resources :requests, only: [] do
-#   member do
-#     # Totally the wrong verb here, but I can't use put since it's from Discord
-#     get "accept"
-#     get "decline"
 #   end
 # end
 

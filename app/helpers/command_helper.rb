@@ -4,7 +4,7 @@ module CommandHelper
   include ArgumentFormatting
 
   def command_usage(command_name, arguments: {}, show_arguments: true)
-    command = Command.all[command_name]
+    command = Command.all[command_name.to_sym]
     return command_name.to_s unless command
 
     if show_arguments && arguments.present?
