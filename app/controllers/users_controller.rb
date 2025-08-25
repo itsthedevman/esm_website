@@ -60,56 +60,32 @@ class UsersController < AuthenticatedController
     render turbo_stream: create_success_toast("Your settings have been updated")
   end
 
-  # def transfer_account
-  #   if session[:transfer_steam_account].blank?
-  #     flash[:alert] = "You are not authorized to view that page"
-  #     return redirect_to root_path
-  #   end
+  def transfer
+    not_found! if session[:transferring_steam_uid].blank?
 
-  #   steam_uid = session[:transfer_steam_account]
+    steam_uid = session.delete(:transferring_steam_uid)
 
-  #   # Remove it immediately
-  #   session.delete(:transfer_steam_account)
+    if params[:cancel]
+      render turbo_stream: create_success_toast("Transfer cancelled")
+      return
+    end
 
-  #   # Unset all users with this steam_uid
-  #   User.where(steam_uid:).update_all(steam_uid: "")
+    # Unset all users with this steam_uid
+    ESM::User.where(steam_uid:).update_all(steam_uid: "")
 
-  #   # Transfer this uid to the new user and refresh their data
-  #   current_user.update!(steam_uid:)
+    # Transfer this uid to the new user and refresh their data
+    current_user.update!(steam_uid:)
 
-  #   flash[:success] = {
-  #     title: "Welcome #{current_user.steam_data.username}!",
-  #     message: "You are now registered with ESM<br/>We've sent you a message via Discord to help you get started",
-  #     hide_after: 8000
-  #   }
+    # Notify them on Discord
+    ESM.bot.send_message(**current_user.welcome_message_hash)
 
-  #   ESM.send_message(
-  #     channel_id: current_user.discord_id,
-  #     message: {
-  #       author: {
-  #         name: current_user.steam_data.username,
-  #         icon_url: current_user.steam_data.avatar
-  #       },
-  #       title: "Successfully Registered!",
-  #       description: "You have been registered with Exile Server Manager. This allows you to use ESM on any server running ESM that you join. You don't even have to be in their Discord!\n**Below is some important information to get you started.**",
-  #       color: ESM::COLORS::GREEN,
-  #       fields: [{
-  #         name: "Getting Started",
-  #         value: "First time using ESM or need a refresher? Come read the [Getting Started](https://www.esmbot.com/wiki) article to help get you acquainted"
-  #       }, {
-  #         name: "Commands",
-  #         value: "Need to feel powerful? Check out my [commands](https://www.esmbot.com/wiki/commands) and come back to show off your new found knowledge!"
-  #       }]
-  #     }
-  #   )
+    flash[:success] = {
+      title: "Welcome #{current_user.steam_data.username}!",
+      body: "You are now registered with ESM<br/>We've sent you a message via Discord to help you get started"
+    }
 
-  #   redirect_to edit_user_path(current_user.discord_id)
-  # end
-
-  # def cancel_transfer
-  #   session.delete(:transfer_steam_account)
-  #   render json: {}
-  # end
+    redirect_to edit_users_path
+  end
 
   def destroy
     current_user.destroy!
@@ -117,12 +93,6 @@ class UsersController < AuthenticatedController
 
     flash[:success] = "Your account has been deleted"
     redirect_to root_path
-  end
-
-  def register
-    raise "Register"
-    # session[:registering] = true
-    # render "layouts/oauth_login", locals: {url: user_discord_omniauth_authorize_path}
   end
 
   def deregister

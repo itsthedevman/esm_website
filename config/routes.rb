@@ -24,8 +24,7 @@ Rails.application.routes.draw do
   resource :users, only: %i[edit update destroy], path: "account" do
     collection do
       get :deregister
-      # post "cancel_transfer"
-      # get "transfer_account"
+      patch :transfer
     end
 
     # /account/notification_routing

@@ -101,5 +101,32 @@ module ESM
           .key_map(:id)
       end
     end
+
+    def welcome_message_hash
+      helpers = Rails.application.routes.url_helpers
+
+      {
+        channel_id: discord_id,
+        message: {
+          author: {
+            name: steam_data.username,
+            icon_url: steam_data.avatar
+          },
+          title: "Successfully Registered!",
+          description: "You have been registered with Exile Server Manager. This allows you to use ESM on any server running ESM that you join. You don't even have to be in their Discord!\n**Below is some important information to get you started.**",
+          color: :green,
+          fields: [
+            {
+              name: "Getting Started",
+              value: "First time using ESM or need a refresher? Come read the [Getting Started](#{helpers.getting_started_docs_url}) article to help get you acquainted"
+            },
+            {
+              name: "Commands",
+              value: "Need to feel powerful? Check out my [commands](#{helpers.commands_docs_url}) and come back to show off your new found knowledge!"
+            }
+          ]
+        }
+      }
+    end
   end
 end

@@ -226,3 +226,6 @@
           | Delete Account
 
 = render "users/delete_modal"
+
+- if params[:already_registered] && session[:transferring_steam_uid]
+  = render "users/already_registered_modal"

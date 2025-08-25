@@ -115,3 +115,12 @@ code {
 .anchor-link:hover .bi-link-45deg {
     opacity: 1;
 }
+
+.transfer-btn:hover {
+    color: rgba(255, 255, 255, 0.75) !important;
+
+    // And if you want to make the small text lighter too:
+    small {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+}
