@@ -14,6 +14,16 @@ class LogEntryComponent < ApplicationComponent
 
   private
 
+  def strip_timestamps(entry)
+    # Remove various timestamp formats at the beginning of entries
+    entry
+      .sub(/^\[([^\]]+)\]\s*\[([^\]]+)\]\s*/, "") # [timestamp] [thread] format
+      .sub(/^\[([^\]]+)\]\s*/, "") # [timestamp] format
+      .sub(/^\d{2}:\d{2}:\d{2}:\d+\s*/, "") # 02:55:06:071228 format
+      .sub(/^\d{4}-\d{2}-\d{2} at \d{2}:\d{2}:\d{2} [AP]M UTC\s*/, "") # Full date timestamp
+      .strip
+  end
+
   def highlighted_content(content)
     return content if @search_text.blank?
 
@@ -27,29 +37,55 @@ class LogEntryComponent < ApplicationComponent
   end
 
   def parse_entry
+    # Strip timestamps first, then parse the clean content
+    clean_entry = strip_timestamps(@entry)
+
+    # Debug logging to see what's happening
+    Rails.logger.debug "=== LOG ENTRY PARSING ==="
+    Rails.logger.debug "Original: #{@entry.inspect}"
+    Rails.logger.debug "Clean: #{clean_entry.inspect}"
+    Rails.logger.debug "Territory operation? #{territory_operation?(clean_entry)}"
+    Rails.logger.debug "Purchase/sale operation? #{purchase_sale_operation?(clean_entry)}"
+    Rails.logger.debug "Death message? #{death_message?}"
+    Rails.logger.debug "Timestamped entry? #{timestamped_entry?}"
+    Rails.logger.debug "=========================="
+
     # Territory operations
-    return parse_territory_operation if territory_operation?
+    if territory_operation?(clean_entry)
+      Rails.logger.debug "PARSING AS: Territory operation"
+      return parse_territory_operation(clean_entry)
+    end
 
     # Purchase/Sale operations
-    return parse_purchase_sale if purchase_sale_operation?
+    if purchase_sale_operation?(clean_entry)
+      Rails.logger.debug "PARSING AS: Purchase/sale operation"
+      return parse_purchase_sale(clean_entry)
+    end
 
     # Death messages - check this before timestamped since deaths have timestamps
-    return parse_death_message if death_message?
+    if death_message?
+      Rails.logger.debug "PARSING AS: Death message"
+      return parse_death_message
+    end
 
     # Timestamped entries
-    return parse_timestamped_entry if timestamped_entry?
+    if timestamped_entry?
+      Rails.logger.debug "PARSING AS: Timestamped entry"
+      return parse_timestamped_entry
+    end
 
     # Generic patterns
+    Rails.logger.debug "PARSING AS: Generic entry"
     parse_generic_entry
   end
 
-  def territory_operation?
-    @entry.match?(/PLAYER\s*\(\s*[\w]+\s*\).*?(STOLE A LEVEL|PAID.*RANSOM|PAID.*PROTECT TERRITORY|PURCHASE A TERRITORY FLAG|RESTORED THE FLAG|UPGRADE TERRITORY)/i)
+  def territory_operation?(entry = @entry)
+    entry.match?(/PLAYER\s*\(\s*[\w]+\s*\).*?(STOLE A LEVEL|PAID.*RANSOM|PAID.*PROTECT TERRITORY|PURCHASE A TERRITORY FLAG|RESTORED THE FLAG|UPGRADE TERRITORY)/i)
   end
 
-  def purchase_sale_operation?
+  def purchase_sale_operation?(entry = @entry)
     # More flexible regex to handle "REMOTE" transactions and weird usernames
-    @entry.match?(/PLAYER:\s*\(\s*[\w]+\s*\).*?(PURCHASED|SOLD)/i)
+    entry.match?(/PLAYER:\s*\(\s*[\w]+\s*\).*?(PURCHASED|SOLD)/i)
   end
 
   def death_message?
@@ -62,8 +98,8 @@ class LogEntryComponent < ApplicationComponent
     @entry.match?(/^\[?\d{2}:\d{2}:\d{2}/)
   end
 
-  def parse_territory_operation
-    case @entry
+  def parse_territory_operation(entry = @entry)
+    case entry
     when /PLAYER\s*\(\s*([\w]+)\s*\)\s*(.+?)\s+STOLE A LEVEL\s+(\d+)\s+FLAG FROM TERRITORY #(\d+)/i
       uid, player, level, territory_id = $1, $2, $3, $4
       safe_join([
@@ -142,20 +178,43 @@ class LogEntryComponent < ApplicationComponent
         total_currency(total)
       ])
 
+    # Complex timestamped remote sales with cargo and balance (like line 523)
+    when /\[([^\]]+)\]\s*\[([^\]]+)\]\s*PLAYER:\s*\(\s*([\w]+)\s*\)\s*R NSTR:\d+\s*\(([^)]+)\)\s*REMOTE SOLD ITEM:\s*(.+?)\s*\(ID#\s*(\d+)\)\s*with Cargo\s+(.+?)\s+FOR\s+([\d,.e\+]+)\s+POPTABS AND\s+([\d,.e\+]+)\s+RESPECT\s*\|\s*PLAYER TOTAL MONEY:\s*([\d,]+)/i
+      timestamp, thread, uid, player, vehicle, vehicle_id, cargo, price, respect, total = $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
+      safe_join([
+        content_tag(:span, "[#{timestamp}]", class: "text-muted me-2"),
+        content_tag(:span, "[#{thread}]", class: "text-secondary me-2"),
+        player_badge(uid, player),
+        " ",
+        action_text("sold", :success),
+        " ",
+        vehicle_badge(vehicle),
+        content_tag(:small, " ##{vehicle_id}", class: "text-muted"),
+        content_tag(:small, " (#{cargo})", class: "text-info ms-1"),
+        " for ",
+        currency_badge(price, "poptabs"),
+        " and ",
+        respect_badge(respect),
+        " ",
+        total_currency(total),
+        " ",
+        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1")
+      ])
+
     else
-      content_tag(:span, @entry, class: "text-muted")
+      content_tag(:span, entry, class: "text-muted")
     end
   end
 
-  def parse_purchase_sale
-    case @entry
-    # Remote purchase transactions
-    when /PLAYER:\s*\(\s*([\w]+)\s*\)\s*R NSTR:\d+\s*\(([^)]+)\)\s*REMOTE\s+PURCHASED ITEM\s+(.+?)\s+FOR\s+([\d,.e\+]+)\s+POPTABS\s*\|\s*PLAYER TOTAL MONEY:\s*([\d,]+)/i
-      uid, player, item, price, total = $1, $2, $3, $4, $5
+  def parse_purchase_sale(entry = @entry)
+    case entry
+    # Remote purchase transactions (flexible username matching)
+    when /PLAYER:\s*\(\s*([\w]+)\s*\)\s*.*?\s+REMOTE\s+PURCHASED ITEM\s+(.+?)\s+FOR\s+([\d,.e\+]+)\s+POPTABS\s*\|\s*PLAYER TOTAL MONEY:\s*([\d,]+)/i
+      uid, item, price, total = $1, $2, $3, $4
+      # Extract player name from the middle part if we can
+      player_name = extract_player_name(entry, uid)
       safe_join([
-        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1"),
-        " ",
-        player_badge(uid, player),
+        player_badge(uid, player_name),
         " ",
         action_text("purchased", :primary),
         " ",
@@ -163,15 +222,16 @@ class LogEntryComponent < ApplicationComponent
         " for ",
         currency_badge(price, "poptabs"),
         " ",
-        total_currency(total)
+        total_currency(total),
+        " ",
+        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1")
       ])
 
-    when /PLAYER:\s*\(\s*([\w]+)\s*\)\s*R NSTR:\d+\s*\(([^)]+)\)\s*REMOTE\s+PURCHASED VEHICLE\s+(.+?)\s+FOR\s+([\d,.e\+]+)\s+POPTABS\s*\|\s*PLAYER TOTAL MONEY:\s*([\d,]+)/i
-      uid, player, vehicle, price, total = $1, $2, $3, $4, $5
+    when /PLAYER:\s*\(\s*([\w]+)\s*\)\s*.*?\s+REMOTE\s+PURCHASED VEHICLE\s+(.+?)\s+FOR\s+([\d,.e\+]+)\s+POPTABS\s*\|\s*PLAYER TOTAL MONEY:\s*([\d,]+)/i
+      uid, vehicle, price, total = $1, $2, $3, $4
+      player_name = extract_player_name(entry, uid)
       safe_join([
-        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1"),
-        " ",
-        player_badge(uid, player),
+        player_badge(uid, player_name),
         " ",
         action_text("purchased", :primary),
         " vehicle ",
@@ -180,16 +240,16 @@ class LogEntryComponent < ApplicationComponent
         currency_badge(price, "poptabs"),
         " ",
         total_currency(total),
-        " "
+        " ",
+        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1")
       ])
 
     # Remote sale transactions
-    when /PLAYER:\s*\(\s*([\w]+)\s*\)\s*R NSTR:\d+\s*\(([^)]+)\)\s*REMOTE\s+SOLD ITEM\s+(.+?)\s+FOR\s+([\d,.e\+]+)\s+POPTABS AND\s+([\d,]+)\s+RESPECT\s*\|\s*PLAYER TOTAL MONEY:\s*([\d,]+)/i
-      uid, player, item, price, respect, total = $1, $2, $3, $4, $5, $6
+    when /PLAYER:\s*\(\s*([\w]+)\s*\)\s*.*?\s+REMOTE\s+SOLD ITEM\s+(.+?)\s+FOR\s+([\d,.e\+]+)\s+POPTABS AND\s+([\d,.e\+]+)\s+RESPECT\s*\|\s*PLAYER TOTAL MONEY:\s*([\d,]+)/i
+      uid, item, price, respect, total = $1, $2, $3, $4, $5
+      player_name = extract_player_name(entry, uid)
       safe_join([
-        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1"),
-        " ",
-        player_badge(uid, player),
+        player_badge(uid, player_name),
         " ",
         action_text("sold", :success),
         " ",
@@ -200,7 +260,30 @@ class LogEntryComponent < ApplicationComponent
         respect_badge(respect),
         " ",
         total_currency(total),
-        " "
+        " ",
+        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1")
+      ])
+
+    # Remote sale with cargo (the complex one)
+    when /PLAYER:\s*\(\s*([\w]+)\s*\)\s*.*?\s+REMOTE\s+SOLD ITEM:\s*(.+?)\s*\(ID#\s*(\d+)\)\s*with Cargo\s+(.+?)\s+FOR\s+([\d,.e\+]+)\s+POPTABS AND\s+([\d,.e\+]+)\s+RESPECT\s*\|\s*PLAYER TOTAL MONEY:\s*([\d,]+)/i
+      uid, vehicle, vehicle_id, cargo, price, respect, total = $1, $2, $3, $4, $5, $6, $7
+      player_name = extract_player_name(entry, uid)
+      safe_join([
+        player_badge(uid, player_name),
+        " ",
+        action_text("sold", :success),
+        " ",
+        vehicle_badge(vehicle),
+        content_tag(:small, " ##{vehicle_id}", class: "text-muted"),
+        content_tag(:small, " (#{cargo})", class: "text-info ms-1"),
+        " for ",
+        currency_badge(price, "poptabs"),
+        " and ",
+        respect_badge(respect),
+        " ",
+        total_currency(total),
+        " ",
+        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1")
       ])
 
     # Regular (non-remote) purchase transactions
@@ -273,7 +356,6 @@ class LogEntryComponent < ApplicationComponent
         " ",
         vehicle_badge(vehicle),
         content_tag(:small, " ##{vehicle_id}", class: "text-muted"),
-        content_tag(:small, " (#{cargo})", class: "text-info ms-1"),
         " for ",
         currency_badge(price, "poptabs"),
         " and ",
@@ -281,6 +363,7 @@ class LogEntryComponent < ApplicationComponent
         " ",
         total_currency(total)
       ])
+
     else
       content_tag(:span, @entry, class: "text-muted")
     end
@@ -510,17 +593,23 @@ class LogEntryComponent < ApplicationComponent
   end
 
   def currency_badge(amount, type = "")
-    formatted_amount = number_with_delimiter(amount)
+    # Convert scientific notation, then let Rails handle the formatting
+    normalized = amount.to_s.match?(/e[+-]?\d+/i) ? amount.to_f.to_i : amount.to_i
+    formatted_amount = helpers.number_with_delimiter(normalized)
     content_tag(:span, "#{formatted_amount} #{type}".strip, class: "badge bg-warning text-dark")
   end
 
   def respect_badge(amount)
-    formatted_amount = number_with_delimiter(amount)
+    # Convert scientific notation, then let Rails handle the formatting
+    normalized = amount.to_s.match?(/e[+-]?\d+/i) ? amount.to_f.to_i : amount.to_i
+    formatted_amount = helpers.number_with_delimiter(normalized)
     content_tag(:span, "+#{formatted_amount} respect", class: "badge bg-success")
   end
 
   def total_currency(amount)
-    formatted_amount = number_with_delimiter(amount)
+    # Convert scientific notation, then let Rails handle the formatting
+    normalized = amount.to_s.match?(/e[+-]?\d+/i) ? amount.to_f.to_i : amount.to_i
+    formatted_amount = helpers.number_with_delimiter(normalized)
     content_tag(:small, "(Balance: #{formatted_amount})", class: "text-muted")
   end
 
@@ -533,13 +622,26 @@ class LogEntryComponent < ApplicationComponent
   end
 
   def vehicle_badge(vehicle)
-    content_tag(:span, vehicle, class: "badge bg-info text-dark")
+    safe_join([
+      content_tag(:i, "", class: "bi bi-truck me-1"),
+      content_tag(:span, vehicle, class: "badge bg-info text-dark")
+    ])
   end
 
-  def number_with_delimiter(number)
-    # Convert scientific notation
-    normalized = number.to_s.match?(/e[+-]?\d+/i) ? number.to_f.to_i : number.to_i
+  def extract_player_name(entry, uid)
+    # Try to extract player name from the middle part between UID and REMOTE
+    # Format: "PLAYER: ( UID ) some_stuff (actual_name) REMOTE ..."
+    middle_match = entry.match(/PLAYER:\s*\(\s*#{Regexp.escape(uid)}\s*\)\s*(.+?)\s+REMOTE/i)
+    return "Unknown" unless middle_match
 
-    helpers.number_with_delimiter(normalized)
+    middle_part = middle_match[1]
+
+    # Look for name in parentheses (most common case)
+    if (name_match = middle_part.match(/\(([^)]+)\)/))
+      name_match[1]
+    else
+      # Fallback: take the last word before REMOTE
+      middle_part.split.last || "Player"
+    end
   end
 end

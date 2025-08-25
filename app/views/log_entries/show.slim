@@ -21,29 +21,25 @@
               - log_entry.entries.each do |entry|
                 tr.log-entry[data-log-entry-target="row"]
                   td.text-center.pe-3.text-muted.user-select-none[
-                    style="width: 80px; cursor: pointer; vertical-align: top; padding-top: 0.75rem;"
+                    style="width: 80px; cursor: pointer; vertical-align: middle; padding-top: 0.75rem;"
                     title="Line #{entry['line_number']}"
                   ]
                     = entry["line_number"]
 
-                  td.log-content[style="font-size: 0.85rem; line-height: 1.4; vertical-align: top; padding: 0.5rem 1rem 0.5rem 0;"]
+                  td.log-content[style="font-size: 0.85rem; line-height: 1.4; vertical-align: middle; padding: 0.5rem 1rem 0.5rem 0;"]
                     / Main formatted content
                     .d-flex.align-items-start.justify-content-between
                       .flex-grow-1
-                        span.text-info.me-3.d-block[style="white-space: nowrap;"]
+                        span.text-info.me-3[style="white-space: nowrap;"]
                           = Time.parse(entry["timestamp"]).strftime("%Y-%m-%d at %I:%M:%S %p UTC")
-                        = render_component( \
-                          LogEntryComponent,
-                          entry: entry["entry"],
-                          search_text: log.search_text,
-                        )
+                        = render_component(LogEntryComponent, entry: entry["entry"], search_text: log.search_text)
 
                       / Toggle button
                       button.btn.btn-outline-secondary.btn-sm.ms-2.flex-shrink-0[
                         data-action="click->log-entry#toggleOriginal"
                         data-log-entry-row-param=entry['line_number']
                         title="Show original log entry"
-                        style="font-size: 0.6rem; padding: 0.15rem 0.4rem; align-self: flex-start;"
+                        style="font-size: 0.6rem; padding: 0.15rem 0.4rem; margin-top: 0.25rem;"
                       ]
                         | ⋯
 
