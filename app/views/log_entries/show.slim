@@ -30,7 +30,7 @@
                     / Main formatted content
                     .d-flex.align-items-start.justify-content-between
                       .flex-grow-1
-                        span.text-info.me-3[style="white-space: nowrap;"]
+                        span.text-info.me-3.d-block[style="white-space: nowrap;"]
                           = Time.parse(entry["timestamp"]).strftime("%Y-%m-%d at %I:%M:%S %p UTC")
                         = render_component(LogEntryComponent, entry: entry["entry"], search_text: log.search_text)
 

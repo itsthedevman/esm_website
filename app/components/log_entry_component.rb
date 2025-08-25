@@ -184,6 +184,8 @@ class LogEntryComponent < ApplicationComponent
       safe_join([
         content_tag(:span, "[#{timestamp}]", class: "text-muted me-2"),
         content_tag(:span, "[#{thread}]", class: "text-secondary me-2"),
+        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1"),
+        " ",
         player_badge(uid, player),
         " ",
         action_text("sold", :success),
@@ -196,9 +198,7 @@ class LogEntryComponent < ApplicationComponent
         " and ",
         respect_badge(respect),
         " ",
-        total_currency(total),
-        " ",
-        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1")
+        total_currency(total)
       ])
 
     else
@@ -214,6 +214,8 @@ class LogEntryComponent < ApplicationComponent
       # Extract player name from the middle part if we can
       player_name = extract_player_name(entry, uid)
       safe_join([
+        content_tag(:span, "[REMOTE]", class: "badge bg-secondary"),
+        " ",
         player_badge(uid, player_name),
         " ",
         action_text("purchased", :primary),
@@ -222,15 +224,15 @@ class LogEntryComponent < ApplicationComponent
         " for ",
         currency_badge(price, "poptabs"),
         " ",
-        total_currency(total),
-        " ",
-        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1")
+        total_currency(total)
       ])
 
     when /PLAYER:\s*\(\s*([\w]+)\s*\)\s*.*?\s+REMOTE\s+PURCHASED VEHICLE\s+(.+?)\s+FOR\s+([\d,.e\+]+)\s+POPTABS\s*\|\s*PLAYER TOTAL MONEY:\s*([\d,]+)/i
       uid, vehicle, price, total = $1, $2, $3, $4
       player_name = extract_player_name(entry, uid)
       safe_join([
+        content_tag(:span, "[REMOTE]", class: "badge bg-secondary"),
+        " ",
         player_badge(uid, player_name),
         " ",
         action_text("purchased", :primary),
@@ -239,9 +241,7 @@ class LogEntryComponent < ApplicationComponent
         " for ",
         currency_badge(price, "poptabs"),
         " ",
-        total_currency(total),
-        " ",
-        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1")
+        total_currency(total)
       ])
 
     # Remote sale transactions
@@ -249,6 +249,8 @@ class LogEntryComponent < ApplicationComponent
       uid, item, price, respect, total = $1, $2, $3, $4, $5
       player_name = extract_player_name(entry, uid)
       safe_join([
+        content_tag(:span, "[REMOTE]", class: "badge bg-secondary"),
+        " ",
         player_badge(uid, player_name),
         " ",
         action_text("sold", :success),
@@ -259,9 +261,7 @@ class LogEntryComponent < ApplicationComponent
         " and ",
         respect_badge(respect),
         " ",
-        total_currency(total),
-        " ",
-        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1")
+        total_currency(total)
       ])
 
     # Remote sale with cargo (the complex one)
@@ -269,6 +269,8 @@ class LogEntryComponent < ApplicationComponent
       uid, vehicle, vehicle_id, cargo, price, respect, total = $1, $2, $3, $4, $5, $6, $7
       player_name = extract_player_name(entry, uid)
       safe_join([
+        content_tag(:span, "[REMOTE]", class: "badge bg-secondary"),
+        " ",
         player_badge(uid, player_name),
         " ",
         action_text("sold", :success),
@@ -281,9 +283,7 @@ class LogEntryComponent < ApplicationComponent
         " and ",
         respect_badge(respect),
         " ",
-        total_currency(total),
-        " ",
-        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1")
+        total_currency(total)
       ])
 
     # Regular (non-remote) purchase transactions
@@ -622,10 +622,7 @@ class LogEntryComponent < ApplicationComponent
   end
 
   def vehicle_badge(vehicle)
-    safe_join([
-      content_tag(:i, "", class: "bi bi-truck me-1"),
-      content_tag(:span, vehicle, class: "badge bg-info text-dark")
-    ])
+    content_tag(:span, vehicle, class: "badge bg-info text-dark")
   end
 
   def extract_player_name(entry, uid)
