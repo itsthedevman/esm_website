@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 module TurboHelper
+  def turbo_frame(id, **args, &block)
+    turbo_frame_tag("#{id}_frame", **args, &block)
+  end
+
+  alias_method :update_turbo_frame, :turbo_frame
+
   def update_turbo_modal(id, &block)
     turbo_frame_tag("#{id}_frame") do
       yield
