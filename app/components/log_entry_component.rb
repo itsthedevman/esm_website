@@ -153,6 +153,8 @@ class LogEntryComponent < ApplicationComponent
     when /PLAYER:\s*\(\s*([\w]+)\s*\)\s*R NSTR:\d+\s*\(([^)]+)\)\s*REMOTE\s+PURCHASED ITEM\s+(.+?)\s+FOR\s+([\d,.e\+]+)\s+POPTABS\s*\|\s*PLAYER TOTAL MONEY:\s*([\d,]+)/i
       uid, player, item, price, total = $1, $2, $3, $4, $5
       safe_join([
+        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1"),
+        " ",
         player_badge(uid, player),
         " ",
         action_text("purchased", :primary),
@@ -161,14 +163,14 @@ class LogEntryComponent < ApplicationComponent
         " for ",
         currency_badge(price, "poptabs"),
         " ",
-        total_currency(total),
-        " ",
-        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1")
+        total_currency(total)
       ])
 
     when /PLAYER:\s*\(\s*([\w]+)\s*\)\s*R NSTR:\d+\s*\(([^)]+)\)\s*REMOTE\s+PURCHASED VEHICLE\s+(.+?)\s+FOR\s+([\d,.e\+]+)\s+POPTABS\s*\|\s*PLAYER TOTAL MONEY:\s*([\d,]+)/i
       uid, player, vehicle, price, total = $1, $2, $3, $4, $5
       safe_join([
+        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1"),
+        " ",
         player_badge(uid, player),
         " ",
         action_text("purchased", :primary),
@@ -178,14 +180,15 @@ class LogEntryComponent < ApplicationComponent
         currency_badge(price, "poptabs"),
         " ",
         total_currency(total),
-        " ",
-        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1")
+        " "
       ])
 
     # Remote sale transactions
     when /PLAYER:\s*\(\s*([\w]+)\s*\)\s*R NSTR:\d+\s*\(([^)]+)\)\s*REMOTE\s+SOLD ITEM\s+(.+?)\s+FOR\s+([\d,.e\+]+)\s+POPTABS AND\s+([\d,]+)\s+RESPECT\s*\|\s*PLAYER TOTAL MONEY:\s*([\d,]+)/i
       uid, player, item, price, respect, total = $1, $2, $3, $4, $5, $6
       safe_join([
+        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1"),
+        " ",
         player_badge(uid, player),
         " ",
         action_text("sold", :success),
@@ -197,8 +200,7 @@ class LogEntryComponent < ApplicationComponent
         respect_badge(respect),
         " ",
         total_currency(total),
-        " ",
-        content_tag(:span, "[REMOTE]", class: "badge bg-secondary ms-1")
+        " "
       ])
 
     # Regular (non-remote) purchase transactions
@@ -271,6 +273,7 @@ class LogEntryComponent < ApplicationComponent
         " ",
         vehicle_badge(vehicle),
         content_tag(:small, " ##{vehicle_id}", class: "text-muted"),
+        content_tag(:small, " (#{cargo})", class: "text-info ms-1"),
         " for ",
         currency_badge(price, "poptabs"),
         " and ",
@@ -278,7 +281,6 @@ class LogEntryComponent < ApplicationComponent
         " ",
         total_currency(total)
       ])
-
     else
       content_tag(:span, @entry, class: "text-muted")
     end
@@ -531,13 +533,13 @@ class LogEntryComponent < ApplicationComponent
   end
 
   def vehicle_badge(vehicle)
-    safe_join([
-      content_tag(:i, "", class: "bi bi-truck me-1"),
-      content_tag(:span, vehicle, class: "badge bg-info text-dark")
-    ])
+    content_tag(:span, vehicle, class: "badge bg-info text-dark")
   end
 
   def number_with_delimiter(number)
-    number.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse
+    # Convert scientific notation
+    normalized = number.to_s.match?(/e[+-]?\d+/i) ? number.to_f.to_i : number.to_i
+
+    helpers.number_with_delimiter(normalized)
   end
 end
