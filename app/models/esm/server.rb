@@ -44,7 +44,9 @@ module ESM
     end
 
     def connected?
-      true
+      Rails.cache.fetch("server:#{id}:connected", expires_in: 10.seconds) do
+        ESM.bot.server_connected?(id)
+      end
     end
 
     def ui_v2?

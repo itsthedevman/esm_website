@@ -152,4 +152,14 @@ class Bot
   def self.user_community_permissions(user_id, guild_ids)
     instance.user_community_permissions(id: user_id, guild_ids:) || []
   end
+
+  #
+  # Returns if the server is connected or not
+  #
+  # @param server_id [String, Integer] The server's ID
+  # @return [Boolean]
+  #
+  def self.server_connected?(server_id)
+    instance.servers_connected(id: server_id)
+  end
 end
