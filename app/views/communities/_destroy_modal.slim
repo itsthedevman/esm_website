@@ -1,7 +1,7 @@
 = render "shared/modal", id: "destroy-community-modal", class: "modal-lg", **local_assigns do
-  .modal-header.border-bottom
-    h5#deleteCommunityModalLabel.modal-title.text-danger
-      i.bi.bi-exclamation-triangle.me-2
+  .modal-header
+    h5#deleteCommunityModalLabel.modal-title
+      i.bi.bi-exclamation-triangle.text-danger.me-2
       | Delete #{current_community.community_name}?
     button.btn-close[
       type="button"

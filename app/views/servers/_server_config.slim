@@ -8,10 +8,9 @@
     = link_to "Cancel", edit_community_server_path(current_community, server),
       class: "btn btn-outline-secondary btn-lg"
 
-    = f.submit "Save Configuration",
-        class: "btn btn-success btn-lg"
+    = f.button "commit", class: "btn btn-success btn-lg", type: "submit" do
       i.bi.bi-check-circle.me-2
-      | Save Configuration
+      | Save Settings
 
 / Advanced Configuration Section Header
 .text-center.pt-5

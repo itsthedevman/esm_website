@@ -1,8 +1,8 @@
 = render "shared/modal", id: "delete_modal", class: "modal-lg" do
-  .modal-header.border-danger.bg-danger.bg-opacity-10
-    h5.modal-title.text-danger
-      i.bi.bi-exclamation-triangle.me-2
-      | Are you sure you want to delete your account, #{current_user.discord_username}?
+  .modal-header
+    h5.modal-title
+      i.bi.bi-exclamation-triangle.text-danger.me-2
+      | Delete Account: #{current_user.discord_username}
     button.btn-close[
       type="button"
       data-bs-dismiss="modal"
