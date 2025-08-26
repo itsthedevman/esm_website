@@ -1,0 +1,84 @@
+/ Route Card Partial
+.col-6
+  .card.bg-dark.border-secondary.h-100.route-card
+    .card-header.border-secondary.d-flex.align-items-center.justify-content-between.py-3
+      div
+        h6.mb-1.text-light
+          i.bi.bi-hash.me-1
+          = route.channel_name
+        small.text-muted = route.discord_server_name
+
+      = button_to community_user_notification_route_path(current_community, route),
+          method: :delete,
+          class: "btn btn-outline-danger btn-sm",
+          data: { \
+            turbo_confirm: "Remove this notification route?",
+            turbo_method: :delete,
+          },
+          title: "Delete route"
+        i.bi.bi-trash
+
+    .card-body.p-3
+      / Source info
+      .mb-3
+        small.text-muted.fw-medium FROM
+        .d-flex.align-items-center.gap-2.mb-2
+          i.bi.bi-server.text-warning
+          span.text-light = route.server_name
+          - if route.any_server?
+            span.badge.bg-info.small Global
+
+      / Notification toggles
+      .mb-3
+        small.text-muted.fw-medium.mb-2.d-block NOTIFICATION TYPES
+
+        / Territory Events
+        - territory_types = route.territory_notification_types
+        - if territory_types.any?
+          .mb-3
+            h6.small.text-muted.mb-2.d-flex.align-items-center
+              | 🏠 TERRITORY
+              small.text-light.ms-auto
+                = "#{territory_types.count(&:enabled?)} active"
+
+            - territory_types.each do |notification_type|
+              .d-flex.align-items-center.justify-content-between.mb-1
+                small class=notification_type.enabled? ? "text-light" : "text-muted"
+                  = notification_type.display_name
+                .form-check.form-switch.form-check-reverse.mb-0
+                  = check_box_tag "route[#{notification_type.id}]", "1", notification_type.enabled?,
+                      class: "form-check-input"
+
+        / Economy Events
+        - economy_types = route.economy_notification_types
+        - if economy_types.any?
+          .mb-3
+            h6.small.text-muted.mb-2.d-flex.align-items-center
+              | 💰 ECONOMY
+              small.text-light.ms-auto
+                = "#{economy_types.count(&:enabled?)} active"
+
+            - economy_types.each do |notification_type|
+              .d-flex.align-items-center.justify-content-between.mb-1
+                small class=notification_type.enabled? ? "text-light" : "text-muted"
+                  = notification_type.display_name
+                .form-check.form-switch.form-check-reverse.mb-0
+                  = check_box_tag "route[#{notification_type.id}]", "1", notification_type.enabled?,
+                      class: "form-check-input"
+
+        / Combat Events
+        - combat_types = route.combat_notification_types
+        - if combat_types.any?
+          .mb-0
+            h6.small.text-muted.mb-2.d-flex.align-items-center
+              | ⚔️ COMBAT
+              small.text-light.ms-auto
+                = "#{combat_types.count(&:enabled?)} active"
+
+            - combat_types.each do |notification_type|
+              .d-flex.align-items-center.justify-content-between.mb-1
+                small class=notification_type.enabled? ? "text-light" : "text-muted"
+                  = notification_type.display_name
+                .form-check.form-switch.form-check-reverse.mb-0
+                  = check_box_tag "route[#{notification_type.id}]", "1", notification_type.enabled?,
+                      class: "form-check-input"
