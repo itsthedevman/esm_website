@@ -38,8 +38,8 @@
                   p.small.text-muted.mb-0 Configure settings and manage everything
 
         .col-lg-4
-          .card.bg-body.border
-            .card-body.text-center.py-4
+          .card.bg-body.border.h-100
+            .card-body.d-flex.flex-column.justify-content-center.align-items-center.text-center.py-4
               h6.text-muted.mb-3 Data Flow
               .small.text-muted
                 | Discord Command
@@ -108,11 +108,11 @@
             = link_to server_setup_docs_path, class: "btn btn-success btn-lg"
               | Server Setup Guide
 
-  hr.py-5
+  hr.my-5
 
   / Core Systems Deep Dive
   .mb-5
-    h3.text-center.mb-5 Understanding ESM's Core Systems
+    h2.text-center.mb-5 Understanding ESM's Core Systems
 
     / XM8 Notification System
     .card.bg-warning.bg-opacity-10.border-warning.mb-4
@@ -143,13 +143,13 @@
               h6.text-warning.mb-2 Notification Routing
               p.small.mb-0 You can route notifications to specific Discord channels in Player Mode communities. Set up custom routes through the web dashboard to control where different notification types go.
 
-          .col-lg-4.d-flex
-            .card.bg-dark.border-0.flex-fill
-              .card-body.text-center.py-4
+          .col-lg-4.d-flex.align-items-stretch
+            .card.bg-dark.border-0.w-100
+              .card-body.d-flex.flex-column.justify-content-center.align-items-center.text-center.py-4
                 i.bi.bi-arrow-right.text-warning.fs-2.mb-3
                 h6.text-warning Default Behavior
                 p.small.text-muted.mb-2 Notifications go to your Discord DMs by default
-                p.small.text-muted.mb-0 You can opt out with #{command_usage(:preferences, show_arguments: false)}
+                p.small.text-muted.mb-0 Opt out with #{command_usage(:preferences, show_arguments: false)}
 
     / Command System
     .card.bg-info.bg-opacity-10.border-info.mb-4
@@ -159,11 +159,11 @@
           | Command System & Permissions
       .card-body
         .row.g-4
-          .col-lg-8.d-flex.flex-column
+          .col-lg-8
             p.mb-3 ESM commands are organized by domain and have different permission levels. Understanding where you can use which commands is crucial.
 
-            .table-responsive.flex-fill
-              table.table.table-sm.table-dark.mb-3
+            .table-responsive
+              table.table.table-dark.mb-3
                 thead
                   tr
                     th Command Type
@@ -183,14 +183,15 @@
                       small.text-muted.d-block (if community allows)
                     td.text-danger No
 
-            .alert.border-secondary.bg-dark.mb-0.flex-shrink
+            .alert.border-secondary.bg-dark.mb-0.d-flex.flex-column.flex-fill
               h6.text-danger.mb-2 Community Control
               p.small.mb-0 Communities can disable commands, restrict them to specific roles, set custom cooldowns, and control which channels they work in. If a command doesn't work, try it in DM or ask an admin.
 
-          .col-lg-4
-            .card.bg-dark.border-0
-              .card-body
-                h6.text-info.mb-3 Command Structure
+          .col-lg-4.d-flex.align-items-stretch
+            .card.bg-dark.border-0.w-100.d-flex.flex-column
+              .card-body.d-flex.flex-column.justify-content-between
+                div
+                  h6.text-info.mb-3 Command Structure
                 .font-monospace.small.text-muted.mb-3
                   | /domain action target
                   br
@@ -199,17 +200,14 @@
                 h6.text-info.mb-2 Examples:
                 ul.small.text-muted.mb-0.list-unstyled
                   li.mb-1
-                    | Check your stats
-                    .ms-2.mt-1
-                      = command_usage(:me, show_arguments: false)
+                    | Check your stats:
+                    .font-monospace.ms-2.mt-1 = command_usage(:me, show_arguments: false)
                   li.mb-1
-                    | List your bases
-                    .ms-2.mt-1
-                      = command_usage(:territories, show_arguments: false)
+                    | List your bases:
+                    .font-monospace.ms-2.mt-1 = command_usage(:territories, show_arguments: false)
                   li
-                    | Admin heal player
-                    .ms-2.mt-1
-                      = command_usage(:player, arguments: {target: "@user", action: "heal"})
+                    | Admin heal:
+                    .font-monospace.ms-2.mt-1 = command_usage(:player, show_arguments: false)
 
     / Territory Management
     .card.bg-success.bg-opacity-10.border-success.mb-4
@@ -245,17 +243,17 @@
               h6.text-success.mb-2 Territory IDs
               p.small.mb-0 Territories get auto-generated IDs like "abcxyz" for easy reference. You can set custom IDs with #{command_usage(:set_id, show_arguments: false)} to make them more memorable.
 
-          .col-lg-4.d-flex
-            .card.bg-dark.border-0.flex-fill
+          .col-lg-4.d-flex.align-items-stretch
+            .card.bg-dark.border-0.w-100
               .card-body
                 h6.text-success.mb-3 Key Commands
                 ul.small.text-muted.mb-0.list-unstyled
-                  li #{command_usage(:territories, show_arguments: false)}
-                  li #{command_usage(:pay, show_arguments: false)}
-                  li #{command_usage(:upgrade, show_arguments: false)}
-                  li #{command_usage(:add, show_arguments: false)}
-                  li #{command_usage(:remove, show_arguments: false)}
-                  li #{command_usage(:promote, show_arguments: false)}
+                  li.font-monospace = command_usage(:territories, show_arguments: false)
+                  li.font-monospace = command_usage(:pay, show_arguments: false)
+                  li.font-monospace = command_usage(:upgrade, show_arguments: false)
+                  li.font-monospace = command_usage(:add, show_arguments: false)
+                  li.font-monospace = command_usage(:remove, show_arguments: false)
+                  li.font-monospace = command_usage(:promote, show_arguments: false)
 
   / Player vs Server Mode
   .card.bg-secondary.bg-opacity-10.border-secondary.mb-5
@@ -266,7 +264,7 @@
 
       .row.g-4
         .col-lg-6
-          .card.bg-info.bg-opacity-10.border-info.h-100
+          .card.bg-info.bg-opacity-10.border-info.h-100.d-flex.flex-column
             .card-header.border-info
               h5.mb-0.text-info Player Mode Communities
             .card-body.d-flex.flex-column
@@ -274,17 +272,17 @@
 
               .flex-fill
                 h6.text-light.mb-2 Features Available:
-                ul.small.text-muted.mb-3
+                ul.small.text-muted.mb-0
                   li XM8 notification routing to channels
                   li Player commands in DMs and text channels
                   li Notification preference management
                   li User alias and default settings
 
-              .alert.border-secondary.bg-dark.mb-0.flex-shrink
+              .alert.border-secondary.bg-dark.mb-0.mt-auto
                 p.small.mb-0 <strong>Perfect for:</strong> Gaming communities that want their members to get notifications in Discord channels rather than just DMs.
 
         .col-lg-6
-          .card.bg-warning.bg-opacity-10.border-warning.h-100
+          .card.bg-warning.bg-opacity-10.border-warning.h-100.d-flex.flex-column
             .card-header.border-warning
               h5.mb-0.text-warning Server Mode Communities
             .card-body.d-flex.flex-column
@@ -299,7 +297,7 @@
                   li Command permission management
                   li Custom notification templates
 
-              .alert.border-secondary.bg-dark.mb-0.flex-shrink
+              .alert.border-secondary.bg-dark.mb-0.mt-auto
                 p.small.mb-0 <strong>Perfect for:</strong> Server administrators who want to manage their servers through Discord and the web dashboard.
 
   / Advanced Features
@@ -317,11 +315,11 @@
 
             h6.text-light.mb-2 Aliases:
             p.small.text-muted.mb-3
-              | Create short names like "main" for "abc4_altis_main". Use the web dashboard to set them up.
+              | Create short names like "main" for "abc4_altis_main". Set them up in your account settings.
 
             h6.text-light.mb-2 Defaults:
             p.small.text-muted.mb-0
-              | Set a default community/server so you can omit IDs from commands. When you use #{command_usage(:me, show_arguments: false)}, ESM knows which server you mean.
+              | Set a default community/server so you can omit IDs from commands. When you use #{command_usage(:me, show_arguments: false)}, ESM knows which server you mean. Also configured in your account settings.
 
       .col-lg-6
         .card.bg-dark.border-secondary.h-100
@@ -342,10 +340,10 @@
               li Locker capacity limits
               li Custom win/loss messages
 
-  hr.py-3
+  hr.my-4
 
   / Quick Actions
-  .row.g-4
+  .row.g-4.mt-3
     .col-md-4
       .card.bg-success.bg-opacity-10.border-success.h-100
         .card-body.text-center
