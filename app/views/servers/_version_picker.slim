@@ -92,7 +92,8 @@
                         code esm.key
                         |<  file.
                       = button_to disable_v2_community_server_path(current_community, server),
-                          method: :patch, class: "btn btn-outline-warning btn-sm ms-3"
+                          method: :patch, class: "btn btn-outline-warning btn-sm ms-3",
+                          data: {turbo: false}
                         | Switch Back
 
     - else
@@ -108,10 +109,10 @@
                 | Time-tested version with proven Windows server reliability.
 
         .col-3.text-end
-          = link_to enable_v2_community_server_path(current_community, server),
+          = button_to enable_v2_community_server_path(current_community, server),
             method: :patch,
             class: "btn btn-success",
-            data: { turbo_method: :patch }
+            data: {turbo: false}
             i.bi.bi-arrow-up-circle.me-2
             | Upgrade to v2
       .row

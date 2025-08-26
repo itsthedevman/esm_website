@@ -99,7 +99,7 @@ class ServersController < AuthenticatedController
 
     server.update!(ui_version: "2.0.0")
 
-    render turbo_stream: turbo_stream.refresh(request_id: nil)
+    redirect_to edit_community_server_path(current_community, server)
   end
 
   def disable_v2
@@ -108,7 +108,7 @@ class ServersController < AuthenticatedController
 
     server.update!(ui_version: "1.0.0")
 
-    render turbo_stream: turbo_stream.refresh(request_id: nil)
+    redirect_to edit_community_server_path(current_community, server)
   end
 
   # V1
