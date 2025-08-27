@@ -1,10 +1,9 @@
 = render "users/container", **local_assigns do
-  / Page header with player-focused messaging
   .text-center.mb-4
     h1.mb-2 My XM8 Notification Routes
     p.lead.text-muted Manage where your game notifications get sent in Discord
 
-    / Quick stats overview - player focused
+    / Quick stats overview
     .row.g-3.justify-content-center.mb-4
       .col-auto
         .card.bg-success.bg-opacity-10.border-success
@@ -22,7 +21,7 @@
             .h4.mb-1.text-info 3
             small.text-muted Discord Servers
 
-  / Pending Requests Section - what YOU need to approve
+  / Pending Requests Section
   - if true
     .card.border-warning.bg-warning.bg-opacity-10.mb-5
       .card-header.border-warning.d-flex.align-items-center.justify-content-between
@@ -87,7 +86,7 @@
                   button.btn.btn-danger.btn-sm Decline
                   button.btn.btn-success.btn-sm Accept
 
-  / Main Routes Section - flat list approach
+  / Main Routes Section
   .mb-5
     .d-flex.align-items-center.justify-content-between.mb-4
       h2.mb-0 My Active Routes
@@ -95,160 +94,10 @@
         i.bi.bi-plus-circle.me-2
         | Create New Route
 
-    / Route cards - flat list, no tabs needed
+    / Route cards
     .row.g-4
-      .col-6
-        .card.bg-dark.border-secondary.h-100.route-card
-          .card-header.border-secondary.d-flex.align-items-center.justify-content-between.py-3
-            div
-              h6.mb-1.text-light
-                i.bi.bi-hash.me-1
-                | general
-              small.text-muted Example Server Discord
-            .d-flex.gap-1
-              button.btn.btn-outline-primary.btn-sm
-                i.bi.bi-pencil
-              button.btn.btn-danger.btn-sm
-                i.bi.bi-trash
-
-          .card-body.p-3
-            / Source info
-            .mb-3
-              small.text-muted.fw-medium FROM
-              .d-flex.align-items-center.gap-2.mb-2
-                i.bi.bi-server.text-warning
-                span.text-light abc4_altis_main
-
-            / Notification types with toggles
-            .mb-3
-              small.text-muted.fw-medium.mb-2.d-block NOTIFICATION TYPES
-
-              / Territory Events
-              .mb-3
-                h6.small.text-muted.mb-2.d-flex.align-items-center
-                  | 🏠 TERRITORY
-                  small.text-light.ms-auto 2 active
-                .d-flex.align-items-center.justify-content-between.mb-1
-                  small.text-light Base Raid
-                  .form-check.form-switch.form-check-reverse.mb-0
-                    input.form-check-input type="checkbox" checked=""
-                .d-flex.align-items-center.justify-content-between.mb-1
-                  small.text-light Flag Events
-                  .form-check.form-switch.form-check-reverse.mb-0
-                    input.form-check-input type="checkbox" checked=""
-                .d-flex.align-items-center.justify-content-between
-                  small.text-muted Grind Started
-                  .form-check.form-switch.form-check-reverse.mb-0
-                    input.form-check-input type="checkbox"
-
-              / Economy Events
-              .mb-0
-                h6.small.text-muted.mb-2.d-flex.align-items-center
-                  | 💰 ECONOMY
-                  small.text-light.ms-auto 1 active
-                .d-flex.align-items-center.justify-content-between.mb-1
-                  small.text-light Protection Money
-                  .form-check.form-switch.form-check-reverse.mb-0
-                    input.form-check-input type="checkbox" checked=""
-                .d-flex.align-items-center.justify-content-between
-                  small.text-muted MarXet Sales
-                  .form-check.form-switch.form-check-reverse.mb-0
-                    input.form-check-input type="checkbox"
-
-      .col-6
-        .card.bg-dark.border-secondary.h-100.route-card
-          .card-header.border-secondary.d-flex.align-items-center.justify-content-between.py-3
-            div
-              h6.mb-1.text-light
-                i.bi.bi-hash.me-1
-                | raid-alerts
-              small.text-muted Tactical Gaming
-            .d-flex.gap-1
-              button.btn.btn-outline-primary.btn-sm
-                i.bi.bi-pencil
-              button.btn.btn-danger.btn-sm
-                i.bi.bi-trash
-
-          .card-body.p-3
-            / Source info
-            .mb-3
-              small.text-muted.fw-medium FROM
-              .d-flex.align-items-center.gap-2.mb-2
-                i.bi.bi-server.text-warning
-                span.text-light Any server
-                span.badge.bg-info.small Global
-
-            / Notification types
-            .mb-3
-              small.text-muted.fw-medium.mb-2.d-block NOTIFICATION TYPES
-
-              / Territory Events
-              .mb-3
-                h6.small.text-muted.mb-2.d-flex.align-items-center
-                  | 🏠 TERRITORY
-                  small.text-light.ms-auto 3 active
-                .d-flex.align-items-center.justify-content-between.mb-1
-                  small.text-light Base Raid
-                  .form-check.form-switch.form-check-reverse.mb-0
-                    input.form-check-input type="checkbox" checked=""
-                .d-flex.align-items-center.justify-content-between.mb-1
-                  small.text-light Flag Events
-                  .form-check.form-switch.form-check-reverse.mb-0
-                    input.form-check-input type="checkbox" checked=""
-                .d-flex.align-items-center.justify-content-between
-                  small.text-light Grind Started
-                  .form-check.form-switch.form-check-reverse.mb-0
-                    input.form-check-input type="checkbox" checked=""
-
-              / Combat Events
-              .mb-0
-                h6.small.text-muted.mb-2.d-flex.align-items-center
-                  | ⚔️ COMBAT
-                  small.text-light.ms-auto 1 active
-                .d-flex.align-items-center.justify-content-between
-                  small.text-light Hack Started
-                  .form-check.form-switch.form-check-reverse.mb-0
-                    input.form-check-input type="checkbox" checked=""
-
-      .col-6
-        .card.bg-dark.border-secondary.h-100.route-card
-          .card-header.border-secondary.d-flex.align-items-center.justify-content-between.py-3
-            div
-              h6.mb-1.text-light
-                i.bi.bi-hash.me-1
-                | notifications
-              small.text-muted Example Server Discord
-            .d-flex.gap-1
-              button.btn.btn-outline-primary.btn-sm
-                i.bi.bi-pencil
-              button.btn.btn-danger.btn-sm
-                i.bi.bi-trash
-
-          .card-body.p-3
-            / Source info
-            .mb-3
-              small.text-muted.fw-medium FROM
-              .d-flex.align-items-center.gap-2.mb-2
-                i.bi.bi-server.text-warning
-                span.text-light abc4_tanoa_test
-
-            / Notification types
-            .mb-3
-              small.text-muted.fw-medium.mb-2.d-block NOTIFICATION TYPES
-
-              / Economy Events
-              .mb-0
-                h6.small.text-muted.mb-2.d-flex.align-items-center
-                  | 💰 ECONOMY
-                  small.text-light.ms-auto 2 active
-                .d-flex.align-items-center.justify-content-between.mb-1
-                  small.text-light Protection Money
-                  .form-check.form-switch.form-check-reverse.mb-0
-                    input.form-check-input type="checkbox" checked=""
-                .d-flex.align-items-center.justify-content-between
-                  small.text-light MarXet Sales
-                  .form-check.form-switch.form-check-reverse.mb-0
-                    input.form-check-input type="checkbox" checked=""
+      - routes.each do |(community, server, channel), routes|
+        = render_component(NotificationRouteCardComponent, community:, server:, channel:, routes:)
 
       .col-6
         / Empty state card for adding more

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class UserNotificationRoutesController < AuthenticatedController
-  # before_action :redirect_if_not_player_mode, if: -> { current_context == current_community }
+  before_action :redirect_if_server_mode!, if: -> { current_context == current_community }
 
   def server_index
     # render action_name, locals: {
@@ -16,15 +16,11 @@ class UserNotificationRoutesController < AuthenticatedController
   end
 
   def player_index
-    # render action_name, locals: {
-    #   user: current_user.clientize,
-    #   communities: load_player_communities_and_channels,
-    #   servers: Community.servers_by_community,
-    #   pending_requests: load_pending_requests,
-    #   types: load_types,
-    #   type_presets: load_type_presets,
-    #   view_path: "user_notification_routes/player"
-    # }
+    routes = current_user.user_notification_routes.by_community_server_and_channel_for_user
+
+    render locals: {
+      routes:
+    }
   end
 
   def create

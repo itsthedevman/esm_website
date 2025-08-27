@@ -1,0 +1,110 @@
+.col-6
+  .card.bg-dark.border-secondary.h-100.route-card
+    .card-header.border-secondary.d-flex.align-items-center.justify-content-between.py-3
+      div
+        h6.mb-1.text-light
+          i.bi.bi-hash.me-1
+          = channel.name
+        small.text-muted = community.community_name
+
+      = button_to "",
+          method: :delete,
+          class: "btn btn-outline-danger btn-sm",
+          data: { \
+            turbo_confirm: "Remove this notification route?",
+            turbo_method: :delete,
+          },
+          title: "Delete route"
+        i.bi.bi-trash
+
+    .card-body.p-3
+      / Source info
+      .mb-3
+        small.text-muted.fw-medium FROM
+        .d-flex.align-items-center.gap-2.mb-2
+          i.bi.bi-server.text-warning
+          - if server.nil?
+            span.badge.bg-info.small Global
+          - else
+            span.text-light = server.server_name
+
+      / Notification toggles
+      .mb-3
+        small.text-muted.fw-medium.mb-2.d-block NOTIFICATION TYPES
+
+        / Territory Events
+        - if (territory_routes = territory_management_routes) && territory_routes.size > 0
+          .mb-3
+            h6.small.text-muted.mb-2.d-flex.align-items-center
+              | TERRITORY MANAGEMENT
+              small.text-light.ms-auto
+                = "#{territory_routes.count(&:enabled?)} active"
+
+            - territory_routes.each do |route|
+              .d-flex.align-items-center.justify-content-between.mb-1
+                small class=class_names(\
+                  "text-light" => route.enabled?,
+                  "text-muted" => !route.enabled?,
+                )
+                  = route.notification_type.titleize
+                .form-check.form-switch.form-check-reverse.mb-0
+                  = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
+                      class: "form-check-input"
+
+        / Combat Events
+        - if (combat_routes = base_combat_routes) && combat_routes.any?
+          .mb-0
+            h6.small.text-muted.mb-2.d-flex.align-items-center
+              | BASE COMBAT
+              small.text-light.ms-auto
+                = "#{combat_routes.count(&:enabled?)} active"
+
+            - combat_routes.each do |route|
+              .d-flex.align-items-center.justify-content-between.mb-1
+                small class=class_names(\
+                  "text-light" => route.enabled?,
+                  "text-muted" => !route.enabled?,
+                )
+                  = route.notification_type.titleize
+                .form-check.form-switch.form-check-reverse.mb-0
+                  = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
+                      class: "form-check-input"
+
+
+        / Economy Events
+        - if (economy_routes = economy_routes) && economy_routes.any?
+          .mb-3
+            h6.small.text-muted.mb-2.d-flex.align-items-center
+              | ECONOMY
+              small.text-light.ms-auto
+                = "#{economy_routes.count(&:enabled?)} active"
+
+            - economy_routes.each do |route|
+              .d-flex.align-items-center.justify-content-between.mb-1
+                small class=class_names(\
+                  "text-light" => route.enabled?,
+                  "text-muted" => !route.enabled?,
+                )
+                  = route.notification_type.titleize
+                .form-check.form-switch.form-check-reverse.mb-0
+                  = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
+                      class: "form-check-input"
+
+        / Custom Events
+        - if (custom_routes = custom_routes) && custom_routes.any?
+          .mb-3
+            h6.small.text-muted.mb-2.d-flex.align-items-center
+              | CUSTOM
+              small.text-light.ms-auto
+                = "#{custom_routes.count(&:enabled?)} active"
+
+            - custom_routes.each do |route|
+              .d-flex.align-items-center.justify-content-between.mb-1
+                small class=class_names(\
+                  "text-light" => route.enabled?,
+                  "text-muted" => !route.enabled?,
+                )
+                  = route.notification_type.titleize
+                .form-check.form-switch.form-check-reverse.mb-0
+                  = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
+                      class: "form-check-input"
