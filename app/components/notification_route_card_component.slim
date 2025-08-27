@@ -30,22 +30,18 @@
 
       / Notification toggles
       .mb-3
-        small.text-muted.fw-medium.mb-2.d-block NOTIFICATION TYPES
-
         / Territory Events
         - if (routes = territory_management_routes) && routes.size > 0
           .mb-3
-            h6.small.text-muted.mb-2.d-flex.align-items-center
-              | TERRITORY MANAGEMENT
-              small.text-light.ms-auto
+            h6.small.mb-2.d-flex.align-items-center
+              span.fw-semibold
+                | TERRITORY MANAGEMENT
+              small.text-muted.ms-auto
                 = "#{routes.count(&:enabled?)} active"
 
             - routes.each do |route|
               .d-flex.align-items-center.justify-content-between.mb-1
-                small class=class_names(\
-                  "text-light" => route.enabled?,
-                  "text-muted" => !route.enabled?,
-                )
+                small
                   = route.notification_type.titleize
                 .form-check.form-switch.form-check-reverse.mb-0
                   = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
@@ -53,18 +49,16 @@
 
         / Combat Events
         - if (routes = base_combat_routes) && routes.size > 0
-          .mb-0
-            h6.small.text-muted.mb-2.d-flex.align-items-center
-              | BASE COMBAT
-              small.text-light.ms-auto
+          .mb-3
+            h6.small.mb-2.d-flex.align-items-center
+              span.fw-semibold
+                | BASE COMBAT
+              small.text-muted.ms-auto
                 = "#{routes.count(&:enabled?)} active"
 
             - routes.each do |route|
               .d-flex.align-items-center.justify-content-between.mb-1
-                small class=class_names(\
-                  "text-light" => route.enabled?,
-                  "text-muted" => !route.enabled?,
-                )
+                small
                   = route.notification_type.titleize
                 .form-check.form-switch.form-check-reverse.mb-0
                   = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
@@ -74,17 +68,15 @@
         / Economy Events
         - if (routes = economy_routes) && routes.size > 0
           .mb-3
-            h6.small.text-muted.mb-2.d-flex.align-items-center
-              | ECONOMY
-              small.text-light.ms-auto
+            h6.small.mb-2.d-flex.align-items-center
+              span.fw-semibold
+                | ECONOMY
+              small.text-muted.ms-auto
                 = "#{routes.count(&:enabled?)} active"
 
             - routes.each do |route|
               .d-flex.align-items-center.justify-content-between.mb-1
-                small class=class_names(\
-                  "text-light" => route.enabled?,
-                  "text-muted" => !route.enabled?,
-                )
+                small
                   = route.notification_type.titleize
                 .form-check.form-switch.form-check-reverse.mb-0
                   = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
@@ -93,17 +85,15 @@
         / Custom Events
         - if (routes = custom_routes) && routes.size > 0
           .mb-3
-            h6.small.text-muted.mb-2.d-flex.align-items-center
-              | CUSTOM
-              small.text-light.ms-auto
+            h6.small.mb-2.d-flex.align-items-center
+              span.fw-semibold
+                | CUSTOM
+              small.text-muted.ms-auto
                 = "#{routes.count(&:enabled?)} active"
 
             - routes.each do |route|
               .d-flex.align-items-center.justify-content-between.mb-1
-                small class=class_names(\
-                  "text-light" => route.enabled?,
-                  "text-muted" => !route.enabled?,
-                )
+                small
                   = route.notification_type.titleize
                 .form-check.form-switch.form-check-reverse.mb-0
                   = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
