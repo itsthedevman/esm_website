@@ -42,7 +42,10 @@ module ESM
           channel = route.channel
           next if channel.nil? # Ensures they have access to the channel
 
-          [[route.destination_community, route.source_server, channel], routes]
+          [
+            [route.destination_community, route.source_server, channel],
+            routes.sort_by(&:notification_type)
+          ]
         end
 
       routes.to_h
