@@ -40,12 +40,16 @@
                 = "#{routes.count(&:enabled?)} active"
 
             - routes.each do |route|
-              .d-flex.align-items-center.justify-content-between.mb-1
-                small
-                  = route.notification_type.titleize
-                .form-check.form-switch.form-check-reverse.mb-0
-                  = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
-                      class: "form-check-input"
+              .d-flex.align-items-center.justify-content-between.mb-1.route-row
+                .d-flex.align-items-center.gap-2.flex-grow-1
+                  .form-check.form-switch.mb-0
+                    = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
+                        class: "form-check-input"
+                  small.flex-grow-1 = route.notification_type.titleize
+                button.btn.btn-link.btn-sm.p-0.text-danger.route-delete.d-none[
+                  title="Delete route for #{route.notification_type.titleize}"
+                ]
+                  i.bi.bi-trash.small
 
         / Combat Events
         - if (routes = base_combat_routes) && routes.size > 0
@@ -57,12 +61,16 @@
                 = "#{routes.count(&:enabled?)} active"
 
             - routes.each do |route|
-              .d-flex.align-items-center.justify-content-between.mb-1
-                small
-                  = route.notification_type.titleize
-                .form-check.form-switch.form-check-reverse.mb-0
-                  = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
-                      class: "form-check-input"
+              .d-flex.align-items-center.justify-content-between.mb-1.route-row
+                .d-flex.align-items-center.gap-2.flex-grow-1
+                  .form-check.form-switch.mb-0
+                    = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
+                        class: "form-check-input"
+                  small.flex-grow-1 = route.notification_type.titleize
+                button.btn.btn-link.btn-sm.p-0.text-danger.route-delete.d-none[
+                  title="Delete route for #{route.notification_type.titleize}"
+                ]
+                  i.bi.bi-trash.small
 
 
         / Economy Events
@@ -75,12 +83,16 @@
                 = "#{routes.count(&:enabled?)} active"
 
             - routes.each do |route|
-              .d-flex.align-items-center.justify-content-between.mb-1
-                small
-                  = route.notification_type.titleize
-                .form-check.form-switch.form-check-reverse.mb-0
-                  = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
-                      class: "form-check-input"
+              .d-flex.align-items-center.justify-content-between.mb-1.route-row
+                .d-flex.align-items-center.gap-2.flex-grow-1
+                  .form-check.form-switch.mb-0
+                    = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
+                        class: "form-check-input"
+                  small.flex-grow-1 = route.notification_type.titleize
+                button.btn.btn-link.btn-sm.p-0.text-danger.route-delete.d-none[
+                  title="Delete route for #{route.notification_type.titleize}"
+                ]
+                  i.bi.bi-trash.small
 
         / Custom Events
         - if (routes = custom_routes) && routes.size > 0
@@ -92,9 +104,13 @@
                 = "#{routes.count(&:enabled?)} active"
 
             - routes.each do |route|
-              .d-flex.align-items-center.justify-content-between.mb-1
-                small
-                  = route.notification_type.titleize
-                .form-check.form-switch.form-check-reverse.mb-0
-                  = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
-                      class: "form-check-input"
+              .d-flex.align-items-center.justify-content-between.mb-1.route-row
+                .d-flex.align-items-center.gap-2.flex-grow-1
+                  .form-check.form-switch.mb-0
+                    = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
+                        class: "form-check-input"
+                  small.flex-grow-1 = route.notification_type.titleize
+                button.btn.btn-link.btn-sm.p-0.text-danger.route-delete.d-none[
+                  title="Delete route for #{route.notification_type.titleize}"
+                ]
+                  i.bi.bi-trash.small
