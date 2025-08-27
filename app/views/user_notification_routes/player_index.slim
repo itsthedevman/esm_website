@@ -98,14 +98,3 @@
     .row.g-4
       - routes.each do |(community, server, channel), routes|
         = render_component(NotificationRouteCardComponent, community:, server:, channel:, routes:)
-
-      .col-6
-        / Empty state card for adding more
-        .card.bg-secondary.bg-opacity-10.border-secondary.h-100.text-center.d-flex.align-items-center.justify-content-center
-          .card-body.py-5
-            i.bi.bi-plus-circle.display-4.text-muted.mb-3
-            h5.text-muted.mb-3 Add Another Route
-            p.text-muted.mb-4 Route notifications from more servers or to different channels
-            button.btn.btn-primary
-              i.bi.bi-plus.me-2
-              | Create Route
