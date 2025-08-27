@@ -72,7 +72,11 @@
   .mb-5
     .d-flex.align-items-center.justify-content-between.mb-4
       h2.mb-0 My Active Routes
-      button.btn.btn-primary
+      button.btn.btn-primary[
+        type="button"
+        data-bs-toggle="modal"
+        data-bs-target="#create_route_modal"
+      ]
         i.bi.bi-plus-circle.me-2
         | Create New Route
 
@@ -96,3 +100,5 @@
           ]
             i.bi.bi-plus.me-2
             | Create Your First Route
+
+= render "create_modal"
