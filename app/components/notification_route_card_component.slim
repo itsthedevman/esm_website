@@ -33,14 +33,14 @@
         small.text-muted.fw-medium.mb-2.d-block NOTIFICATION TYPES
 
         / Territory Events
-        - if (territory_routes = territory_management_routes) && territory_routes.size > 0
+        - if (routes = territory_management_routes) && routes.size > 0
           .mb-3
             h6.small.text-muted.mb-2.d-flex.align-items-center
               | TERRITORY MANAGEMENT
               small.text-light.ms-auto
-                = "#{territory_routes.count(&:enabled?)} active"
+                = "#{routes.count(&:enabled?)} active"
 
-            - territory_routes.each do |route|
+            - routes.each do |route|
               .d-flex.align-items-center.justify-content-between.mb-1
                 small class=class_names(\
                   "text-light" => route.enabled?,
@@ -52,14 +52,14 @@
                       class: "form-check-input"
 
         / Combat Events
-        - if (combat_routes = base_combat_routes) && combat_routes.any?
+        - if (routes = base_combat_routes) && routes.size > 0
           .mb-0
             h6.small.text-muted.mb-2.d-flex.align-items-center
               | BASE COMBAT
               small.text-light.ms-auto
-                = "#{combat_routes.count(&:enabled?)} active"
+                = "#{routes.count(&:enabled?)} active"
 
-            - combat_routes.each do |route|
+            - routes.each do |route|
               .d-flex.align-items-center.justify-content-between.mb-1
                 small class=class_names(\
                   "text-light" => route.enabled?,
@@ -72,14 +72,14 @@
 
 
         / Economy Events
-        - if (economy_routes = economy_routes) && economy_routes.any?
+        - if (routes = economy_routes) && routes.size > 0
           .mb-3
             h6.small.text-muted.mb-2.d-flex.align-items-center
               | ECONOMY
               small.text-light.ms-auto
-                = "#{economy_routes.count(&:enabled?)} active"
+                = "#{routes.count(&:enabled?)} active"
 
-            - economy_routes.each do |route|
+            - routes.each do |route|
               .d-flex.align-items-center.justify-content-between.mb-1
                 small class=class_names(\
                   "text-light" => route.enabled?,
@@ -91,14 +91,14 @@
                       class: "form-check-input"
 
         / Custom Events
-        - if (custom_routes = custom_routes) && custom_routes.any?
+        - if (routes = custom_routes) && routes.size > 0
           .mb-3
             h6.small.text-muted.mb-2.d-flex.align-items-center
               | CUSTOM
               small.text-light.ms-auto
-                = "#{custom_routes.count(&:enabled?)} active"
+                = "#{routes.count(&:enabled?)} active"
 
-            - custom_routes.each do |route|
+            - routes.each do |route|
               .d-flex.align-items-center.justify-content-between.mb-1
                 small class=class_names(\
                   "text-light" => route.enabled?,
