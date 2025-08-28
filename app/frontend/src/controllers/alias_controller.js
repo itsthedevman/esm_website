@@ -1,5 +1,5 @@
 import ApplicationController from "./application_controller";
-import $ from "cash-dom";
+import $ from "../helpers/cash_dom";
 import * as R from "ramda";
 import Validate from "../helpers/validator";
 import { onModalHidden } from "../helpers/modals";

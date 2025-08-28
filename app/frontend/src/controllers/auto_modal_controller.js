@@ -12,7 +12,6 @@ export default class extends ApplicationController {
   connect() {
     // Use nextTick to ensure DOM is fully ready
     this.nextTick(() => {
-      console.log("open");
       this.openModal();
     });
   }

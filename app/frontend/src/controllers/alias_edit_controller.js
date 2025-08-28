@@ -1,5 +1,5 @@
 import AliasController from "./alias_controller";
-import $ from "cash-dom";
+import $ from "../helpers/cash_dom";
 import * as R from "ramda";
 import * as bootstrap from "bootstrap";
 
