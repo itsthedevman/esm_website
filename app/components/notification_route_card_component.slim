@@ -1,4 +1,7 @@
-.col-6
+.col-6[
+  id="#{channel.id}-#{community.public_id}-#{server&.public_id}"
+  data-controller="routes"
+]
   .card.bg-dark.border-secondary.h-100.route-card
     .card-header.border-secondary.d-flex.align-items-center.justify-content-between.py-3
       div
@@ -7,14 +10,16 @@
           = channel.name
         small.text-muted = community.community_name
 
-      = button_to "",
-          method: :delete,
-          class: "btn btn-outline-danger btn-sm",
-          data: { \
-            turbo_confirm: "Remove this notification route?",
-            turbo_method: :delete,
-          },
-          title: "Delete route"
+      = button_to destroy_many_users_notification_routing_index_path( \
+          ids: all_routes.map(&:public_id),
+        ),
+        method: :delete,
+        class: "btn btn-outline-danger btn-sm",
+        data: { \
+          turbo_confirm: "Remove all routes for this channel?",
+          turbo_method: :delete,
+        },
+        title: "Delete route"
         i.bi.bi-trash
 
     .card-body.p-3
@@ -31,86 +36,17 @@
       / Notification toggles
       .mb-3
         / Territory Events
-        - if (routes = territory_management_routes) && routes.size > 0
-          .mb-3
-            h6.small.mb-2.d-flex.align-items-center
-              span.fw-semibold
-                | TERRITORY MANAGEMENT
-              small.text-muted.ms-auto
-                = "#{routes.count(&:enabled?)} active"
-
-            - routes.each do |route|
-              .d-flex.align-items-center.justify-content-between.mb-1.route-row
-                .d-flex.align-items-center.gap-2.flex-grow-1
-                  .form-check.form-switch.mb-0
-                    = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
-                        class: "form-check-input"
-                  small.flex-grow-1 = route.notification_type.titleize
-                button.btn.btn-link.btn-sm.p-0.text-danger.route-delete.d-none[
-                  title="Delete route for #{route.notification_type.titleize}"
-                ]
-                  i.bi.bi-trash.small
+        - if (group_name, routes = territory_management_routes) && routes.size > 0
+          = render_route_group(group_name, routes)
 
         / Combat Events
-        - if (routes = base_combat_routes) && routes.size > 0
-          .mb-3
-            h6.small.mb-2.d-flex.align-items-center
-              span.fw-semibold
-                | BASE COMBAT
-              small.text-muted.ms-auto
-                = "#{routes.count(&:enabled?)} active"
-
-            - routes.each do |route|
-              .d-flex.align-items-center.justify-content-between.mb-1.route-row
-                .d-flex.align-items-center.gap-2.flex-grow-1
-                  .form-check.form-switch.mb-0
-                    = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
-                        class: "form-check-input"
-                  small.flex-grow-1 = route.notification_type.titleize
-                button.btn.btn-link.btn-sm.p-0.text-danger.route-delete.d-none[
-                  title="Delete route for #{route.notification_type.titleize}"
-                ]
-                  i.bi.bi-trash.small
-
+        - if (group_name, routes = base_combat_routes) && routes.size > 0
+          = render_route_group(group_name, routes)
 
         / Economy Events
-        - if (routes = economy_routes) && routes.size > 0
-          .mb-3
-            h6.small.mb-2.d-flex.align-items-center
-              span.fw-semibold
-                | ECONOMY
-              small.text-muted.ms-auto
-                = "#{routes.count(&:enabled?)} active"
-
-            - routes.each do |route|
-              .d-flex.align-items-center.justify-content-between.mb-1.route-row
-                .d-flex.align-items-center.gap-2.flex-grow-1
-                  .form-check.form-switch.mb-0
-                    = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
-                        class: "form-check-input"
-                  small.flex-grow-1 = route.notification_type.titleize
-                button.btn.btn-link.btn-sm.p-0.text-danger.route-delete.d-none[
-                  title="Delete route for #{route.notification_type.titleize}"
-                ]
-                  i.bi.bi-trash.small
+        - if (group_name, routes = economy_routes) && routes.size > 0
+          = render_route_group(group_name, routes)
 
         / Custom Events
-        - if (routes = custom_routes) && routes.size > 0
-          .mb-3
-            h6.small.mb-2.d-flex.align-items-center
-              span.fw-semibold
-                | CUSTOM
-              small.text-muted.ms-auto
-                = "#{routes.count(&:enabled?)} active"
-
-            - routes.each do |route|
-              .d-flex.align-items-center.justify-content-between.mb-1.route-row
-                .d-flex.align-items-center.gap-2.flex-grow-1
-                  .form-check.form-switch.mb-0
-                    = check_box_tag "route[#{route.public_id}]", "1", route.enabled?,
-                        class: "form-check-input"
-                  small.flex-grow-1 = route.notification_type.titleize
-                button.btn.btn-link.btn-sm.p-0.text-danger.route-delete.d-none[
-                  title="Delete route for #{route.notification_type.titleize}"
-                ]
-                  i.bi.bi-trash.small
+        - if (group_name, routes = custom_routes) && routes.size > 0
+          = render_route_group(group_name, routes)

@@ -135,38 +135,63 @@ class UserNotificationRoutesController < AuthenticatedController
   end
 
   def destroy
-    route = current_context.user_notification_routes.where(uuid: params[:id]).first
-    return check_failed!(message: "Failed to find the requested route") if route.blank?
+    route = current_context.user_notification_routes
+      .includes(:destination_community, :source_server)
+      .find_by(public_id: params[:id])
+
+    not_found! if route.nil?
 
     route.destroy!
 
-    message = "#{route.notification_type.titleize} notifications from #{route.source_server&.server_name || "any server"} will no longer route to this channel"
-    message =
-      if current_context == current_community
-        "#{route.user.user_name}'s #{message}"
-      else
-        "Your #{message}"
-      end
+    # No routes left? Refresh the page
+    if current_context.user_notification_routes.size == 0
+      flash[:success] = "Route has been removed"
+      render turbo_stream: turbo_stream.refresh(request_id: nil)
+      return
+    end
 
-    render json: {message: message}, status: :ok
+    actions = [
+      turbo_stream.remove(route.dom_id),
+      create_success_toast("Route has been removed")
+    ]
+
+    # If the last route in a group has been removed, remove the group too
+    if (dom_id = remove_route_group(route))
+      actions << turbo_stream.remove(dom_id)
+
+      # Since we removed the group, check if we need to remove the card too
+      if (dom_id = remove_route_card(route))
+        actions << turbo_stream.remove(dom_id)
+      end
+    end
+
+    render turbo_stream: actions
   end
 
   def destroy_many
-    routes = current_context.user_notification_routes.where(uuid: params[:ids])
-    return check_failed!(message: "Failed to find the requested routes") if routes.blank?
+    routes = current_context.user_notification_routes
+      .includes(:destination_community, :source_server)
+      .where(public_id: params[:ids])
 
-    routes.each(&:destroy)
+    not_found! if routes.blank?
+
+    routes.each(&:destroy!)
+
+    # No routes left? Refresh the page
+    if current_context.user_notification_routes.size == 0
+      flash[:success] = "Routes has been removed"
+      render turbo_stream: turbo_stream.refresh(request_id: nil)
+      return
+    end
 
     route = routes.first
-    message = "notifications from #{route.source_server&.server_name || "any server"} will no longer route to this channel"
-    message =
-      if current_context == current_community
-        "#{route.user.user_name}'s #{message}"
-      else
-        "Your #{message}"
-      end
+    community = route.destination_community
+    server = route.source_server
 
-    render json: {message: message}, status: :ok
+    render turbo_stream: [
+      turbo_stream.remove("#{route.channel_id}-#{community.public_id}-#{server&.public_id}"),
+      create_success_toast("Routes has been removed")
+    ]
   end
 
   def accept_requests
@@ -262,5 +287,39 @@ class UserNotificationRoutesController < AuthenticatedController
         :incoming_envelope: #{user.mention}, this channel will now receive #{types_sentence} XM8 notifications sent to you from #{server}
       STRING
     )
+  end
+
+  def remove_route_group(route)
+    group_name, group_types = ESM::UserNotificationRoute::GROUPS
+      .find { |_, v| v.include?(route.notification_type) }
+
+    group_routes_exist = current_context.user_notification_routes.where(
+      channel_id: route.channel_id,
+      destination_community_id: route.destination_community_id,
+      source_server_id: route.source_server_id,
+      notification_type: group_types
+    ).exists?
+
+    return if group_routes_exist
+
+    server = route.source_server
+    community = route.destination_community
+
+    "#{route.channel_id}-#{community.public_id}-#{server&.server_id}-#{group_name}"
+  end
+
+  def remove_route_card(route)
+    routes_exist = current_context.user_notification_routes.where(
+      channel_id: route.channel_id,
+      destination_community_id: route.destination_community_id,
+      source_server_id: route.source_server_id
+    ).exists?
+
+    return if routes_exist
+
+    server = route.source_server
+    community = route.destination_community
+
+    "#{route.channel_id}-#{community.public_id}-#{server&.public_id}"
   end
 end
