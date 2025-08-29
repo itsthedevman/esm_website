@@ -1,0 +1,44 @@
+.col-6
+  .card.bg-dark.border-secondary.h-100.d-flex.flex-column
+    .card-body.flex-grow-1
+      .d-flex.align-items-center.mb-3
+        .me-3
+          - if community.icon_url.present?
+            img.rounded src=community.icon_url alt=community.community_name width="48" height="48"
+          - else
+            .bg-primary.rounded.d-flex.align-items-center.justify-content-center style="width: 48px; height: 48px;"
+                i.bi.bi-people.text-white.fs-4
+        div
+          h5.mb-0.text-light
+            = community.community_name
+          small.text-muted
+            = community.community_id
+
+      .mb-3
+        strong.text-info
+          | #
+          = channel.name
+        small.text-muted.ms-2
+          |> ← from
+          = server&.server_id || "any server"
+
+      / Territory Events
+      - if (group_name, routes = territory_management_routes(all_routes)) && routes.size > 0
+        = render_route_group(group_name, routes)
+
+      / Combat Events
+      - if (group_name, routes = base_combat_routes(all_routes)) && routes.size > 0
+        = render_route_group(group_name, routes)
+
+      / Economy Events
+      - if (group_name, routes = economy_routes(all_routes)) && routes.size > 0
+        = render_route_group(group_name, routes)
+
+      / Custom Events
+      - if (group_name, routes = custom_routes(all_routes)) && routes.size > 0
+        = render_route_group(group_name, routes)
+
+    .card-footer.border-secondary
+      .d-flex.gap-2.justify-content-end
+        button.btn.btn-danger.btn-sm Decline
+        button.btn.btn-success.btn-sm Accept

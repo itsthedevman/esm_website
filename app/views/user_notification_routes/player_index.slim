@@ -19,54 +19,8 @@
           | Server admins have requested to route your notifications to these channels. You can accept or decline each request.
 
         .row.g-3
-          .col-6
-            .card.bg-dark.border-secondary.h-100.d-flex.flex-column
-              .card-body.flex-grow-1
-                .d-flex.align-items-center.mb-3
-                  img.rounded-circle.me-3 src="https://via.placeholder.com/32x32/6c757d/ffffff?text=ES" width="32" height="32" alt="Avatar"
-                  div
-                    h6.mb-0.text-light Example Server Discord
-                    small.text-muted Requested by: ServerAdmin
-
-                .mb-3
-                  strong.text-info #raid-alerts
-                  small.text-muted.ms-2 ← from abc4_altis_main
-
-                .mb-3
-                  h6.small.text-muted.mb-2 🏠 TERRITORY EVENTS
-                  .d-flex.flex-wrap.gap-1
-                    span.badge.bg-secondary Base Raid
-                    span.badge.bg-secondary Flag Events
-                    span.badge.bg-secondary Grinding
-
-              .card-footer.border-secondary
-                .d-flex.gap-2.justify-content-end
-                  button.btn.btn-danger.btn-sm Decline
-                  button.btn.btn-success.btn-sm Accept
-
-          .col-6
-            .card.bg-dark.border-secondary.h-100.d-flex.flex-column
-              .card-body.flex-grow-1
-                .d-flex.align-items-center.mb-3
-                  img.rounded-circle.me-3 src="https://via.placeholder.com/32x32/6c757d/ffffff?text=TG" width="32" height="32" alt="Avatar"
-                  div
-                    h6.mb-0.text-light Tactical Gaming
-                    small.text-muted Requested by: AdminUser
-
-                .mb-3
-                  strong.text-info #notifications
-                  small.text-muted.ms-2 ← from Any server
-
-                .mb-3
-                  h6.small.text-muted.mb-2 💰 ECONOMY
-                  .d-flex.flex-wrap.gap-1
-                    span.badge.bg-secondary Protection Money
-                    span.badge.bg-secondary MarXet Sales
-
-              .card-footer.border-secondary
-                .d-flex.gap-2.justify-content-end
-                  button.btn.btn-danger.btn-sm Decline
-                  button.btn.btn-success.btn-sm Accept
+          - pending_routes.each do |(community, server, channel), routes|
+            = render_component(RouteRequestCardComponent, community:, server:, channel:, routes:)
 
   / Main Routes Section
   .mb-5

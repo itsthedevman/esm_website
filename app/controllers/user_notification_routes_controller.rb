@@ -16,10 +16,17 @@ class UserNotificationRoutesController < AuthenticatedController
   end
 
   def player_index
-    routes = current_user.user_notification_routes.by_community_server_and_channel_for_user
+    routes = current_user.user_notification_routes
+      .accepted
+      .by_community_server_and_channel_for_user
+
+    pending_routes = current_user.user_notification_routes
+      .pending_user_acceptance
+      .by_community_server_and_channel_for_user
 
     render locals: {
-      routes:
+      routes:,
+      pending_routes:
     }
   end
 

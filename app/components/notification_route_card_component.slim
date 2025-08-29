@@ -36,17 +36,17 @@
       / Notification toggles
       .mb-3
         / Territory Events
-        - if (group_name, routes = territory_management_routes) && routes.size > 0
+        - if (group_name, routes = territory_management_routes(all_routes)) && routes.size > 0
           = render_route_group(group_name, routes)
 
         / Combat Events
-        - if (group_name, routes = base_combat_routes) && routes.size > 0
+        - if (group_name, routes = base_combat_routes(all_routes)) && routes.size > 0
           = render_route_group(group_name, routes)
 
         / Economy Events
-        - if (group_name, routes = economy_routes) && routes.size > 0
+        - if (group_name, routes = economy_routes(all_routes)) && routes.size > 0
           = render_route_group(group_name, routes)
 
         / Custom Events
-        - if (group_name, routes = custom_routes) && routes.size > 0
+        - if (group_name, routes = custom_routes(all_routes)) && routes.size > 0
           = render_route_group(group_name, routes)

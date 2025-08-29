@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class NotificationRouteCardComponent < ApplicationComponent
+  include NotificationGrouping
+
   attr_reader :community, :server, :channel, :all_routes
 
   def on_load(community:, server:, channel:, routes:)
@@ -8,42 +10,6 @@ class NotificationRouteCardComponent < ApplicationComponent
     @server = server
     @channel = channel
     @all_routes = routes
-  end
-
-  def territory_management_routes
-    types = ESM::UserNotificationRoute::GROUPS[:territory_management]
-
-    [
-      "territory_management",
-      all_routes.select { |route| types.include?(route.notification_type) }
-    ]
-  end
-
-  def base_combat_routes
-    types = ESM::UserNotificationRoute::GROUPS[:base_combat]
-
-    [
-      "base_combat",
-      all_routes.select { |route| types.include?(route.notification_type) }
-    ]
-  end
-
-  def economy_routes
-    types = ESM::UserNotificationRoute::GROUPS[:economy]
-
-    [
-      "economy",
-      all_routes.select { |route| types.include?(route.notification_type) }
-    ]
-  end
-
-  def custom_routes
-    types = ESM::UserNotificationRoute::GROUPS[:custom]
-
-    [
-      "custom",
-      all_routes.select { |route| types.include?(route.notification_type) }
-    ]
   end
 
   def render_route_group(group_name, routes)
