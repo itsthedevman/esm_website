@@ -4,19 +4,16 @@
     p.lead.text-muted Manage where your game notifications get sent in Discord
 
   / Pending Requests Section
-  - if true
+  - if pending_routes.size > 0
     .card.border-warning.bg-warning.bg-opacity-10.mb-5
-      .card-header.border-warning.d-flex.align-items-center.justify-content-between
+      .card-header.border-warning
         h3.mb-0.text-warning
           i.bi.bi-clock-history.me-2
           | Pending Route Requests
-        .d-flex.gap-2
-          button.btn.btn-danger.btn-sm Decline All
-          button.btn.btn-warning.btn-sm Accept All
 
       .card-body
         p.text-muted.small.mb-4
-          | Server admins have requested to route your notifications to these channels. You can accept or decline each request.
+          | Server admins have requested to route your notifications to these channels.
 
         .row.g-3
           - pending_routes.each do |(community, server, channel), routes|
@@ -24,15 +21,16 @@
 
   / Main Routes Section
   .mb-5
-    .d-flex.align-items-center.justify-content-between.mb-4
-      h2.mb-0 My Active Routes
-      button.btn.btn-primary[
-        type="button"
-        data-bs-toggle="modal"
-        data-bs-target="#create_route_modal"
-      ]
-        i.bi.bi-plus-circle.me-2
-        | Create New Route
+    - if routes.size > 0
+      .d-flex.align-items-center.justify-content-between.mb-4
+        h2.mb-0 My Active Routes
+        button.btn.btn-primary[
+          type="button"
+          data-bs-toggle="modal"
+          data-bs-target="#create_route_modal"
+        ]
+          i.bi.bi-plus-circle.me-2
+          | Create New Route
 
     / Route cards
     .row.g-4

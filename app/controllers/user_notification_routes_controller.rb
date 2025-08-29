@@ -141,6 +141,48 @@ class UserNotificationRoutesController < AuthenticatedController
     render json: {message: message}, status: :ok
   end
 
+  def accept
+    ids = params[:ids].to_a
+    not_found! if ids.blank?
+
+    routes = current_context.user_notification_routes.where(public_id: ids)
+    not_found! if routes.blank? || routes.size != ids.size
+
+    if current_community
+      routes.update_all(community_accepted: true, updated_at: Time.current)
+    else
+      routes.update_all(user_accepted: true, updated_at: Time.current)
+    end
+
+    notify_channel(routes)
+
+    flash[:success] = "Request accepted"
+
+    if current_community
+      redirect_to community_notification_routing_index_path
+    else
+      redirect_to users_notification_routing_index_path
+    end
+  end
+
+  def decline
+    ids = params[:ids].to_a
+    not_found! if ids.blank?
+
+    routes = current_context.user_notification_routes.where(public_id: ids)
+    not_found! if routes.blank? || routes.size != ids.size
+
+    routes.delete_all
+
+    flash[:success] = "Request declined"
+
+    if current_community
+      redirect_to community_notification_routing_index_path
+    else
+      redirect_to users_notification_routing_index_path
+    end
+  end
+
   def destroy
     route = current_context.user_notification_routes
       .includes(:destination_community, :source_server)
@@ -186,7 +228,7 @@ class UserNotificationRoutesController < AuthenticatedController
 
     # No routes left? Refresh the page
     if current_context.user_notification_routes.size == 0
-      flash[:success] = "Routes has been removed"
+      flash[:success] = "Routes have been removed"
       render turbo_stream: turbo_stream.refresh(request_id: nil)
       return
     end
@@ -197,69 +239,8 @@ class UserNotificationRoutesController < AuthenticatedController
 
     render turbo_stream: [
       turbo_stream.remove("#{route.channel_id}-#{community.public_id}-#{server&.public_id}"),
-      create_success_toast("Routes has been removed")
+      create_success_toast("Routes have been removed")
     ]
-  end
-
-  def accept_requests
-    routes = current_context.user_notification_routes.where(uuid: params[:ids])
-    return check_failed!(message: "Failed to find the requested routes") if routes.blank? || routes.size != params[:ids].size
-
-    if current_community
-      routes.update_all(community_accepted: true, updated_at: Time.current)
-    else
-      routes.update_all(user_accepted: true, updated_at: Time.current)
-    end
-
-    render json: {message: "#{"Request".pluralize(routes.size)} accepted"}
-
-    notify_channel(routes)
-  end
-
-  def decline_requests
-    routes = current_context.user_notification_routes.where(uuid: params[:ids])
-    return check_failed!(message: "Failed to find the requested routes") if routes.blank? || routes.size != params[:ids].size
-
-    routes.delete_all
-    render json: {message: "#{"Request".pluralize(routes.size)} declined"}
-  end
-
-  def accept_all_requests
-    pending_requests =
-      if current_context == current_community
-        current_community.user_notification_routes.pending_community_acceptance
-      else
-        current_user.user_notification_routes.pending_user_acceptance
-      end
-
-    grouped_routes = pending_requests.by_channel_server_and_user.values
-    grouped_routes.each do |routes|
-      updated_fields = {updated_at: Time.current}
-
-      if current_context == current_community
-        updated_fields[:community_accepted] = true
-      else
-        updated_fields[:user_accepted] = true
-      end
-
-      UserNotificationRoute.where(id: routes.map(&:id)).update_all(**updated_fields)
-
-      notify_channel(routes)
-    end
-
-    render json: {message: "All requests accepted"}
-  end
-
-  def decline_all_requests
-    pending_requests =
-      if current_context == current_community
-        current_community.user_notification_routes.pending_community_acceptance
-      else
-        current_user.user_notification_routes.pending_user_acceptance
-      end
-
-    pending_requests.delete_all
-    render json: {message: "All requests declined"}
   end
 
   private
@@ -270,12 +251,13 @@ class UserNotificationRoutesController < AuthenticatedController
   end
 
   def notify_channel(routes)
-    # Everything is grouped so all the requests are for one user, from one server, routing to one channel
+    # Everything is grouped so all the requests are for one user
+    # from one server routing to one channel
     template_route = routes.first
     user = template_route.user
 
     types_sentence =
-      if UserNotificationRoute::TYPES.size == routes.size
+      if ESM::UserNotificationRoute::TYPES.size == routes.size
         "all"
       else
         routes.map { |route| "`#{route.notification_type.titleize}`" }.to_sentence
@@ -288,7 +270,7 @@ class UserNotificationRoutesController < AuthenticatedController
         "any server"
       end
 
-    ESM.send_message(
+    ESM.bot.send_message(
       channel_id: template_route.channel_id,
       message: <<~STRING
         :incoming_envelope: #{user.mention}, this channel will now receive #{types_sentence} XM8 notifications sent to you from #{server}

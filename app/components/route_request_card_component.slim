@@ -40,5 +40,15 @@
 
     .card-footer.border-secondary
       .d-flex.gap-2.justify-content-end
-        button.btn.btn-danger.btn-sm Decline
-        button.btn.btn-success.btn-sm Accept
+        = button_to decline_users_notification_routing_index_path,
+          class: "btn btn-danger btn-sm",
+          method: :patch,
+          data: {turbo: false}
+          = hidden_field_tag :ids, all_routes.map(&:public_id).to_json
+          | Decline
+        = button_to accept_users_notification_routing_index_path,
+          class: "btn btn-success text-white btn-sm",
+          method: :patch,
+          data: {turbo: false}
+          = hidden_field_tag :ids, all_routes.map(&:public_id).to_json
+          | Accept

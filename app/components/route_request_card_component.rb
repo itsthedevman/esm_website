@@ -18,7 +18,9 @@ class RouteRequestCardComponent < ApplicationComponent
 
       routes_section = content_tag :div, nil, class: "d-flex flex-wrap gap-1" do
         safe_join(routes.map do |route|
-          content_tag :span, route.notification_type.humanize, class: "badge bg-secondary"
+          content_tag :span,
+            route.notification_type.titleize,
+            class: "badge bg-secondary"
         end)
       end
 
