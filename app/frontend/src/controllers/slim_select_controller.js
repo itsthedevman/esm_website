@@ -45,13 +45,6 @@ export default class extends ApplicationController {
       },
       events: {
         afterChange: (newVal) => {
-          // Update the underlying select element
-          if (newVal && newVal.length > 0) {
-            selectElement.value = newVal[0].value;
-          } else {
-            selectElement.value = "";
-          }
-
           // Trigger change event for other listeners (including validation)
           this.nextTick(() => {
             selectElement.dispatchEvent(new Event("change", { bubbles: true }));
