@@ -12,7 +12,7 @@
 
       .row.g-3
         .col-md-6
-          .card.border-2.route-source-card.any-server
+          .card.border-2.selectable-card
             .card-body.text-center.py-3
               i.bi.bi-globe.text-info.fs-3.mb-2
               h6.mb-1.text-info Any Server
@@ -21,7 +21,7 @@
                 | Select
 
         .col-md-6
-          .card.border-2.route-source-card.specific-servers
+          .card.border-2.selectable-card
             .card-body.text-center.py-3
               i.bi.bi-server.text-success.fs-3.mb-2
               h6.mb-1.text-success Specific Servers
@@ -51,7 +51,7 @@
 
       .row.g-3
         .col-md-3.col-6
-          .card.border-2.route-type-card.all
+          .card.border-2.selectable-card
             .card-body.text-center.py-3
               i.bi.bi-bell-fill.text-primary.fs-4.mb-2
               h6.small.mb-0.text-primary Everything
@@ -59,7 +59,7 @@
                 | Select
 
         .col-md-3.col-6
-          .card.border-2.route-type-card.raids
+          .card.border-2.selectable-card
             .card-body.text-center.py-3
               i.bi.bi-shield-exclamation.text-danger.fs-4.mb-2
               h6.small.mb-0.text-danger Raids
@@ -67,7 +67,7 @@
                 | Select
 
         .col-md-3.col-6
-          .card.border-2.route-type-card.money
+          .card.border-2.selectable-card
             .card-body.text-center.py-3
               i.bi.bi-currency-dollar.text-success.fs-4.mb-2
               h6.small.mb-0.text-success Money
@@ -75,7 +75,7 @@
                 | Select
 
         .col-md-3.col-6
-          .card.border-2.route-type-card.custom
+          .card.border-2.selectable-card
             .card-body.text-center.py-3
               i.bi.bi-ui-checks.text-info.fs-4.mb-2
               h6.small.mb-0.text-info Pick & Choose
@@ -134,54 +134,6 @@
             }
         small.form-text.text-muted.mt-1 Choose which channel will receive the notifications
 
-    / Preview Card
-    .card.bg-secondary.bg-opacity-10.border-secondary
-      .card-header.py-2
-        h6.mb-0.text-light
-          i.bi.bi-eye.me-2
-          | Route Preview
-
-      / Empty state
-      .card-body.py-4.text-center.text-muted.d-none
-        i.bi.bi-arrow-up.me-2
-        | Configure your route above to see a preview
-
-      / Filled preview (shown when configured)
-      .card-body.py-3
-        .row.g-3
-          .col-md-4
-            small.text-muted.fw-medium.d-block.mb-2 SOURCE
-            .d-flex.align-items-center.gap-2
-              i.bi.bi-server.text-warning
-              span.text-light Any Server
-
-          .col-md-4
-            small.text-muted.fw-medium.d-block.mb-2 DESTINATION
-            .d-flex.align-items-center.gap-2
-              i.bi.bi-hash.text-info
-              span.text-light general
-              small.text-muted.ms-1 (ExileCommunity)
-
-          .col-md-4
-            small.text-muted.fw-medium.d-block.mb-2 NOTIFICATIONS
-            span.badge.bg-primary Raids Preset
-
-        / When they have multiple servers selected
-        .border-top.border-secondary.pt-3.mt-3
-          small.text-muted.fw-medium.d-block.mb-2 SELECTED SERVERS
-          .d-flex.flex-wrap.gap-2
-            span.badge.bg-secondary abc4_altis_main
-            span.badge.bg-secondary abc4_tanoa_pvp
-            span.badge.bg-secondary abc4_malden_test
-
-        / When they have custom types selected
-        .border-top.border-secondary.pt-3.mt-3
-          small.text-muted.fw-medium.d-block.mb-2 NOTIFICATION TYPES
-          .d-flex.flex-wrap.gap-2
-            span.badge.bg-danger Base Raid
-            span.badge.bg-warning Flag Stolen
-            span.badge.bg-info Protection Money Due
-
     / Info Alert
     .alert.alert-info.border-info.bg-info.bg-opacity-10.mt-4.mb-0
       .d-flex.align-items-start
@@ -193,9 +145,7 @@
 
   .modal-footer.border-top
     .d-flex.align-items-center.justify-content-between.w-100
-      small.text-muted
-        i.bi.bi-lightbulb.text-warning.me-1
-        | You can modify routes later
+      div
       .d-flex.gap-2
         button.btn.btn-outline-secondary[type="button" data-bs-dismiss="modal"]
           | Cancel

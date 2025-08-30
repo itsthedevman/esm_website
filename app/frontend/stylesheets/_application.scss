@@ -8,11 +8,9 @@
 
 $nav-offset: calc(map-get($spacers, 5) + map-get($spacers, 4));
 
-@import "accounts";
 @import "dashboard";
 @import "notifications";
 @import "toast";
-@import "servers";
 
 body {
     min-height: 100vh;
@@ -44,6 +42,25 @@ code {
 
     .window {
         @extend .my-5;
+    }
+}
+
+.selectable-card {
+    // Map each Bootstrap color to its styling
+    @each $color, $value in $theme-colors {
+        &.selected {
+            // When the card contains a button with this color variant
+            &:has(.btn-outline-#{$color}) {
+                @extend .bg-opacity-10;
+                @extend .border-#{$color};
+                @extend .bg-#{$color};
+
+                // Convert the outline button to filled
+                .btn-outline-#{$color} {
+                    @extend .btn-#{$color};
+                }
+            }
+        }
     }
 }
 
