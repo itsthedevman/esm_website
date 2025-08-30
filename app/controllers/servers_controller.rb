@@ -99,7 +99,7 @@ class ServersController < AuthenticatedController
 
     server.update!(ui_version: "2.0.0")
 
-    redirect_to edit_community_server_path(current_community, server)
+    redirect_to edit_community_server_path(current_community, server, migrating: true)
   end
 
   def disable_v2

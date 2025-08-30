@@ -7,20 +7,20 @@
           i.bi.bi-check-circle.text-success.fs-1.me-3
           div
             h5.mb-1.text-success ESM v2 Active
-            p.text-muted.mb-0 Cross-platform version with improved performance and easier configuration.
+            p.text-muted.mb-0 Modern architecture with cross-platform support and reliable XM8 delivery.
 
         button.btn.btn-outline-info[data-bs-toggle="collapse" data-bs-target="#v2Help"]
           i.bi.bi-question-circle.me-2
           | Need Help with v2?
-      .collapse.mt-3#v2Help
+      #v2Help[class=class_names("collapse mt-3", show: params[:migrating])]
         .card.bg-info.bg-opacity-10.border-info
           .card-body
             .row.g-4
               .col-6
                 h6.text-info.mb-2
                   i.bi.bi-arrow-up-circle.me-2
-                  | Migration
-                p.small.text-muted.mb-3 Recently upgraded from v1?
+                  | Migration from Classic
+                p.small.text-muted.mb-3 Recently upgraded from Classic?
                 ul.small.text-muted.mb-3
                   li Review migration steps and database changes
                   li Download fresh config files from dashboard
@@ -33,11 +33,13 @@
                   li
                     |> Check
                     code @esm/log/esm.log
-                    |<  for migration errors
+                    |<  for errors
                   li
                     |> Ensure
                     code esm.key
-                    |<  is in the right location
+                    |<  is in the
+                    code @esm
+                    |  directory
                 = link_to server_setup_docs_path(anchor: "upgradeSteps"), class: "btn btn-outline-info btn-sm"
                   | Migration Guide
 
@@ -94,19 +96,19 @@
                       = button_to disable_v2_community_server_path(current_community, server),
                           method: :patch, class: "btn btn-outline-warning btn-sm ms-3",
                           data: {turbo: false}
-                        | Switch Back
+                        | Switch to Classic
 
     - else
-      / Currently on V1 - show upgrade option
+      / Currently on Classic - show upgrade option
       .row.g-4
         .col-9
           .d-flex.align-items-center.mb-3
             .me-3
-              i.bi.bi-shield-check.text-primary.fs-1
+              i.bi.bi-clock-history.text-secondary.fs-1
             div
-              h5.mb-1.text-primary ESM Classic Active
+              h5.mb-1.text-secondary ESM Classic Active
               p.text-muted.mb-0
-                | Time-tested version with proven Windows server reliability.
+                | Battle-tested since 2018
 
         .col-3.text-end
           = button_to enable_v2_community_server_path(current_community, server),
@@ -117,7 +119,19 @@
             | Upgrade to v2
       .row
         .col
-          .alert.alert-info.border-info.bg-info.bg-opacity-10.mb-0
-            h6.text-info.mb-2 ESM v2 Available
-            p.small.mb-0
-              | Supports Linux servers, easier setup with automatic config files, enhanced log searching, and new transfer command for players.
+          .alert.alert-success.border-success.bg-success.bg-opacity-10.mb-0
+            h6.text-success.mb-2
+              i.bi.bi-rocket-takeoff.me-2
+              | ESM v2 Available - Recommended Upgrade
+
+            .row.g-4
+              .col-md-6
+                ul.small.mb-0
+                  li Works on Linux + Windows servers
+                  li Minimal setup, powerful controls when needed
+                  li Reliable XM8 delivery - no more missed notifications
+              .col-md-6
+                ul.small.mb-0
+                  li Runs quietly alongside your server
+                  li Search logs with advanced patterns
+                  li Auto-generates configuration files
