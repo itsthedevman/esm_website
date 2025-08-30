@@ -1,104 +1,204 @@
-/ Create New Route Modal
 = render "shared/modal", id: "create_route_modal", class: "modal-lg" do
   .modal-header.border-primary.bg-primary.bg-opacity-10
-    h5.modal-title.text-primary Create a new routing request
-    button.btn-close type="button" data-bs-dismiss="modal"
+    h4.modal-title.text-primary.mb-0
+      i.bi.bi-arrow-left-right.me-2
+      | Create Notification Route
+    button.btn-close[type="button" data-bs-dismiss="modal" aria-label="Close"]
 
   .modal-body
-    / Route for Users
+    / Step 1: Source Selection
     .mb-4
-      label.form-label.fw-medium Route XM8 notifications for
-      select.form-select multiple="" size="4"
-        option PlayerOne (76561198123456789)
-        option ExilePlayer (76561198987654321)
-        option AdminUser (76561198555666777)
-        option TestUser (76561198111222333)
-      small.form-text.text-muted Hold Ctrl/Cmd to select multiple users
+      h5.fw-medium.mb-3 Where are the notifications coming from?
 
-    / To Channel
+      .row.g-3
+        .col-md-6
+          .card.border-2.route-source-card.any-server
+            .card-body.text-center.py-3
+              i.bi.bi-globe.text-info.fs-3.mb-2
+              h6.mb-1.text-info Any Server
+              small.text-muted.mb-3.d-block Route from all servers
+              button.btn.btn-outline-info.btn-sm.w-100[type="button"]
+                | Select
+
+        .col-md-6
+          .card.border-2.route-source-card.specific-servers
+            .card-body.text-center.py-3
+              i.bi.bi-server.text-success.fs-3.mb-2
+              h6.mb-1.text-success Specific Servers
+              small.text-muted.mb-3.d-block Choose which servers
+              button.btn.btn-outline-success.btn-sm.w-100[type="button"]
+                | Select
+
+      / Server Selection (shown when specific is selected)
+      .mt-3.d-none
+        = label_tag "servers", class: "form-label fw-medium"
+          i.bi.bi-server.text-success.me-2
+          | Select Servers
+        = select_tag "servers",
+            [],
+            class: "form-select",
+            multiple: true,
+            data: { \
+              # controller: "slim-select",
+              slim_select_placeholder_value: "Choose servers...",
+              slim_select_allow_deselect_value: true,
+            }
+        small.form-text.text-muted.mt-1 Select one or more servers to route notifications from
+
+    / Step 2: Notification Types
     .mb-4
-      label.form-label.fw-medium To channel
-      select.form-select
-        option Select a channel...
-        option #general
-        option #notifications
-        option #raid-alerts
-        option #admin-only
+      h5.fw-medium.mb-3 Which notification types?
 
-    / From Server
+      .row.g-3
+        .col-md-3.col-6
+          .card.border-2.route-type-card.all
+            .card-body.text-center.py-3
+              i.bi.bi-bell-fill.text-primary.fs-4.mb-2
+              h6.small.mb-0.text-primary Everything
+              button.btn.btn-outline-primary.btn-sm.w-100.mt-2[type="button"]
+                | Select
+
+        .col-md-3.col-6
+          .card.border-2.route-type-card.raids
+            .card-body.text-center.py-3
+              i.bi.bi-shield-exclamation.text-danger.fs-4.mb-2
+              h6.small.mb-0.text-danger Raids
+              button.btn.btn-outline-danger.btn-sm.w-100.mt-2[type="button"]
+                | Select
+
+        .col-md-3.col-6
+          .card.border-2.route-type-card.money
+            .card-body.text-center.py-3
+              i.bi.bi-currency-dollar.text-success.fs-4.mb-2
+              h6.small.mb-0.text-success Money
+              button.btn.btn-outline-success.btn-sm.w-100.mt-2[type="button"]
+                | Select
+
+        .col-md-3.col-6
+          .card.border-2.route-type-card.custom
+            .card-body.text-center.py-3
+              i.bi.bi-ui-checks.text-info.fs-4.mb-2
+              h6.small.mb-0.text-info Pick & Choose
+              button.btn.btn-outline-info.btn-sm.w-100.mt-2[type="button"]
+                | Select
+
+      / Custom Type Selection (shown when custom is selected)
+      .mt-3.d-none
+        = label_tag "notification_types", class: "form-label fw-medium"
+          i.bi.bi-list-check.text-info.me-2
+          | Select Notification Types
+        = select_tag "notification_types",
+            [],
+            class: "form-select",
+            multiple: true,
+            data: { \
+              # controller: "slim-select",
+              slim_select_placeholder_value: "Choose notification types...",
+              slim_select_allow_deselect_value: true,
+              slim_select_hide_selected_value: true,
+            }
+        small.form-text.text-muted.mt-1 Pick specific notification types to route
+
+    / Step 3: Destination
     .mb-4
-      label.form-label.fw-medium From server(s)
-      .ms-3
-        .form-check
-          input.form-check-input type="radio" name="serverRadio" value="any" checked=""
-          label.form-check-label Any
-        .form-check
-          input.form-check-input type="radio" name="serverRadio" value="custom"
-          label.form-check-label Custom
-        .ms-4.mt-2
-          select.form-select disabled=""
-            option abc4_altis_main
-            option abc4_tanoa_test
-            option abc4_malden_dev
+      h5.fw-medium.mb-3 Where should notifications go?
 
-    / Notification Types - Grouped
-    .mb-4
-      label.form-label.fw-medium Notification Types
-      .ms-3
-        .form-check
-          input.form-check-input type="radio" name="typesRadio" value="any" checked=""
-          label.form-check-label All Types
-        .form-check
-          input.form-check-input type="radio" name="typesRadio" value="raids"
-          label.form-check-label 🏠 Territory Events (Base Raids, Flags, Grinding)
-        .form-check
-          input.form-check-input type="radio" name="typesRadio" value="payments"
-          label.form-check-label 💰 Economy Events (Payments, MarXet Sales)
-        .form-check
-          input.form-check-input type="radio" name="typesRadio" value="custom"
-          label.form-check-label Custom Selection
+      / Community Selection
+      .mb-3
+        = label_tag "community", class: "form-label fw-medium"
+          i.bi.bi-discord.text-primary.me-2
+          | Discord Community
+        = select_tag "community",
+            [],
+            class: "form-select",
+            data: { \
+              # controller: "slim-select",
+              slim_select_placeholder_value: "Choose a community...",
+              slim_select_allow_deselect_value: true,
+            }
+        small.form-text.text-muted.mt-1 Select the Discord server to route notifications to
 
-        .ms-4.mt-3 style="display: none;"
-          .row.g-3
-            .col-4
-              h6.small.text-muted 🏠 Territory Events
-              .form-check
-                input.form-check-input type="checkbox"
-                label.form-check-label.small Base Raid
-              .form-check
-                input.form-check-input type="checkbox"
-                label.form-check-label.small Flag Stolen
-              .form-check
-                input.form-check-input type="checkbox"
-                label.form-check-label.small Flag Restored
-              .form-check
-                input.form-check-input type="checkbox"
-                label.form-check-label.small Grind Started
-            .col-4
-              h6.small.text-muted 💰 Economy Events
-              .form-check
-                input.form-check-input type="checkbox"
-                label.form-check-label.small Protection Money Due
-              .form-check
-                input.form-check-input type="checkbox"
-                label.form-check-label.small Protection Money Paid
-              .form-check
-                input.form-check-input type="checkbox"
-                label.form-check-label.small MarXet Item Sold
-            .col-4
-              h6.small.text-muted ⚔️ Combat Events
-              .form-check
-                input.form-check-input type="checkbox"
-                label.form-check-label.small Hack Started
-              .form-check
-                input.form-check-input type="checkbox"
-                label.form-check-label.small Charge Plant Started
+      / Channel Selection
+      .mb-3
+        = label_tag "channel", class: "form-label fw-medium"
+          i.bi.bi-hash.text-info.me-2
+          | Notification Channel
+        = select_tag "channel",
+            [],
+            class: "form-select",
+            disabled: true,
+            data: { \
+              # controller: "slim-select",
+              slim_select_placeholder_value: "Select a community first...",
+              slim_select_allow_deselect_value: true,
+            }
+        small.form-text.text-muted.mt-1 Choose which channel will receive the notifications
 
-    .alert.alert-info.border-info.bg-info.bg-opacity-10
-      i.bi.bi-info-circle.me-2
-      strong Note:
-      |< Once this request is created, the selected users will need to accept the request from their player dashboard before their notifications will be routed.
+    / Preview Card
+    .card.bg-secondary.bg-opacity-10.border-secondary
+      .card-header.py-2
+        h6.mb-0.text-light
+          i.bi.bi-eye.me-2
+          | Route Preview
+
+      / Empty state
+      .card-body.py-4.text-center.text-muted.d-none
+        i.bi.bi-arrow-up.me-2
+        | Configure your route above to see a preview
+
+      / Filled preview (shown when configured)
+      .card-body.py-3
+        .row.g-3
+          .col-md-4
+            small.text-muted.fw-medium.d-block.mb-2 SOURCE
+            .d-flex.align-items-center.gap-2
+              i.bi.bi-server.text-warning
+              span.text-light Any Server
+
+          .col-md-4
+            small.text-muted.fw-medium.d-block.mb-2 DESTINATION
+            .d-flex.align-items-center.gap-2
+              i.bi.bi-hash.text-info
+              span.text-light general
+              small.text-muted.ms-1 (ExileCommunity)
+
+          .col-md-4
+            small.text-muted.fw-medium.d-block.mb-2 NOTIFICATIONS
+            span.badge.bg-primary Raids Preset
+
+        / When they have multiple servers selected
+        .border-top.border-secondary.pt-3.mt-3
+          small.text-muted.fw-medium.d-block.mb-2 SELECTED SERVERS
+          .d-flex.flex-wrap.gap-2
+            span.badge.bg-secondary abc4_altis_main
+            span.badge.bg-secondary abc4_tanoa_pvp
+            span.badge.bg-secondary abc4_malden_test
+
+        / When they have custom types selected
+        .border-top.border-secondary.pt-3.mt-3
+          small.text-muted.fw-medium.d-block.mb-2 NOTIFICATION TYPES
+          .d-flex.flex-wrap.gap-2
+            span.badge.bg-danger Base Raid
+            span.badge.bg-warning Flag Stolen
+            span.badge.bg-info Protection Money Due
+
+    / Info Alert
+    .alert.alert-info.border-info.bg-info.bg-opacity-10.mt-4.mb-0
+      .d-flex.align-items-start
+        i.bi.bi-info-circle.text-info.me-3.mt-1
+        div
+          h6.text-info.mb-2 Approval Required
+          p.small.mb-0
+            | Once created, a community admin must approve this route before notifications start flowing. You'll be notified when your request is accepted.
 
   .modal-footer.border-top
-    button.btn.btn-outline-secondary type="button" data-bs-dismiss="modal" Cancel
-    button.btn.btn-primary type="button" Create Request
+    .d-flex.align-items-center.justify-content-between.w-100
+      small.text-muted
+        i.bi.bi-lightbulb.text-warning.me-1
+        | You can modify routes later
+      .d-flex.gap-2
+        button.btn.btn-outline-secondary[type="button" data-bs-dismiss="modal"]
+          | Cancel
+        button.btn.btn-success.ms-2[type="button" disabled]
+          i.bi.bi-plus-circle.me-2
+          | Create Route
