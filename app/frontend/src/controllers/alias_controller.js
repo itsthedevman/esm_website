@@ -3,6 +3,7 @@ import $ from "../helpers/cash_dom";
 import * as R from "ramda";
 import Validate from "../helpers/validator";
 import { onModalHidden } from "../helpers/modals";
+import CardSelector from "../helpers/card_selector";
 
 // Base controller - see alias_new_controller/alias_edit_controller
 export default class extends ApplicationController {
@@ -36,13 +37,13 @@ export default class extends ApplicationController {
     this.#initializeValidator();
 
     // Prepare the new alias cards
-    this.cards = {
+    this.cards = new CardSelector({
       community: $(this.communityButtonTarget),
       server: $(this.serverButtonTarget),
-    };
+    });
 
     this.selectedType = "community";
-    this._setActiveCard();
+    this.cards.select(this.selectedType);
 
     // Prepare the previews
     this.previews = {
@@ -80,21 +81,9 @@ export default class extends ApplicationController {
 
   // protected
 
-  _setActiveCard() {
-    this.#resetCards();
-
-    // Now select the one that was picked
-    const selectedCard = this.cards[this.selectedType];
-    selectedCard.addClass("selected");
-
-    const button = selectedCard.find("button");
-    button.addClass("selected");
-    button.html("SELECTED");
-  }
-
   _showSection(type) {
     this.selectedType = type;
-    this._setActiveCard();
+    this.cards.select(this.selectedType);
 
     const communitySectionElem = $(this.communitySectionTarget);
     const serverSectionElem = $(this.serverSectionTarget);
@@ -160,17 +149,6 @@ export default class extends ApplicationController {
   #clearSelection(selector) {
     this.dispatch("clearSelection", { target: $(selector)[0] });
   }
-
-  #resetCards() {
-    R.values(this.cards).map((card, _) => {
-      card.removeClass("selected");
-
-      const button = card.find("button");
-      button.removeClass("selected");
-      button.html("Select");
-    });
-  }
-
   #renderPreview() {
     const previews = this.previews[this.selectedType];
 

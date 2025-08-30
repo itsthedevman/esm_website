@@ -14,7 +14,7 @@ export default class extends AliasController {
     this.alias = alias;
 
     this.selectedType = alias.server ? "server" : "community";
-    this._setActiveCard();
+    this.cards.select(this.selectedType);
     this._showSection(this.selectedType);
 
     $(this.valueTarget).val(alias.value);
