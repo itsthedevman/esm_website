@@ -160,3 +160,22 @@
 .ss-main + .invalid-feedback {
     display: block !important;
 }
+
+.ss-selectall {
+    // Replace with a simple dash/checkbox icon
+    &::before {
+        content: "☐"; // or use bi-square icon
+        margin-right: 0.5rem;
+        color: $esm-warm-gray-500;
+    }
+
+    &.ss-selected::before {
+        content: "☑"; // or use bi-check-square
+        color: $esm-ui-info; // Your nice blue instead of green
+    }
+
+    // Hide the default checkmark
+    svg {
+        display: none;
+    }
+}

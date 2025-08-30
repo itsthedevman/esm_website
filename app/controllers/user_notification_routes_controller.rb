@@ -24,9 +24,32 @@ class UserNotificationRoutesController < AuthenticatedController
       .pending_user_acceptance
       .by_community_server_and_channel_for_user
 
+    all_communities = ESM::Community.select(:id, :community_id, :community_name)
+      .order("UPPER(community_id)")
+      .load
+
+    servers_by_community = ESM::Server.select(:id, :community_id, :server_id, :server_name)
+      .includes(:community)
+      .order("UPPER(server_id)")
+      .load
+      .group_by(&:community)
+      .sort_by.method(:first).case_insensitive
+      .to_a
+      .to_h
+
     render locals: {
       routes:,
-      pending_routes:
+      pending_routes:,
+      community_select_data: helpers.generate_community_select_data(
+        all_communities,
+        value_method: ->(community) { "#{community.community_id}:#{community.community_name}" }
+      ),
+      server_select_data: helpers.generate_server_select_data(
+        servers_by_community,
+        value_method: ->(server) { "#{server.server_id}:#{server.server_name}" },
+        select_all: true
+      ),
+      notification_type_select_data: generate_type_select_data
     }
   end
 
@@ -310,5 +333,15 @@ class UserNotificationRoutesController < AuthenticatedController
     community = route.destination_community
 
     "#{route.channel_id}-#{community.public_id}-#{server&.public_id}"
+  end
+
+  def generate_type_select_data
+    helpers.group_data_from_collection_for_slim_select(
+      ESM::UserNotificationRoute::GROUPS,
+      ->(key) { key.to_s.titleize.upcase },
+      :itself,
+      ->(i) { i.titleize },
+      placeholder: true
+    )
   end
 end

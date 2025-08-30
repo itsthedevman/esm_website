@@ -27,17 +27,17 @@ class UsersController < AuthenticatedController
       # Defaults
       id_defaults:,
       default_community_select_data:
-        generate_community_select_data(all_communities, id_defaults.community_id),
+        helpers.generate_community_select_data(all_communities, id_defaults.community_id),
       default_server_select_data:
-        generate_server_select_data(servers_by_community, id_defaults.server_id),
+        helpers.generate_server_select_data(servers_by_community, id_defaults.server_id),
 
       # Aliases
       id_aliases:,
-      alias_community_select_data: generate_community_select_data(
+      alias_community_select_data: helpers.generate_community_select_data(
         all_communities,
         value_method: ->(community) { "#{community.community_id}:#{community.community_name}" }
       ),
-      alias_server_select_data: generate_server_select_data(
+      alias_server_select_data: helpers.generate_server_select_data(
         servers_by_community,
         value_method: ->(server) { "#{server.server_id}:#{server.server_name}" }
       )
@@ -103,35 +103,6 @@ class UsersController < AuthenticatedController
   end
 
   private
-
-  def generate_community_select_data(all_communities, selected_id = nil, value_method: nil)
-    value_method ||= :community_id
-
-    text_method = ->(community) { "[#{community.community_id}] #{community.community_name}" }
-    selected = selected_id ? ->(item, _value) { item.id == selected_id } : false
-
-    helpers.data_from_collection_for_slim_select(
-      all_communities, value_method, text_method,
-      selected:, placeholder: true
-    )
-  end
-
-  def generate_server_select_data(servers_by_community, selected_id = nil, value_method: nil)
-    group_label_method = ->(community) { "[#{community.community_id}] #{community.community_name}" }
-
-    value_method ||= :server_id
-
-    text_method = lambda do |server|
-      "[#{server.server_id}] #{server.server_name || "Name not provided"}"
-    end
-
-    selected = selected_id ? ->(item, _value) { item.id == selected_id } : false
-
-    helpers.group_data_from_collection_for_slim_select(
-      servers_by_community, group_label_method, value_method, text_method,
-      selected:, placeholder: true
-    )
-  end
 
   def permit_update_params!
     params.require(:user).permit(

@@ -1,4 +1,4 @@
-= render "shared/modal", id: "create_route_modal", class: "modal-lg" do
+= render "shared/modal", id: "create_route_modal", class: "modal-lg", data: {bs_focus: false} do
   = content_tag :div, nil, data: {controller: "route-new"}
     .modal-header.border-primary.bg-primary.bg-opacity-10
       h4.modal-title.text-primary.mb-0
@@ -39,7 +39,7 @@
                   | Select
 
         / Server Selection (shown when specific is selected)
-        .mt-3.d-none
+        .mt-3
           = label_tag "servers", class: "form-label fw-medium"
             i.bi.bi-server.text-success.me-2
             | Select Servers
@@ -48,7 +48,8 @@
               class: "form-select",
               multiple: true,
               data: { \
-                # controller: "slim-select",
+                controller: "slim-select",
+                slim_select_data_value: server_select_data,
                 slim_select_placeholder_value: "Choose servers...",
                 slim_select_allow_deselect_value: true,
               }
@@ -108,7 +109,7 @@
                   | Select
 
         / Custom Type Selection (shown when custom is selected)
-        .mt-3.d-none
+        .mt-3
           = label_tag "notification_types", class: "form-label fw-medium"
             i.bi.bi-list-check.text-info.me-2
             | Select Notification Types
@@ -117,10 +118,10 @@
               class: "form-select",
               multiple: true,
               data: { \
-                # controller: "slim-select",
+                controller: "slim-select",
+                slim_select_data_value: notification_type_select_data,
                 slim_select_placeholder_value: "Choose notification types...",
                 slim_select_allow_deselect_value: true,
-                slim_select_hide_selected_value: true,
               }
           small.form-text.text-muted.mt-1 Pick specific notification types to route
 
@@ -137,7 +138,8 @@
               [],
               class: "form-select",
               data: { \
-                # controller: "slim-select",
+                controller: "slim-select",
+                slim_select_data_value: community_select_data,
                 slim_select_placeholder_value: "Choose a community...",
                 slim_select_allow_deselect_value: true,
               }
@@ -158,6 +160,48 @@
                 slim_select_allow_deselect_value: true,
               }
           small.form-text.text-muted.mt-1 Choose which channel will receive the notifications
+
+      / Preview Card
+      .card.bg-secondary.bg-opacity-10.border-secondary
+        .card-header.py-2
+          h6.mb-0.text-light
+            i.bi.bi-eye.me-2
+            | Route Preview
+
+        / Empty state
+        .card-body.py-4.text-center.text-muted.d-none
+          i.bi.bi-arrow-up.me-2
+          | Configure your route above to see a preview
+
+        .card-body.py-3
+          / Inline flow visualization
+          .row.mb-3
+            .col-5
+              small.text-muted.fw-medium.d-block.mb-1 FROM
+              / Multiple servers
+              / span.badge.bg-secondary abc4_altis_main
+              / span.text-muted.mx-1 +2 more
+
+              / Or for "Any"
+              span.badge.bg-info Any Server
+
+            .col-2.d-flex.align-items-center
+              i.bi.bi-arrow-right.text-primary
+
+            .col-5
+              small.text-muted.fw-medium.d-block.mb-1 TO
+              span
+                span.text-light ExileCommunity
+                span.text-muted.mx-1 →
+                span.text-info #
+                span.text-light general
+
+          / Types as pills inline
+          small.text-muted.fw-medium.d-block.mb-1 TYPES:
+          .d-flex.align-items-center.gap-2.flex-wrap
+            span.badge.bg-danger Base Raid
+            span.badge.bg-warning Flag Stolen
+            span.badge.bg-info Protection Money Due
 
       / Info Alert
       .alert.alert-info.border-info.bg-info.bg-opacity-10.mt-4.mb-0
