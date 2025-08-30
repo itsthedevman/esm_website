@@ -42,16 +42,16 @@
             .card-body
               / Log Channel Selection
               .mb-4
-                h5.mb-2
+                h5.mb-3
                   i.bi.bi-hash.text-info.me-2
-                  | Log Channel
+                  | Discord Log Channel
                 p.text-muted.small.mb-3
-                  | Choose which channel receives server events and notifications.
-                  br
-                  .alert.alert-warning.border-warning.bg-warning.bg-opacity-10.mt-2.py-2
-                    i.bi.bi-shield-exclamation.text-warning.me-2
-                    strong.text-warning Recommended:
-                    |< Create a private channel - logs may contain sensitive information.
+                  | Where server events and notifications get posted.
+
+                .alert.alert-warning.border-warning.bg-warning.bg-opacity-10.py-2
+                  i.bi.bi-shield-exclamation.text-warning.me-2
+                  strong.text-warning Private channel recommended
+                  | - logs may contain player IPs and sensitive data
 
                 .row
                   .col-md-8
@@ -63,12 +63,12 @@
 
               hr.my-3
 
-              / Log Events
+              / Log Events - Clearer descriptions
               .mb-0
-                h5.mb-2
+                h5.mb-3
                   i.bi.bi-toggles.text-info.me-2
-                  | Event Types
-                p.text-muted.small.mb-3 Select which events to log to your channel
+                  | What Gets Logged
+                p.text-muted.small.mb-3 Control the noise level in your log channel
 
                 .row.g-3
                   .col-md-6
@@ -77,9 +77,12 @@
                         .form-check.form-switch
                           = f.check_box :log_reconnect_event, class: "form-check-input"
                           = f.label :log_reconnect_event, class: "form-check-label fw-medium" do
-                            | Server Connect/Disconnect
+                            i.bi.bi-plug.text-success.me-2
+                            | Connection Events
                         small.text-muted.mt-2.d-block
-                          | Logs when your servers connect or disconnect from ESM
+                          | "Server altis is now online" messages
+                          br
+                          em.text-info Recommended: ON for monitoring uptime
 
                   .col-md-6
                     .card.bg-dark.border-secondary.h-100
@@ -87,9 +90,12 @@
                         .form-check.form-switch
                           = f.check_box :log_discord_log_event, class: "form-check-input"
                           = f.label :log_discord_log_event, class: "form-check-label fw-medium" do
-                            | Arma 3 Discord Logs
+                            i.bi.bi-terminal.text-warning.me-2
+                            | Action Logging
                         small.text-muted.mt-2.d-block
-                          | All messages received from your servers
+                          | All messages from your Arma servers
+                          br
+                          em.text-warning Warning: Can be spammy
 
                   .col-md-6
                     .card.bg-dark.border-secondary.h-100
@@ -97,9 +103,12 @@
                         .form-check.form-switch
                           = f.check_box :log_xm8_event, class: "form-check-input"
                           = f.label :log_xm8_event, class: "form-check-label fw-medium" do
-                            | XM8 Notifications
+                            i.bi.bi-bell.text-info.me-2
+                            | XM8 Delivery Receipts
                         small.text-muted.mt-2.d-block
-                          | Delivery receipts for player notifications
+                          | Confirmation when players get notifications
+                          br
+                          em.text-secondary Mostly for debugging issues
 
         / Access Management Section
         .card.mb-4
@@ -136,19 +145,39 @@
 
         / Welcome Message Section
         .card.mb-4
-          .card-header.d-flex.align-items-center
-            .form-check.form-switch.me-3
-              = f.check_box :welcome_message_enabled,
-                  class: "form-check-input mt-2",
-                  data: {action: "click->community-edit#onWelcomeMessageToggleClick"}
+          .card-header.d-flex.align-items-center.justify-content-between
+            h4.mb-0
+              i.bi.bi-door-open.text-primary.me-2
+              | New Member Welcome
 
-              = f.label :welcome_message_enabled, class: "form-check-label h4 mb-0" do
-                | Welcome Message
+            .form-check.form-switch
+              = f.check_box :welcome_message_enabled,
+                  class: "form-check-input",
+                  data: {action: "click->community-edit#onWelcomeMessageToggleClick"}
+              = f.label :welcome_message_enabled, class: "form-check-label"
+                span.text-muted Enable
+
           .card-body
-            p.text-muted.small
-              | When enabled, ESM will automatically greet new members of your Discord server to let them know about ESM and its features.
-              br
-              | You may add additional information below that will be included in this welcome message.
+            .alert.alert-success.border-success.bg-success.bg-opacity-10.mb-3[
+              class=class_names("d-none": !f.object.welcome_message_enabled)
+              data-community-edit-target="welcomeMessageEnabled"
+            ]
+              i.bi.bi-check-circle.text-success.me-2
+              | Currently active - new Discord members will receive an automated welcome
+
+            .alert.alert-secondary.border-secondary.bg-secondary.bg-opacity-10.mb-3[
+              class=class_names("d-none": f.object.welcome_message_enabled)
+              data-community-edit-target="welcomeMessageDisabled"
+            ]
+              i.bi.bi-pause-circle.text-secondary.me-2
+              | Currently disabled - toggle above to activate
+
+            p.text-muted.small.mb-3
+              | ESM automatically greets new Discord members with:
+            ul.small.text-muted.mb-3
+              li Basic ESM commands and features
+              li Your community ID for easy reference
+              li Optional: Your custom message below
 
             .row
               .col
@@ -156,7 +185,7 @@
                   class: "form-control",
                   rows: 5,
                   disabled: !current_community.welcome_message_enabled,
-                  placeholder: "Add your custom welcome message here...",
+                  placeholder: "Add a personal touch! Maybe server rules, getting started tips, or a friendly greeting...",
                   data: {action: "input->community-edit#onWelcomeMessageInput"}
 
                 .d-flex.justify-content-between.mt-2
@@ -167,8 +196,7 @@
                   small.text-muted
                     span[data-community-edit-target="welcomeMessageLength"]
                       = current_community.welcome_message.length
-                    | /
-                    span[] 1000
+                    | /1000
 
         / Action Buttons
         .d-flex.justify-content-between.align-items-center.pt-4.border-top
