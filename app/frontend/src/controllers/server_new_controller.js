@@ -2,6 +2,7 @@ import ApplicationController from "./application_controller";
 import * as R from "ramda";
 import $ from "../helpers/cash_dom";
 import JustValidate from "just-validate";
+import CardSelector from "../helpers/card_selector";
 
 // Connects to data-controller="server-new"
 export default class extends ApplicationController {
@@ -13,18 +14,18 @@ export default class extends ApplicationController {
       submitFormAutomatically: true,
     });
 
-    this.cards = {
+    this.cards = new CardSelector({
       1: $(this.v1CardTarget),
       2: $(this.v2CardTarget),
-    };
+    });
 
     this.#initializeValidator();
-    this.#setActiveCard(2);
+    this.#setVersion(2);
   }
 
   onVersionSelected(event) {
     const version = $(event.currentTarget).data("version");
-    this.#setActiveCard(version);
+    this.#setVersion(version);
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -68,30 +69,8 @@ export default class extends ApplicationController {
       ]);
   }
 
-  #setActiveCard(version) {
-    this.#resetCards();
-    this.#setVersion(version);
-
-    // Now select the one that was picked
-    const selectedCard = this.cards[version];
-    selectedCard.addClass("selected");
-
-    const button = selectedCard.find("button");
-    button.html("SELECTED");
-  }
-
-  #resetCards() {
-    R.values(this.cards).map((card, _) => {
-      card.removeClass("selected");
-
-      const button = card.find("button");
-      const version = button.data("version");
-
-      button.html(`Choose v${version}`);
-    });
-  }
-
   #setVersion(version) {
+    this.cards.select(version);
     $(this.versionTarget).val(version);
   }
 }

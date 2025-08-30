@@ -1,10 +1,25 @@
 .version-card {
     &.selected {
-        @extend .border-primary;
-        @extend .border-3;
+        &.classic {
+            @extend .bg-opacity-10;
+            @extend .border-secondary;
+            @extend .bg-secondary;
+        }
 
-        button {
-            @extend .btn-primary;
+        &.v2 {
+            @extend .bg-opacity-10;
+            @extend .border-success;
+            @extend .bg-success;
+        }
+    }
+
+    button {
+        &.btn-outline-secondary.selected {
+            @extend .btn-secondary;
+        }
+
+        &.btn-outline-success.selected {
+            @extend .btn-success;
         }
     }
 }
