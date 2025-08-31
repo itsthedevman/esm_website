@@ -8,10 +8,13 @@ export default class extends ApplicationController {
   static targets = [
     "sourceAny",
     "sourceCustom",
+    "sourceSelect",
+
     "presetEverything",
     "presetRaid",
     "presetMoney",
     "presetCustom",
+    "typeSelect",
   ];
 
   connect() {
@@ -33,11 +36,31 @@ export default class extends ApplicationController {
 
   onSourceCardChanged(event) {
     const id = $(event.currentTarget).data("id");
+
     this.sourceCards.select(id);
+    this.selectedSource = id;
+
+    const selectElem = $(this.sourceSelectTarget);
+
+    if (this.selectedSource == "custom") {
+      selectElem.show();
+    } else {
+      selectElem.hide();
+    }
   }
 
   onPresetCardChanged(event) {
     const id = $(event.currentTarget).data("id");
+
     this.presetCards.select(id);
+    this.selectedPreset = id;
+
+    const selectElem = $(this.typeSelectTarget);
+
+    if (this.selectedPreset == "custom") {
+      selectElem.show();
+    } else {
+      selectElem.hide();
+    }
   }
 }

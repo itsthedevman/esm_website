@@ -39,7 +39,7 @@
                   | Select
 
         / Server Selection (shown when specific is selected)
-        .mt-3
+        .mt-3.d-none[data-route-new-target="sourceSelect"]
           = label_tag "servers", class: "form-label fw-medium"
             i.bi.bi-server.text-success.me-2
             | Select Servers
@@ -109,7 +109,7 @@
                   | Select
 
         / Custom Type Selection (shown when custom is selected)
-        .mt-3
+        .mt-3.d-none[data-route-new-target="typeSelect"]
           = label_tag "notification_types", class: "form-label fw-medium"
             i.bi.bi-list-check.text-info.me-2
             | Select Notification Types
