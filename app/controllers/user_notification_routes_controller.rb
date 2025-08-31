@@ -341,6 +341,7 @@ class UserNotificationRoutesController < AuthenticatedController
       ->(key) { key.to_s.titleize.upcase },
       :itself,
       ->(i) { i.titleize },
+      select_all: true,
       placeholder: true
     )
   end

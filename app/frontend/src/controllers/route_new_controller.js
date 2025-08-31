@@ -21,11 +21,9 @@ export default class extends ApplicationController {
     "selectedCommunity",
     "selectedChannel",
 
-    "preview",
     "previewSelectedServers",
-    "previewSelectedCommunity",
-    "previewSelectedChannel",
     "previewSelectedTypes",
+    "previewTo",
   ];
 
   static presets = {
@@ -137,42 +135,70 @@ export default class extends ApplicationController {
 
   #renderPreview() {
     this.#renderPreviewServers();
-
-    const typesElem = $(this.previewSelectedTypesTarget);
-    const preset = this.presets[this.selectedPreset];
-
-    if (R.isNotNil(preset)) {
-      const colorClass = preset.color;
-      const values = preset.values
-        .map((type) => {
-          const label = this.#titleize(type);
-
-          return `<span class="badge bg-${colorClass}">${label}</span>`;
-        })
-        .join("");
-
-      typesElem.html(values);
-    }
-
-    const communityElem = $(this.previewSelectedCommunityTarget);
-    const channelElem = $(this.previewSelectedChannelTarget);
+    this.#renderPreviewCommunity();
+    this.#renderPreviewTypes();
   }
 
   #renderPreviewServers() {
     const serversElem = $(this.previewSelectedServersTarget);
 
     if (this.selectedSource == "any") {
-      serversElem.html(`<span class="badge bg-info">Any Server</span>`);
+      serversElem.html(`<span class="badge bg-secondary">Any Server</span>`);
       return;
     }
 
-    const html = $(this.selectedServersTarget)
+    let html = $(this.selectedServersTarget)
       .val()
       .map((id) => id.split(":", 2)[0]) // Take only the server ID
-      .map((id) => `<span class="badge bg-secondary">${id}</span>`)
+      .map((label) => `<span class="badge bg-secondary">${label}</span>`)
       .join("");
 
+    if (R.isEmpty(html)) {
+      html = `<small class="text-muted">Waiting for selection...</small>`;
+    }
+
     serversElem.html(html);
+  }
+
+  #renderPreviewCommunity() {
+    const toElem = $(this.previewToTarget);
+
+    const communityName = $(this.selectedCommunityTarget)
+      .val()
+      .split(":", 2)[1];
+
+    if (R.isNil(communityName)) {
+      toElem.html(`<small class="text-muted">Waiting for selection...</small>`);
+      return;
+    }
+
+    const channelName = "general_todo";
+
+    toElem.html(`
+      <span class="badge bg-primary">${communityName}</span>
+      <span class="text-muted mx-1">→</span>
+      <span class="badge bg-info">#${channelName}</span>
+    `);
+  }
+
+  #renderPreviewTypes() {
+    const typesElem = $(this.previewSelectedTypesTarget);
+    const preset = this.presets[this.selectedPreset];
+
+    if (R.isNotNil(preset)) {
+      const colorClass = preset.color;
+
+      let values = preset.values
+        .map((type) => this.#titleize(type))
+        .map((label) => `<span class="badge bg-${colorClass}">${label}</span>`)
+        .join("");
+
+      if (R.isEmpty(values)) {
+        values = `<small class="text-muted">Waiting for selection...</small>`;
+      }
+
+      typesElem.html(values);
+    }
   }
 
   #titleize(string) {
