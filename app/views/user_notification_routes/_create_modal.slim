@@ -1,5 +1,5 @@
 = render "shared/modal", id: "create_route_modal", class: "modal-lg", data: {bs_focus: false} do
-  = content_tag :div, nil, data: {controller: "route-new"}
+  = content_tag :div, nil, data: {controller: "route-new", route_new_presets_value: {}}
     .modal-header.border-primary.bg-primary.bg-opacity-10
       h4.modal-title.text-primary.mb-0
         i.bi.bi-arrow-left-right.me-2
@@ -52,6 +52,8 @@
                 slim_select_data_value: server_select_data,
                 slim_select_placeholder_value: "Choose servers...",
                 slim_select_allow_deselect_value: true,
+                route_new_target: "selectedServers",
+                action: "change->route-new#onSelectedServerChanged",
               }
           small.form-text.text-muted.mt-1 Select one or more servers to route notifications from
 
@@ -122,6 +124,7 @@
                 slim_select_data_value: notification_type_select_data,
                 slim_select_placeholder_value: "Choose notification types...",
                 slim_select_allow_deselect_value: true,
+                route_new_target: "selectedTypes",
               }
           small.form-text.text-muted.mt-1 Pick specific notification types to route
 
@@ -142,6 +145,8 @@
                 slim_select_data_value: community_select_data,
                 slim_select_placeholder_value: "Choose a community...",
                 slim_select_allow_deselect_value: true,
+                slim_select_close_on_select_value: true,
+                route_new_target: "selectedCommunity",
               }
           small.form-text.text-muted.mt-1 Select the Discord server to route notifications to
 
@@ -158,6 +163,7 @@
                 # controller: "slim-select",
                 slim_select_placeholder_value: "Select a community first...",
                 slim_select_allow_deselect_value: true,
+                route_new_target: "selectedChannel",
               }
           small.form-text.text-muted.mt-1 Choose which channel will receive the notifications
 
@@ -178,12 +184,7 @@
           .row.mb-3
             .col-4
               small.text-muted.fw-medium.d-block.mb-1 FROM
-              / Multiple servers
-              / span.badge.bg-secondary abc4_altis_main
-              / span.text-muted.mx-1 +2 more
-
-              / Or for "Any"
-              span.badge.bg-info Any Server
+              .d-flex.gap-2[data-route-new-target="previewSelectedServers"]
 
             .col-1.d-flex.align-items-center
               i.bi.bi-arrow-right.text-primary
@@ -191,17 +192,14 @@
             .col
               small.text-muted.fw-medium.d-block.mb-1 TO
               span
-                span.text-light ExileCommunity
+                span.text-light[data-route-new-target="previewSelectedCommunity"]
                 span.text-muted.mx-1 →
                 span.text-info #
-                span.text-light general
+                span.text-light[data-route-new-target="previewSelectedChannel"]
 
           / Types as pills inline
           small.text-muted.fw-medium.d-block.mb-1 TYPES:
-          .d-flex.align-items-center.gap-2.flex-wrap
-            span.badge.bg-danger Base Raid
-            span.badge.bg-warning Flag Stolen
-            span.badge.bg-info Protection Money Due
+          .d-flex.align-items-center.gap-2.flex-wrap[data-route-new-target="previewSelectedTypes"]
 
       / Info Alert
       .alert.alert-info.border-info.bg-info.bg-opacity-10.mt-4.mb-0
