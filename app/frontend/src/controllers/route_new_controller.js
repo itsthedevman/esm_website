@@ -190,8 +190,8 @@ export default class extends ApplicationController {
 
       let values = preset.values
         .map((type) => this.#titleize(type))
-        .map((label) => `<span class="badge bg-${colorClass}">${label}</span>`)
-        .join("");
+        .map((label) => `<small class="text-info">${label}</small>`)
+        .join(`<span class="opacity-50">•</span>`);
 
       if (R.isEmpty(values)) {
         values = `<small class="text-muted">Waiting for selection...</small>`;
