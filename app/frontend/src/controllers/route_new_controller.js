@@ -54,7 +54,6 @@ export default class extends ApplicationController {
       "protection-money-due",
       "protection-money-paid",
     ],
-    custom: [],
   };
 
   connect() {
@@ -127,6 +126,10 @@ export default class extends ApplicationController {
     this.#renderPreview();
   }
 
+  onTypesChanged(_event) {
+    this.#renderPreview();
+  }
+
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   #renderPreview() {
@@ -187,18 +190,22 @@ export default class extends ApplicationController {
     const typesElem = $(this.previewSelectedTypesTarget);
     const preset = this.presets[this.selectedPreset];
 
-    if (R.isNotNil(preset)) {
-      let values = preset
+    let values = preset;
+    if (R.isNil(values)) {
+      values = $(this.selectedTypesTarget).val();
+    }
+
+    let html = "";
+    if (R.isEmpty(values)) {
+      html = `<small class="text-muted">Waiting for selection...</small>`;
+    } else {
+      html = values
         .map((type) => this.#titleize(type))
         .map((label) => `<small>${label}</small>`)
         .join(`<span class="opacity-50">•</span>`);
-
-      if (R.isEmpty(values)) {
-        values = `<small class="text-muted">Waiting for selection...</small>`;
-      }
-
-      typesElem.html(values);
     }
+
+    typesElem.html(html);
   }
 
   #titleize(string) {
