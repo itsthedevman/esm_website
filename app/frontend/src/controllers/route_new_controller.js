@@ -2,6 +2,7 @@ import ApplicationController from "./application_controller";
 import $ from "../helpers/cash_dom";
 import * as R from "ramda";
 import CardSelector from "../helpers/card_selector";
+import { onModalHidden } from "../helpers/modals";
 
 // Connects to data-controller="route-new"
 export default class extends ApplicationController {
@@ -57,6 +58,7 @@ export default class extends ApplicationController {
   };
 
   connect() {
+    this.modal = this.element;
     this.presets = R.clone(this.constructor.presets);
 
     this.sourceCards = new CardSelector({
@@ -71,13 +73,13 @@ export default class extends ApplicationController {
       custom: $(this.presetCustomTarget),
     });
 
-    this.selectedSource = "any";
-    this.sourceCards.select("any");
-
-    this.selectedPreset = "everything";
-    this.presetCards.select("everything");
+    this.#selectSource("any");
+    this.#selectPreset("everything");
 
     this.#renderPreview();
+
+    // Prepare the modal
+    onModalHidden(this.modal, () => this.#clearModal());
   }
 
   onSelectedServerChanged(_event) {
@@ -87,8 +89,7 @@ export default class extends ApplicationController {
   onSourceCardChanged(event) {
     const id = $(event.currentTarget).data("id");
 
-    this.sourceCards.select(id);
-    this.selectedSource = id;
+    this.#selectSource(id);
 
     const selectElem = $(this.sourceSelectTarget);
 
@@ -104,8 +105,7 @@ export default class extends ApplicationController {
   onPresetCardChanged(event) {
     const id = $(event.currentTarget).data("id");
 
-    this.presetCards.select(id);
-    this.selectedPreset = id;
+    this.#selectPreset(id);
 
     const selectElem = $(this.typeSelectTarget);
 
@@ -131,6 +131,28 @@ export default class extends ApplicationController {
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
+
+  #selectSource(source) {
+    this.selectedSource = source;
+    this.sourceCards.select(source);
+  }
+
+  #selectPreset(preset) {
+    this.selectedPreset = preset;
+    this.presetCards.select(preset);
+  }
+
+  #clearModal() {
+    this.#selectSource("any");
+    this.#selectPreset("everything");
+
+    this.clearSlimSelection(this.selectedServersTarget);
+    this.clearSlimSelection(this.selectedCommunityTarget);
+    this.clearSlimSelection(this.selectedTypesTarget);
+
+    // this.validator.clearAllErrors();
+    this.#renderPreview();
+  }
 
   #renderPreview() {
     this.#renderPreviewServers();
