@@ -42,9 +42,6 @@ export default class extends ApplicationController {
       server: $(this.serverButtonTarget),
     });
 
-    this.selectedType = "community";
-    this.cards.select(this.selectedType);
-
     // Prepare the previews
     this.previews = {
       community: {
@@ -57,6 +54,7 @@ export default class extends ApplicationController {
       },
     };
 
+    this._showSection("community");
     this.#renderPreview();
 
     // Prepare the modal
@@ -70,8 +68,7 @@ export default class extends ApplicationController {
   }
 
   onValueInput(_event) {
-    $(this.valueCountTarget).html($(this.valueTarget).val().length);
-
+    this.#updateCounter();
     this.#renderPreview();
   }
 
@@ -137,6 +134,10 @@ export default class extends ApplicationController {
       ]);
   }
 
+  #updateCounter() {
+    $(this.valueCountTarget).html($(this.valueTarget).val().length);
+  }
+
   #clearModal() {
     $(this.valueTarget).val("");
 
@@ -144,6 +145,11 @@ export default class extends ApplicationController {
     this.clearSlimSelection(this.serverIDTarget);
 
     this.validator.clearAllErrors();
+
+    this._showSection("community");
+
+    this.#renderPreview();
+    this.#updateCounter();
   }
 
   #renderPreview() {
