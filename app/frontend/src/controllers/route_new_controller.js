@@ -27,46 +27,34 @@ export default class extends ApplicationController {
   ];
 
   static presets = {
-    everything: {
-      color: "primary",
-      values: [
-        "base-raid",
-        "charge-plant-started",
-        "custom",
-        "flag-restored",
-        "flag-steal-started",
-        "flag-stolen",
-        "grind-started",
-        "hack-started",
-        "marxet-item-sold",
-        "protection-money-due",
-        "protection-money-paid",
-      ],
-    },
-    raid: {
-      color: "danger",
-      values: [
-        "base-raid",
-        "charge-plant-started",
-        "flag-restored",
-        "flag-steal-started",
-        "flag-stolen",
-        "grind-started",
-        "hack-started",
-      ],
-    },
-    money: {
-      color: "success",
-      values: [
-        "marxet-item-sold",
-        "protection-money-due",
-        "protection-money-paid",
-      ],
-    },
-    custom: {
-      color: "info",
-      values: [],
-    },
+    everything: [
+      "base-raid",
+      "charge-plant-started",
+      "custom",
+      "flag-restored",
+      "flag-steal-started",
+      "flag-stolen",
+      "grind-started",
+      "hack-started",
+      "marxet-item-sold",
+      "protection-money-due",
+      "protection-money-paid",
+    ],
+    raid: [
+      "base-raid",
+      "charge-plant-started",
+      "flag-restored",
+      "flag-steal-started",
+      "flag-stolen",
+      "grind-started",
+      "hack-started",
+    ],
+    money: [
+      "marxet-item-sold",
+      "protection-money-due",
+      "protection-money-paid",
+    ],
+    custom: [],
   };
 
   connect() {
@@ -186,11 +174,9 @@ export default class extends ApplicationController {
     const preset = this.presets[this.selectedPreset];
 
     if (R.isNotNil(preset)) {
-      const colorClass = preset.color;
-
-      let values = preset.values
+      let values = preset
         .map((type) => this.#titleize(type))
-        .map((label) => `<small class="text-info">${label}</small>`)
+        .map((label) => `<small>${label}</small>`)
         .join(`<span class="opacity-50">•</span>`);
 
       if (R.isEmpty(values)) {
