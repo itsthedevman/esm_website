@@ -28,10 +28,7 @@ class AuthenticatedController < ApplicationController
   def check_for_community_access!
     return if current_community&.modifiable_by?(current_user)
 
-    respond_to do |format|
-      format.html { redirect_to communities_path, alert: "Page not found" }
-      format.json { render json: {}, status: :unauthorized }
-    end
+    not_found!
   end
 
   def redirect_if_player_mode!

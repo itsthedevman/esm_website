@@ -45,6 +45,9 @@ Rails.application.routes.draw do
 
   # /communities
   resources :communities, param: :community_id do
+    # /communities/:community_id/channels
+    resources :channels, only: %i[index], param: :channel_id
+
     # /communities/:community_id/commands
     resources :commands, only: %i[index update], param: :name
 

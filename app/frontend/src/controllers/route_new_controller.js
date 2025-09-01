@@ -3,6 +3,7 @@ import $ from "../helpers/cash_dom";
 import * as R from "ramda";
 import CardSelector from "../helpers/card_selector";
 import { onModalHidden } from "../helpers/modals";
+import axios from "axios";
 
 // Connects to data-controller="route-new"
 export default class extends ApplicationController {
@@ -119,6 +120,7 @@ export default class extends ApplicationController {
   }
 
   onCommunityChanged(_event) {
+    this.#loadChannels();
     this.#renderPreview();
   }
 
@@ -236,5 +238,21 @@ export default class extends ApplicationController {
       .split(" ")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(" ");
+  }
+
+  #loadChannels() {
+    axios
+      .get(`/communities/${this.communityIDValue}/channels`, {
+        params: { user: true, slim_select: true },
+      })
+      .then((response) => {
+        this.setSlimSelection(
+          this.selectedChannelTarget,
+          response.content.channels
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 }

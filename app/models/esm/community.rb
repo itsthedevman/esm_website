@@ -47,8 +47,8 @@ module ESM
       ESM.bot.community_modifiable_by?(id, user.id)
     end
 
-    def admin_channels
-      @admin_channels ||= ESM.bot.community_channels(id)
+    def channels
+      @channels ||= ESM.bot.community_channels(id)
     end
 
     def player_channels(user)
