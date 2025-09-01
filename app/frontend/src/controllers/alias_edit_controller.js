@@ -19,12 +19,12 @@ export default class extends AliasController {
 
     $(this.valueTarget).val(alias.value);
 
-    this.#setSelection(
+    this.setSlimSelection(
       this.communityIDTarget,
       `${alias.community?.community_id}:${alias.community?.community_name}`
     );
 
-    this.#setSelection(
+    this.setSlimSelection(
       this.serverIDTarget,
       `${alias.server?.server_id}:${alias.server?.server_name}`
     );
@@ -90,12 +90,5 @@ export default class extends AliasController {
         errorMessage: "Alias already exists",
       },
     ]);
-  }
-
-  #setSelection(target, value) {
-    this.dispatch("setSelection", {
-      target,
-      detail: { value, validate: true },
-    });
   }
 }

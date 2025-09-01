@@ -140,15 +140,12 @@ export default class extends ApplicationController {
   #clearModal() {
     $(this.valueTarget).val("");
 
-    this.#clearSelection(this.communityIDTarget);
-    this.#clearSelection(this.serverIDTarget);
+    this.clearSlimSelection(this.communityIDTarget);
+    this.clearSlimSelection(this.serverIDTarget);
 
     this.validator.clearAllErrors();
   }
 
-  #clearSelection(selector) {
-    this.dispatch("clearSelection", { target: $(selector)[0] });
-  }
   #renderPreview() {
     const previews = this.previews[this.selectedType];
 

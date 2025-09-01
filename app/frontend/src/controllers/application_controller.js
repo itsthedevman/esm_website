@@ -19,4 +19,15 @@ export default class ApplicationController extends Controller {
   nextTick(callback) {
     setTimeout(callback, 0);
   }
+
+  setSlimSelection(selector, value) {
+    this.dispatch("setSelection", {
+      target: $(selector)[0],
+      detail: { value, validate: true },
+    });
+  }
+
+  clearSlimSelection(selector) {
+    this.dispatch("clearSelection", { target: $(selector)[0] });
+  }
 }
