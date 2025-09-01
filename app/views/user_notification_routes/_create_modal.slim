@@ -147,6 +147,7 @@
                 slim_select_allow_deselect_value: true,
                 slim_select_close_on_select_value: true,
                 route_new_target: "selectedCommunity",
+                action: "change->route-new#onCommunityChanged",
               }
           small.form-text.text-muted.mt-1 Select the Discord server to route notifications to
 
@@ -164,6 +165,7 @@
                 slim_select_placeholder_value: "Select a community first...",
                 slim_select_allow_deselect_value: true,
                 route_new_target: "selectedChannel",
+                action: "change->route-new#onChannelChanged",
               }
           small.form-text.text-muted.mt-1 Choose which channel will receive the notifications
 

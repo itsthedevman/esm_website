@@ -119,6 +119,14 @@ export default class extends ApplicationController {
     this.#renderPreview();
   }
 
+  onCommunityChanged(_event) {
+    this.#renderPreview();
+  }
+
+  onChannelChanged(_event) {
+    this.#renderPreview();
+  }
+
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   #renderPreview() {
@@ -160,13 +168,19 @@ export default class extends ApplicationController {
       return;
     }
 
-    const channelName = "general_todo";
-
-    toElem.html(`
+    let html = `
       <span class="badge bg-primary">${communityName}</span>
       <span class="text-muted mx-1">→</span>
-      <span class="badge bg-info">#${channelName}</span>
-    `);
+    `;
+
+    const channel = null;
+    if (channel) {
+      html += `<span class="badge bg-info">#${channel.name}</span>`;
+    } else {
+      html += `<small class="text-muted">Waiting for selection...</small>`;
+    }
+
+    toElem.html(html);
   }
 
   #renderPreviewTypes() {
