@@ -4,6 +4,7 @@ import * as R from "ramda";
 import CardSelector from "../helpers/card_selector";
 import { onModalHidden } from "../helpers/modals";
 import axios from "axios";
+import throttle from "lodash/throttle";
 
 // Connects to data-controller="route-new"
 export default class extends ApplicationController {
@@ -58,9 +59,12 @@ export default class extends ApplicationController {
     ],
   };
 
+  loadChannels = throttle(() => this.#loadChannels(), 1000);
+
   connect() {
     this.modal = this.element;
     this.presets = R.clone(this.constructor.presets);
+    this.channels = {};
 
     this.sourceCards = new CardSelector({
       any: $(this.sourceAnyTarget),
@@ -81,6 +85,10 @@ export default class extends ApplicationController {
 
     // Prepare the modal
     onModalHidden(this.modal, () => this.#clearModal());
+
+    this.nextTick(() => {
+      this.disableSlim(this.selectedChannelTarget);
+    });
   }
 
   onSelectedServerChanged(_event) {
@@ -120,7 +128,7 @@ export default class extends ApplicationController {
   }
 
   onCommunityChanged(_event) {
-    this.#loadChannels();
+    this.loadChannels();
     this.#renderPreview();
   }
 
@@ -148,9 +156,9 @@ export default class extends ApplicationController {
     this.#selectSource("any");
     this.#selectPreset("everything");
 
-    this.clearSlimSelection(this.selectedServersTarget);
-    this.clearSlimSelection(this.selectedCommunityTarget);
-    this.clearSlimSelection(this.selectedTypesTarget);
+    this.clearSlimSelected(this.selectedServersTarget);
+    this.clearSlimSelected(this.selectedCommunityTarget);
+    this.clearSlimSelected(this.selectedTypesTarget);
 
     // this.validator.clearAllErrors();
     this.#renderPreview();
@@ -200,9 +208,10 @@ export default class extends ApplicationController {
       <span class="text-muted mx-1">→</span>
     `;
 
-    const channel = null;
-    if (channel) {
-      html += `<span class="badge bg-info">#${channel.name}</span>`;
+    const channelName = $(this.selectedChannelTarget).val().split(":", 2)[1];
+
+    if (channelName) {
+      html += `<span class="badge bg-info">#${channelName}</span>`;
     } else {
       html += `<small class="text-muted">Waiting for selection...</small>`;
     }
@@ -241,15 +250,31 @@ export default class extends ApplicationController {
   }
 
   #loadChannels() {
+    const communityID = $(this.selectedCommunityTarget).val().split(":", 2)[0];
+    const channelElem = $(this.selectedChannelTarget);
+
+    this.disableSlim(channelElem);
+    this.clearSlimData(channelElem);
+
+    if (R.isNil(communityID) || R.isEmpty(communityID)) return;
+
+    const channels = this.channels[communityID] || [];
+
+    // Use the cache if there is one
+    if (R.isNotEmpty(channels)) {
+      this.setSlimData(channelElem, this.channels[communityID]);
+      this.enableSlim(channelElem);
+      return;
+    }
+
     axios
-      .get(`/communities/${this.communityIDValue}/channels`, {
+      .get(`/communities/${communityID}/channels`, {
         params: { user: true, slim_select: true },
       })
       .then((response) => {
-        this.setSlimSelection(
-          this.selectedChannelTarget,
-          response.content.channels
-        );
+        this.channels[communityID] = response.data.content.channels;
+        this.setSlimData(channelElem, this.channels[communityID]);
+        this.enableSlim(channelElem);
       })
       .catch((error) => {
         console.error(error);

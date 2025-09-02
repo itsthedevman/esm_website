@@ -59,8 +59,7 @@
               slim_select_allow_deselect_value: true,
               route_new_target: "selectedServers",
               action: [ \
-                "route-new:clearSelection->slim-select#clearSelection",
-                "route-new:setSelection->slim-select#setSelection",
+                slim_select_stimulus_actions("route-new"),
                 "change->route-new#onSelectedServerChanged",
               ].join(" "),
             }
@@ -135,8 +134,7 @@
               slim_select_allow_deselect_value: true,
               route_new_target: "selectedTypes",
               action: [ \
-                "route-new:clearSelection->slim-select#clearSelection",
-                "route-new:setSelection->slim-select#setSelection",
+                slim_select_stimulus_actions("route-new"),
                 "change->route-new#onTypesChanged",
               ].join(" "),
             }
@@ -162,8 +160,7 @@
               slim_select_close_on_select_value: true,
               route_new_target: "selectedCommunity",
               action: [ \
-                "route-new:clearSelection->slim-select#clearSelection",
-                "route-new:setSelection->slim-select#setSelection",
+                slim_select_stimulus_actions("route-new"),
                 "change->route-new#onCommunityChanged",
               ].join(" "),
             }
@@ -177,15 +174,14 @@
         = select_tag "channel",
             [],
             class: "form-select",
-            disabled: true,
             data: { \
-              # controller: "slim-select",
-              slim_select_placeholder_value: "Select a community first...",
+              controller: "slim-select",
+              slim_select_placeholder_value: "Select a channel...",
               slim_select_allow_deselect_value: true,
+              slim_select_close_on_select_value: true,
               route_new_target: "selectedChannel",
               action: [ \
-                "route-new:clearSelection->slim-select#clearSelection",
-                "route-new:setSelection->slim-select#setSelection",
+                slim_select_stimulus_actions("route-new"),
                 "change->route-new#onChannelChanged",
               ].join(" "),
             }
