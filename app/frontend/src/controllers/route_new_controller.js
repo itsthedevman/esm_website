@@ -5,10 +5,14 @@ import CardSelector from "../helpers/card_selector";
 import { onModalHidden } from "../helpers/modals";
 import axios from "axios";
 import throttle from "lodash/throttle";
+import Validate from "../helpers/validator";
+import { disableSubmitOnEnter, Serializer } from "../helpers/forms";
 
 // Connects to data-controller="route-new"
 export default class extends ApplicationController {
   static targets = [
+    "form",
+
     "sourceAny",
     "sourceCustom",
     "sourceSelect",
@@ -66,6 +70,11 @@ export default class extends ApplicationController {
     this.presets = R.clone(this.constructor.presets);
     this.channels = {};
 
+    this.validator = new Validate();
+    this.#initializeValidator();
+
+    this.serializer = new Serializer("span[data-routes-new-storage]", "routes");
+
     this.sourceCards = new CardSelector({
       any: $(this.sourceAnyTarget),
       custom: $(this.sourceCustomTarget),
@@ -102,7 +111,7 @@ export default class extends ApplicationController {
 
     const selectElem = $(this.sourceSelectTarget);
 
-    if (this.selectedSource == "custom") {
+    if (this.selectedSource === "custom") {
       selectElem.show();
     } else {
       selectElem.hide();
@@ -118,7 +127,7 @@ export default class extends ApplicationController {
 
     const selectElem = $(this.typeSelectTarget);
 
-    if (this.selectedPreset == "custom") {
+    if (this.selectedPreset === "custom") {
       selectElem.show();
     } else {
       selectElem.hide();
@@ -140,7 +149,62 @@ export default class extends ApplicationController {
     this.#renderPreview();
   }
 
+  onCreateClicked(_event) {
+    this.validator.validate().then((isValid) => {
+      if (!isValid) return;
+
+      const types =
+        this.presets[this.selectedPreset] || $(this.selectedTypesTarget).val();
+
+      const extractID = R.compose(R.head, R.split(":"));
+      const server_ids =
+        this.selectedSource === "any"
+          ? "any"
+          : R.map(extractID, $(this.selectedServersTarget).val());
+
+      const community_id = extractID($(this.selectedCommunityTarget).val());
+      const channel_id = extractID($(this.selectedChannelTarget).val());
+
+      this.serializer.serialize({
+        types,
+        server_ids,
+        community_id,
+        channel_id,
+      });
+
+      this.formTarget.submit();
+    });
+  }
+
   //////////////////////////////////////////////////////////////////////////////////////////////////
+
+  #initializeValidator() {
+    this.validator
+      .addField(this.selectedServersTarget, [
+        {
+          validator: (value, _context) => {
+            if (this.selectedSource === "any") return true;
+
+            return !R.isEmpty(value);
+          },
+          errorMessage: "Please select one or more servers",
+        },
+      ])
+      .addField(this.selectedTypesTarget, [
+        {
+          validator: (value, _context) => {
+            if (this.selectedPreset !== "custom") return true;
+
+            return !R.isEmpty(value);
+          },
+          errorMessage: "Please select one or more types",
+        },
+      ])
+      .addField(this.selectedCommunityTarget, [{ rule: "required" }])
+      .addField(this.selectedChannelTarget, [{ rule: "required" }]);
+
+    disableSubmitOnEnter();
+  }
 
   #selectSource(source) {
     this.selectedSource = source;
@@ -173,7 +237,7 @@ export default class extends ApplicationController {
   #renderPreviewServers() {
     const serversElem = $(this.previewSelectedServersTarget);
 
-    if (this.selectedSource == "any") {
+    if (this.selectedSource === "any") {
       serversElem.html(`<span class="badge bg-secondary">Any Server</span>`);
       return;
     }

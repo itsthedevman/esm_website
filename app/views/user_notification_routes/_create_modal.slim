@@ -226,12 +226,19 @@
           p.small.mb-0
             | Once created, a community admin must approve this route before notifications start flowing. You'll be notified when your request is accepted.
 
+    = form_with url: users_notification_routing_index_path,
+      method: :post,
+      data: {route_new_target: "form", turbo: false},
+      class: "d-none"
+      span[data-routes-new-storage]
+
   .modal-footer.border-top
     .d-flex.align-items-center.justify-content-between.w-100
       div
       .d-flex.gap-2
         button.btn.btn-outline-secondary[type="button" data-bs-dismiss="modal"]
           | Cancel
-        button.btn.btn-success.ms-2[type="button" disabled]
+        = button_tag class: "btn btn-success ms-2",
+          data: {action: "click->route-new#onCreateClicked"}
           i.bi.bi-plus-circle.me-2
           | Create Route

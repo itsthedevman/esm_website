@@ -54,61 +54,58 @@ class UserNotificationRoutesController < AuthenticatedController
   end
 
   def create
+    permitted_params = permit_create_params!
+
     # Validate and load the users
     users =
-      if route_params[:user_ids].present?
-        users = User.where(discord_id: route_params[:user_ids]).select(:id)
-        return check_failed!(message: "Failed to find the requested users") if users.blank? || users.size != route_params[:user_ids].size
+      if current_community
+        user_ids = permitted_params[:user_ids]
+        users = ESM::User.where(discord_id: user_ids).select(:id)
+        not_found! if users.blank? || users.size != user_ids.size
 
         users
       else
         [current_user]
       end
 
-    # Validate the community. If we're modifying this from the server dashboard, current_community will be defined.
-    community = current_community || Community.find_by_community_id(route_params[:community_id])
-    return check_failed!(message: "Failed to find the requested community") if community.nil?
+    # Validate the community.
+    # If we're modifying this from the server dashboard, current_community will be defined.
+    community = current_community ||
+      ESM::Community.find_by_community_id(permitted_params[:community_id])
+
+    not_found! if community.nil?
 
     # Validate the channel
     filter =
-      if current_context == current_community
+      if current_community
         {community_id: current_community.id}
       else
         {user_id: current_user.id}
       end
 
-    channel = ESM.channel(route_params[:channel_id], **filter)
-    return check_failed!(message: "You do not have access to that channel") if channel.nil?
-
-    # Presets for types :)
-    types =
-      case route_params[:types]
-      when "any"
-        UserNotificationRoute::TYPES
-      when "raids"
-        UserNotificationRoute::TYPE_PRESETS[:raids]
-      when "payments"
-        UserNotificationRoute::TYPE_PRESETS[:payments]
-      else
-        UserNotificationRoute::TYPES.select { |type| type.in?(route_params[:types]) }
-      end
+    channel = ESM.bot.channel(permitted_params[:channel_id], **filter)
+    not_found! if channel.nil?
 
     # Validate the servers
+    server_ids = permitted_params[:server_ids]
+
     servers =
-      if route_params[:server_ids].is_a?(String) && route_params[:server_ids].casecmp?("any")
+      if server_ids == "any"
         [nil]
       else
-        servers = Server.where(server_id: route_params[:server_ids]).select(:id)
-        return check_failed!(message: "Failed to find the requested servers") if servers.blank? || servers.size != route_params[:server_ids].size
+        servers = ESM::Server.where(server_id: server_ids).select(:id)
+        not_found! if servers.blank? || servers.size != server_ids.size
 
         servers
       end
 
+    types = UserNotificationRoute::TYPES.select { |type| permitted_params[:types].include?(type) }
+
     # This builds all of the queries as Array<Hash>
-    queries = users.map do |user|
+    queries = users.flat_map do |user|
       # This auto accepts any requests for the current user
       auto_accept =
-        if current_context == current_community
+        if current_community
           current_user == user
         else
           current_user == user && community.modifiable_by?(current_user)
@@ -128,23 +125,46 @@ class UserNotificationRoutesController < AuthenticatedController
           }
         end
       end
-    end.flatten
+    end
 
     # Remove any duplicates
-    queries.reject! { |query| UserNotificationRoute.where(query.except(:community_accepted, :uuid)).exists? }
+    queries.reject! do |query|
+      ESM::UserNotificationRoute.where(query.except(:community_accepted, :uuid)).exists?
+    end
+
+    # Fetch all existing routes for these combinations
+    existing_routes = ESM::UserNotificationRoute.where(
+      user_id: users.map(&:id),
+      source_server_id: servers.map(&:id).push(nil), # Include nil for "any server"
+      destination_community_id: community.id,
+      channel_id: channel[:id],
+      notification_type: types
+    ).pluck(:user_id, :source_server_id, :notification_type).join_map("-").to_set
+
+    # Remove any duplicates
+    queries.reject! do |query|
+      key = "#{query[:user_id]}-#{query[:source_server_id]}-#{query[:notification_type]}"
+      existing_routes.include?(key)
+    end
 
     # I love bulk inserts
     UserNotificationRoute.import(queries)
 
     # Check if any were auto-accepted and notify the channel
-    accepted_uuids = queries.select { |query| query[:community_accepted] && query[:user_accepted] }.map { |query| query[:uuid] }
-    routes = UserNotificationRoute.where(uuid: accepted_uuids)
+    accepted_uuids = queries.select { |query| query[:community_accepted] && query[:user_accepted] }
+      .map { |query| query[:uuid] }
+
+    routes = UserNotificationRoute.all
+      .where(uuid: accepted_uuids)
+      .select(:user_id, :notification_type, :source_server_id, :channel_id)
+
     notify_channel(routes) if routes.present?
 
-    render json: {
-      routes: current_context.user_notification_routes.where(channel_id: channel[:id]).clientize,
-      message: "#{"Request".pluralize(queries.size)} sent. ESM will send a message to <span class='esm-text-color-toast-blue'>##{channel[:name]}</span> when the request has been accepted"
-    }, status: :created
+    if current_community
+      redirect_to community_notification_routing_index_path
+    else
+      redirect_to users_notification_routing_index_path
+    end
   end
 
   def update
@@ -268,9 +288,11 @@ class UserNotificationRoutesController < AuthenticatedController
 
   private
 
-  def route_params
-    # server_ids and types can be an array or a string
-    @route_params ||= params.permit(:server_ids, :types, :community_id, :channel_id, user_ids: [], types: [], server_ids: [])
+  def permit_create_params!
+    # server_ids is defined twice because it can be either an array or string
+    params.require(:routes).permit(
+      :server_ids, :community_id, :channel_id, types: [], server_ids: []
+    )
   end
 
   def notify_channel(routes)
