@@ -13,27 +13,13 @@ export default class extends ApplicationController {
   };
 
   connect() {
-    this.initializeSlimSelect();
-    this.setupAttributeWatcher();
-  }
-
-  disconnect() {
-    if (this.slimSelect) {
-      this.slimSelect.destroy();
-    }
-    if (this.observer) {
-      this.observer.disconnect();
-    }
-  }
-
-  initializeSlimSelect() {
     const selectElement = this.hasSelectTarget
       ? this.selectTarget
       : this.element;
 
     const config = {
       select: selectElement,
-      data: this.dataValue || [],
+      data: this.dataValue,
       settings: {
         searchText: this.searchTextValue || "No results",
         searchPlaceholder: this.searchTextValue || "Search",
@@ -44,7 +30,7 @@ export default class extends ApplicationController {
         disabled: this.disabledValue || selectElement.disabled,
       },
       events: {
-        afterChange: (newVal) => {
+        afterChange: (_) => {
           // Trigger change event for other listeners (including validation)
           this.nextTick(() => {
             selectElement.dispatchEvent(new Event("change", { bubbles: true }));
@@ -60,46 +46,31 @@ export default class extends ApplicationController {
     this.slimSelect = new SlimSelect(config);
   }
 
-  setupAttributeWatcher() {
-    const selectElement = this.hasSelectTarget
-      ? this.selectTarget
-      : this.element;
-
-    // Watch for changes to disabled attribute
-    this.observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === "disabled") {
-          this.handleDisabledChange();
-        }
-      });
-    });
-
-    this.observer.observe(selectElement, {
-      attributes: true,
-      attributeFilter: ["disabled"],
-    });
+  disconnect() {
+    this.slimSelect?.destroy();
   }
 
-  handleDisabledChange() {
-    const selectElement = this.hasSelectTarget
-      ? this.selectTarget
-      : this.element;
-    const isDisabled = selectElement.disabled;
-
-    if (this.slimSelect) {
-      if (isDisabled) {
-        this.slimSelect.disable();
-      } else {
-        this.slimSelect.enable();
-      }
-    }
+  disable() {
+    this.slimSelect?.disable();
   }
 
-  setSelection({ detail: { value, validate = false } }) {
+  enable() {
+    this.slimSelect?.enable();
+  }
+
+  setData({ detail: { value } }) {
+    this.slimSelect?.setData(value);
+  }
+
+  clearData() {
+    this.slimSelect?.setData([]);
+  }
+
+  setSelected({ detail: { value, validate = false } }) {
     this.slimSelect?.setSelected([value], validate);
   }
 
-  clearSelection() {
+  clearSelected() {
     this.slimSelect?.setSelected([], false);
   }
 }

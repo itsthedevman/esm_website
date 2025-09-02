@@ -20,7 +20,7 @@
 
         .row.g-3
           .col-md-6
-            .card.border-2.alias-type-card.community[data-alias-edit-target="communityButton"]
+            .card.border-2.selectable-card[data-alias-edit-target="communityButton"]
               .card-body.text-center.py-3
                 i.bi.bi-discord.text-primary.fs-3.mb-2
                 h6.mb-1.text-primary Community
@@ -32,7 +32,7 @@
                 ] Select
 
           .col-md-6
-            .card.border-2.alias-type-card.server[data-alias-edit-target="serverButton"]
+            .card.border-2.selectable-card[data-alias-edit-target="serverButton"]
               .card-body.text-center.py-3
                 i.bi.bi-server.text-success.fs-3.mb-2
                 h6.mb-1.text-success Arma Server
@@ -67,8 +67,7 @@
               slim_select_allow_deselect_value: true,
               slim_select_data_value: alias_community_select_data,
               action: [ \
-                "alias-edit:clearSelection->slim-select#clearSelection",
-                "alias-edit:setSelection->slim-select#setSelection",
+                slim_select_stimulus_actions("alias-edit"),
                 "change->alias-edit#onIDChanged",
               ].join(" "),
               alias_edit_target: "communityID",
@@ -89,8 +88,7 @@
               slim_select_allow_deselect_value: true,
               slim_select_data_value: alias_server_select_data,
               action: [ \
-                "alias-edit:clearSelection->slim-select#clearSelection",
-                "alias-edit:setSelection->slim-select#setSelection",
+                slim_select_stimulus_actions("alias-edit"),
                 "change->alias-edit#onIDChanged",
               ].join(" "),
               alias_edit_target: "serverID",

@@ -20,14 +20,33 @@ export default class ApplicationController extends Controller {
     setTimeout(callback, 0);
   }
 
-  setSlimSelection(selector, value) {
-    this.dispatch("setSelection", {
+  setSlimSelected(selector, value, validate = true) {
+    this.dispatch("setSelected", {
       target: $(selector)[0],
-      detail: { value, validate: true },
+      detail: { value, validate },
     });
   }
 
-  clearSlimSelection(selector) {
-    this.dispatch("clearSelection", { target: $(selector)[0] });
+  clearSlimSelected(selector) {
+    this.dispatch("clearSelected", { target: $(selector)[0] });
+  }
+
+  setSlimData(selector, value) {
+    this.dispatch("setData", {
+      target: $(selector)[0],
+      detail: { value },
+    });
+  }
+
+  clearSlimData(selector) {
+    this.dispatch("clearData", { target: $(selector)[0] });
+  }
+
+  enableSlim(selector) {
+    this.dispatch("enable", { target: $(selector)[0] });
+  }
+
+  disableSlim(selector) {
+    this.dispatch("disable", { target: $(selector)[0] });
   }
 }

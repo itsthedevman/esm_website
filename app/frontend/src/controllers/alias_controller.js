@@ -141,8 +141,8 @@ export default class extends ApplicationController {
   #clearModal() {
     $(this.valueTarget).val("");
 
-    this.clearSlimSelection(this.communityIDTarget);
-    this.clearSlimSelection(this.serverIDTarget);
+    this.clearSlimSelected(this.communityIDTarget);
+    this.clearSlimSelected(this.serverIDTarget);
 
     this.validator.clearAllErrors();
 

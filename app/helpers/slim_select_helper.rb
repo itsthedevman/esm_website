@@ -103,4 +103,15 @@ module SlimSelectHelper
       selected:, placeholder: true, **options
     )
   end
+
+  def slim_select_stimulus_actions(controller_name)
+    [
+      "#{controller_name}:setSelected->slim-select#setSelected",
+      "#{controller_name}:clearSelected->slim-select#clearSelected",
+      "#{controller_name}:clearData->slim-select#clearData",
+      "#{controller_name}:setData->slim-select#setData",
+      "#{controller_name}:enable->slim-select#enable",
+      "#{controller_name}:disable->slim-select#disable"
+    ].join(" ")
+  end
 end

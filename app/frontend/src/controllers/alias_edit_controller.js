@@ -19,12 +19,12 @@ export default class extends AliasController {
 
     $(this.valueTarget).val(alias.value);
 
-    this.setSlimSelection(
+    this.setSlimSelected(
       this.communityIDTarget,
       `${alias.community?.community_id}:${alias.community?.community_name}`
     );
 
-    this.setSlimSelection(
+    this.setSlimSelected(
       this.serverIDTarget,
       `${alias.server?.server_id}:${alias.server?.server_name}`
     );
