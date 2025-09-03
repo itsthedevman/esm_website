@@ -8,8 +8,11 @@ class UserNotificationRoutesController < AuthenticatedController
       .pending_community_acceptance
       .by_user_channel_and_server
 
+    routes = current_user.user_notification_routes.by_user_channel_and_server
+
     render locals: {
-      pending_routes:
+      pending_routes:,
+      routes:
     }
   end
 

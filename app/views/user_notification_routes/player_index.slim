@@ -20,7 +20,11 @@
     #routes-container.row.g-4
       - if routes.size > 0
         - routes.each do |(community, server, channel), routes|
-          = render_component(NotificationRouteCardComponent, community:, server:, channel:, routes:)
+          .col-6
+            = render_component( \
+              NotificationRouteCardComponent,
+              community:, server:, channel:, routes:,
+            )
       - else
         = render "no_routes"
 
