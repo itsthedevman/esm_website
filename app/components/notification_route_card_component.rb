@@ -62,15 +62,13 @@ class NotificationRouteCardComponent < ApplicationComponent
 
   def render_route_checkbox(route)
     content_tag(:div, class: "form-check form-switch mb-0") do
-      id = "route-#{route.public_id}"
-
       safe_join([
         check_box_tag(
           "route[#{route.public_id}]", "1",
           route.enabled?,
-          id:, class: "form-check-input"
+          id: route.dom_id, class: "form-check-input"
         ),
-        content_tag(:label, route.notification_type.titleize, class: "small", for: id)
+        content_tag(:label, route.notification_type.titleize, class: "small", for: route.dom_id)
       ])
     end
   end
