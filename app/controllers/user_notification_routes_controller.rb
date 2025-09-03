@@ -17,11 +17,6 @@ class UserNotificationRoutesController < AuthenticatedController
 
   def player_index
     routes = current_user.user_notification_routes
-      .accepted
-      .by_community_server_and_channel_for_user
-
-    pending_routes = current_user.user_notification_routes
-      .pending_user_acceptance
       .by_community_server_and_channel_for_user
 
     all_communities = ESM::Community.select(:id, :community_id, :community_name)
@@ -39,7 +34,6 @@ class UserNotificationRoutesController < AuthenticatedController
 
     render locals: {
       routes:,
-      pending_routes:,
       community_select_data: helpers.generate_community_select_data(
         all_communities,
         value_method: ->(community) { "#{community.community_id}:#{community.community_name}" }
@@ -141,6 +135,7 @@ class UserNotificationRoutesController < AuthenticatedController
   def update
     route = current_context.user_notification_routes.find_by(public_id: params[:id])
     not_found! if route.nil?
+    not_found! unless route.community_accepted?
 
     route.update!(enabled: params[:enabled])
 

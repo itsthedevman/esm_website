@@ -1,4 +1,20 @@
 = render "communities/container", **local_assigns do
+  / / Pending Requests Section
+  / - if pending_routes.size > 0
+  /   .card.border-warning.bg-warning.bg-opacity-10.mb-5
+  /     .card-header.border-warning
+  /       h3.mb-0.text-warning
+  /         i.bi.bi-clock-history.me-2
+  /         | Pending Route Requests
+
+  /     .card-body
+  /       p.text-muted.small.mb-4
+  /         | Server admins have requested to route your notifications to these channels.
+
+  /       .row.g-3
+  /         - pending_routes.each do |(community, server, channel), routes|
+  /           = render_component(RouteRequestCardComponent, community:, server:, channel:, routes:)
+
   / Page header with server admin focus
   .text-center.mb-4
     h1.mb-2 XM8 Notification Routing

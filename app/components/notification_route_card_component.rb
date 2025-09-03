@@ -27,6 +27,14 @@ class NotificationRouteCardComponent < ApplicationComponent
 
   private
 
+  def route_pending?(route)
+    route.user_accepted? && !route.community_accepted?
+  end
+
+  def route_active?(route)
+    route.user_accepted? && route.community_accepted?
+  end
+
   def group_container_id(channel, community, server, group_name)
     "#{channel.id}-#{community.public_id}-#{server&.server_id}-#{group_name}"
   end
@@ -42,9 +50,12 @@ class NotificationRouteCardComponent < ApplicationComponent
   end
 
   def render_route_row(route)
+    row_classes = ["d-flex", "align-items-center", "justify-content-between", "mb-1", "route-row"]
+    row_classes << "opacity-50" if route_pending?(route)
+
     content_tag(
       :div,
-      class: "d-flex align-items-center justify-content-between mb-1 route-row",
+      class: row_classes,
       id: route.dom_id
     ) do
       safe_join([
@@ -56,7 +67,24 @@ class NotificationRouteCardComponent < ApplicationComponent
 
   def render_route_controls(route)
     content_tag(:div, class: "d-flex align-items-center gap-2 flex-grow-1") do
-      render_route_checkbox(route)
+      if route_pending?(route)
+        render_pending_route(route)
+      else
+        render_route_checkbox(route)
+      end
+    end
+  end
+
+  def render_pending_route(route)
+    content_tag(
+      :div,
+      class: "d-flex align-items-center gap-2",
+      title: "Waiting for community approval"
+    ) do
+      safe_join([
+        content_tag(:i, "", class: "bi bi-clock text-warning"),
+        content_tag(:span, route.notification_type.titleize, class: "small text-muted")
+      ])
     end
   end
 
