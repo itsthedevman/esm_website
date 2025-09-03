@@ -208,8 +208,11 @@ class UserNotificationRoutesController < AuthenticatedController
 
     # No routes left? Refresh the page
     if current_context.user_notification_routes.size == 0
-      flash[:success] = "Route has been removed"
-      render turbo_stream: turbo_stream.refresh(request_id: nil)
+      render turbo_stream: [
+        turbo_stream.replace("routes-container", partial: "no_routes"),
+        create_success_toast("Route has been removed")
+      ]
+
       return
     end
 
@@ -240,21 +243,13 @@ class UserNotificationRoutesController < AuthenticatedController
 
     routes.each(&:destroy!)
 
-    # No routes left? Refresh the page
-    if current_context.user_notification_routes.size == 0
-      flash[:success] = "Routes have been removed"
-      render turbo_stream: turbo_stream.refresh(request_id: nil)
-      return
+    flash[:success] = "Routes have been removed"
+
+    if current_community
+      redirect_to community_notification_routing_index_path
+    else
+      redirect_to users_notification_routing_index_path
     end
-
-    route = routes.first
-    community = route.destination_community
-    server = route.source_server
-
-    render turbo_stream: [
-      turbo_stream.remove("#{route.channel_id}-#{community.public_id}-#{server&.public_id}"),
-      create_success_toast("Routes have been removed")
-    ]
   end
 
   private
