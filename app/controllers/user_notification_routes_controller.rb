@@ -56,34 +56,10 @@ class UserNotificationRoutesController < AuthenticatedController
   def create
     permitted_params = permit_create_params!
 
-    # Validate and load the users
-    users =
-      if current_community
-        user_ids = permitted_params[:user_ids]
-        users = ESM::User.where(discord_id: user_ids).select(:id)
-        not_found! if users.blank? || users.size != user_ids.size
-
-        users
-      else
-        [current_user]
-      end
-
-    # Validate the community.
-    # If we're modifying this from the server dashboard, current_community will be defined.
-    community = current_community ||
-      ESM::Community.find_by_community_id(permitted_params[:community_id])
-
+    community = ESM::Community.find_by_community_id(permitted_params[:community_id])
     not_found! if community.nil?
 
-    # Validate the channel
-    filter =
-      if current_community
-        {community_id: current_community.id}
-      else
-        {user_id: current_user.id}
-      end
-
-    channel = ESM.bot.channel(permitted_params[:channel_id], **filter)
+    channel = ESM.bot.channel(permitted_params[:channel_id], user_id: current_user.id)
     not_found! if channel.nil?
 
     # Validate the servers
@@ -91,6 +67,7 @@ class UserNotificationRoutesController < AuthenticatedController
 
     servers =
       if server_ids == "any"
+        # We want to create one entry per type with a nil server ID
         [nil]
       else
         servers = ESM::Server.where(server_id: server_ids).select(:id)
@@ -99,47 +76,45 @@ class UserNotificationRoutesController < AuthenticatedController
         servers
       end
 
-    types = UserNotificationRoute::TYPES.select { |type| permitted_params[:types].include?(type) }
+    types = ESM::UserNotificationRoute::TYPES.select do |type|
+      permitted_params[:types].include?(type)
+    end
 
-    # This builds all of the queries as Array<Hash>
-    queries = users.flat_map do |user|
-      # This auto accepts any requests for the current user
-      auto_accept =
-        if current_community
-          current_user == user
-        else
-          current_user == user && community.modifiable_by?(current_user)
-        end
+    # This auto accepts any requests
+    auto_accept = community.modifiable_by?(current_user)
 
-      types.map do |type|
-        servers.map do |server|
-          {
-            uuid: SecureRandom.uuid,
-            user_id: user.id,
-            source_server_id: server&.id,
-            destination_community_id: community.id,
-            channel_id: channel[:id],
-            notification_type: type,
-            community_accepted: auto_accept || current_context == current_community,
-            user_accepted: auto_accept || current_context == current_user
-          }
-        end
+    queries = types.flat_map do |type|
+      servers.map do |server|
+        {
+          public_id: SecureRandom.uuid,
+          user_id: current_user.id,
+          source_server_id: server&.id,
+          destination_community_id: community.id,
+          channel_id: channel[:id],
+          notification_type: type,
+          community_accepted: auto_accept || false,
+          user_accepted: true
+        }
       end
     end
 
-    # Remove any duplicates
-    queries.reject! do |query|
-      ESM::UserNotificationRoute.where(query.except(:community_accepted, :uuid)).exists?
-    end
-
-    # Fetch all existing routes for these combinations
-    existing_routes = ESM::UserNotificationRoute.where(
-      user_id: users.map(&:id),
-      source_server_id: servers.map(&:id).push(nil), # Include nil for "any server"
+    # Now we need to detect any routes that might exist and drop them from our insert
+    existing_routes_query = current_user.user_notification_routes.where(
       destination_community_id: community.id,
       channel_id: channel[:id],
       notification_type: types
-    ).pluck(:user_id, :source_server_id, :notification_type).join_map("-").to_set
+    )
+
+    existing_routes_query =
+      if server_ids == "any"
+        existing_routes_query.where(source_server_id: nil)
+      else
+        existing_routes_query.where(source_server_id: servers.map(&:id))
+      end
+
+    existing_routes = existing_routes_query.pluck(:user_id, :source_server_id, :notification_type)
+      .map { |id| id.join("-") }
+      .to_set
 
     # Remove any duplicates
     queries.reject! do |query|
@@ -147,24 +122,20 @@ class UserNotificationRoutesController < AuthenticatedController
       existing_routes.include?(key)
     end
 
-    # I love bulk inserts
-    UserNotificationRoute.import(queries)
+    ESM::UserNotificationRoute.insert_all(queries)
 
     # Check if any were auto-accepted and notify the channel
     accepted_uuids = queries.select { |query| query[:community_accepted] && query[:user_accepted] }
-      .map { |query| query[:uuid] }
+      .key_map(:public_id)
 
-    routes = UserNotificationRoute.all
-      .where(uuid: accepted_uuids)
+    routes = ESM::UserNotificationRoute.all
+      .where(public_id: accepted_uuids)
       .select(:user_id, :notification_type, :source_server_id, :channel_id)
 
     notify_channel(routes) if routes.present?
 
-    if current_community
-      redirect_to community_notification_routing_index_path
-    else
-      redirect_to users_notification_routing_index_path
-    end
+    flash[:success] = "Routes created"
+    redirect_to users_notification_routing_index_path
   end
 
   def update
