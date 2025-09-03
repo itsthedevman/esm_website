@@ -56,16 +56,22 @@ class NotificationRouteCardComponent < ApplicationComponent
 
   def render_route_controls(route)
     content_tag(:div, class: "d-flex align-items-center gap-2 flex-grow-1") do
-      safe_join([
-        render_route_checkbox(route),
-        content_tag(:small, route.notification_type.titleize, class: "flex-grow-1")
-      ])
+      render_route_checkbox(route)
     end
   end
 
   def render_route_checkbox(route)
     content_tag(:div, class: "form-check form-switch mb-0") do
-      check_box_tag("route[#{route.public_id}]", "1", route.enabled?, class: "form-check-input")
+      id = "route-#{route.public_id}"
+
+      safe_join([
+        check_box_tag(
+          "route[#{route.public_id}]", "1",
+          route.enabled?,
+          id:, class: "form-check-input"
+        ),
+        content_tag(:label, route.notification_type.titleize, class: "small", for: id)
+      ])
     end
   end
 
@@ -74,7 +80,7 @@ class NotificationRouteCardComponent < ApplicationComponent
       users_notification_routing_path(route),
       method: :delete,
       class: "btn btn-link btn-sm p-0 text-danger route-delete d-none",
-      title: "Delete route for #{route.notification_type.titleize}"
+      title: "Delete #{route.notification_type.titleize} route"
     ) do
       content_tag(:i, "", class: "bi bi-trash small")
     end
