@@ -4,15 +4,13 @@ class UserNotificationRoutesController < AuthenticatedController
   before_action :redirect_if_server_mode!, if: -> { current_context == current_community }
 
   def server_index
-    # render action_name, locals: {
-    #   servers: Community.servers_by_community,
-    #   channels: load_admin_channels,
-    #   pending_requests: load_pending_requests,
-    #   types: load_types,
-    #   users: load_users,
-    #   type_presets: load_type_presets,
-    #   view_path: "user_notification_routes/server"
-    # }
+    pending_routes = current_community.user_notification_routes
+      .pending_community_acceptance
+      .by_user_channel_and_server
+
+    render locals: {
+      pending_routes:
+    }
   end
 
   def player_index

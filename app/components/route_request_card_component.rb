@@ -3,10 +3,10 @@
 class RouteRequestCardComponent < ApplicationComponent
   include NotificationGrouping
 
-  attr_reader :community, :server, :channel, :all_routes
+  attr_reader :user, :server, :channel, :all_routes
 
-  def on_load(community:, server:, channel:, routes:)
-    @community = community
+  def on_load(user:, server:, channel:, routes:)
+    @user = user
     @server = server
     @channel = channel
     @all_routes = routes

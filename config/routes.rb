@@ -34,10 +34,6 @@ Rails.application.routes.draw do
       only: %i[create update destroy] do
       collection do
         get :/, action: :player_index
-
-        patch :accept
-        patch :decline
-
         delete :destroy_many
       end
     end

@@ -1,45 +1,11 @@
 = render "communities/container", **local_assigns do
-  / / Pending Requests Section
-  / - if pending_routes.size > 0
-  /   .card.border-warning.bg-warning.bg-opacity-10.mb-5
-  /     .card-header.border-warning
-  /       h3.mb-0.text-warning
-  /         i.bi.bi-clock-history.me-2
-  /         | Pending Route Requests
-
-  /     .card-body
-  /       p.text-muted.small.mb-4
-  /         | Server admins have requested to route your notifications to these channels.
-
-  /       .row.g-3
-  /         - pending_routes.each do |(community, server, channel), routes|
-  /           = render_component(RouteRequestCardComponent, community:, server:, channel:, routes:)
-
   / Page header with server admin focus
   .text-center.mb-4
     h1.mb-2 XM8 Notification Routing
     p.lead.text-muted Manage notification routing for your Discord server members
 
-    / Quick stats overview
-    .row.g-3.justify-content-center.mb-4
-      .col-auto
-        .card.bg-primary.bg-opacity-10.border-primary
-          .card-body.text-center.py-3
-            .h4.mb-1.text-primary 3
-            small.text-muted Active Channels
-      .col-auto
-        .card.bg-success.bg-opacity-10.border-success
-          .card-body.text-center.py-3
-            .h4.mb-1.text-success 12
-            small.text-muted Active Routes
-      .col-auto
-        .card.bg-warning.bg-opacity-10.border-warning
-          .card-body.text-center.py-3
-            .h4.mb-1.text-warning 2
-            small.text-muted Pending Requests
-
   / Pending Requests Section
-  - if true
+  - if pending_routes.size > 0
     .card.border-warning.bg-warning.bg-opacity-10.mb-5
       .card-header.border-warning.d-flex.align-items-center.justify-content-between
         h3.mb-0.text-warning
@@ -54,68 +20,11 @@
           | Players have requested to route their notifications to your Discord channels. Accept or decline each request.
 
         .row.g-3
-          .col-6
-            .card.bg-dark.border-secondary.h-100.d-flex.flex-column
-              .card-body.flex-grow-1
-                .d-flex.align-items-center.mb-3
-                  img.rounded-circle.me-3 src="https://via.placeholder.com/32x32/6c757d/ffffff?text=P1" width="32" height="32" alt="Avatar"
-                  div
-                    h6.mb-0.text-light PlayerOne
-                    small.text-muted Steam64: 76561198123456789
+          - pending_routes.each do |(user, server, channel), routes|
+            = render_component(RouteRequestCardComponent, user:, server:, channel:, routes:)
 
-                .mb-3
-                  strong.text-info #general
-                  small.text-muted.ms-2 ← from Any server
-
-                .mb-3
-                  h6.small.text-muted.mb-2 🏠 TERRITORY EVENTS
-                  .d-flex.flex-wrap.gap-1.mb-2
-                    span.badge.bg-secondary Base Raid
-                    span.badge.bg-secondary Flag Events
-
-                  h6.small.text-muted.mb-2 💰 ECONOMY
-                  .d-flex.flex-wrap.gap-1
-                    span.badge.bg-secondary Protection Money
-                    span.badge.bg-secondary +2 more
-
-              .card-footer.border-secondary
-                .d-flex.gap-2.justify-content-end
-                  button.btn.btn-danger.btn-sm Decline
-                  button.btn.btn-success.btn-sm Accept
-
-          .col-6
-            .card.bg-dark.border-secondary.h-100.d-flex.flex-column
-              .card-body.flex-grow-1
-                .d-flex.align-items-center.mb-3
-                  img.rounded-circle.me-3 src="https://via.placeholder.com/32x32/6c757d/ffffff?text=E" width="32" height="32" alt="Avatar"
-                  div
-                    h6.mb-0.text-light ExilePlayer
-                    small.text-muted Steam64: 76561198987654321
-
-                .mb-3
-                  strong.text-info #notifications
-                  small.text-muted.ms-2 ← from abc4_altis_main
-
-                .mb-3
-                  h6.small.text-muted.mb-2 💰 ECONOMY
-                  .d-flex.flex-wrap.gap-1
-                    span.badge.bg-secondary Base Payments
-                    span.badge.bg-secondary MarXet Sales
-
-              .card-footer.border-secondary
-                .d-flex.gap-2.justify-content-end
-                  button.btn.btn-danger.btn-sm Decline
-                  button.btn.btn-success.btn-sm Accept
-
-  / Active Routes Management - flat approach with filtering
+  / Active Routes Management
   .mb-5
-    .d-flex.align-items-center.justify-content-between.mb-4
-      h2.mb-0 Active Routes
-      button.btn.btn-primary
-        i.bi.bi-plus-circle.me-2
-        | Create New Route
-
-    / Filter bar for better organization
     .row.g-3.mb-4
       .col-3
         select.form-select
@@ -138,7 +47,7 @@
       .col-3
         button.btn.btn-outline-secondary Clear Filters
 
-    / Route cards - organized by user groups but in flat display
+    / Route cards
     .row.g-4
       / User group 1
       .col-12
@@ -151,7 +60,6 @@
                   h6.mb-0.text-primary PlayerOne
                   small.text-muted 3 active routes
               .d-flex.gap-2
-                button.btn.btn-outline-primary.btn-sm Create Route For User
                 button.btn.btn-danger.btn-sm Delete All
 
         .row.g-3.mb-5
@@ -261,7 +169,6 @@
                   h6.mb-0.text-success ExilePlayer
                   small.text-muted 2 active routes
               .d-flex.gap-2
-                button.btn.btn-outline-success.btn-sm Create Route For User
                 button.btn.btn-danger.btn-sm Delete All
 
         .row.g-3.mb-5

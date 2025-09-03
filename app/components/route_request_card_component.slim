@@ -2,17 +2,14 @@
   .card.bg-dark.border-secondary.h-100.d-flex.flex-column
     .card-body.flex-grow-1
       .d-flex.align-items-center.mb-3
-        .me-3
-          - if community.icon_url.present?
-            img.rounded src=community.icon_url alt=community.community_name width="48" height="48"
-          - else
-            .bg-primary.rounded.d-flex.align-items-center.justify-content-center style="width: 48px; height: 48px;"
-                i.bi.bi-people.text-white.fs-4
+        img.rounded-circle.me-3[
+          src=user.avatar_url
+          alt=user.discord_username
+          width="48"
+          height="48"
+        ]
         div
-          h5.mb-0.text-light
-            = community.community_name
-          small.text-muted
-            = community.community_id
+          h6.mb-0.text-light = user.discord_username
 
       .mb-3
         strong.text-info
@@ -40,13 +37,13 @@
 
     .card-footer.border-secondary
       .d-flex.gap-2.justify-content-end
-        = button_to decline_users_notification_routing_index_path,
+        = button_to decline_community_notification_routing_index_path,
           class: "btn btn-danger btn-sm",
           method: :patch,
           data: {turbo: false}
           = hidden_field_tag :ids, all_routes.map(&:public_id).to_json
           | Decline
-        = button_to accept_users_notification_routing_index_path,
+        = button_to accept_community_notification_routing_index_path,
           class: "btn btn-success text-white btn-sm",
           method: :patch,
           data: {turbo: false}
