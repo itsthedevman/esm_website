@@ -139,20 +139,13 @@ class UserNotificationRoutesController < AuthenticatedController
   end
 
   def update
-    route = current_context.user_notification_routes.where(uuid: params[:id]).first
-    return check_failed!(message: "Failed to find the requested route") if route.blank?
+    route = current_context.user_notification_routes.find_by(public_id: params[:id])
+    not_found! if route.nil?
 
     route.update!(enabled: params[:enabled])
 
-    message = "#{route.notification_type.titleize} notifications are now #{route.enabled? ? "enabled" : "disabled"} for this channel"
-    message =
-      if current_context == current_community
-        "#{route.user.user_name}'s #{message}"
-      else
-        "Your #{message}"
-      end
-
-    render json: {message: message}, status: :ok
+    message = "Route <strong>#{route.enabled? ? "enabled" : "disabled"}</strong>"
+    render turbo_stream: create_success_toast(message)
   end
 
   def accept

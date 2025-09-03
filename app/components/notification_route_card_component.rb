@@ -61,14 +61,22 @@ class NotificationRouteCardComponent < ApplicationComponent
   end
 
   def render_route_checkbox(route)
-    content_tag(:div, class: "form-check form-switch mb-0") do
+    form_with(
+      model: route,
+      url: users_notification_routing_path(route),
+      method: :patch,
+      local: false,
+      class: "form-check form-switch mb-0",
+      data: {controller: "auto-submit"}
+    ) do |f|
       safe_join([
-        check_box_tag(
-          "route[#{route.public_id}]", "1",
-          route.enabled?,
-          id: route.dom_id, class: "form-check-input"
+        f.check_box(
+          :enabled,
+          class: "form-check-input",
+          name: :enabled,
+          data: {action: "change->auto-submit#submit"}
         ),
-        content_tag(:label, route.notification_type.titleize, class: "small", for: route.dom_id)
+        f.label(:enabled, route.notification_type.titleize, class: "small")
       ])
     end
   end

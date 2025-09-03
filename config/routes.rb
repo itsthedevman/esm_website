@@ -31,7 +31,7 @@ Rails.application.routes.draw do
     resources :user_notification_routes,
       path: :notification_routing,
       as: :notification_routing,
-      only: %i[create destroy] do
+      only: %i[create update destroy] do
       collection do
         get :/, action: :player_index
 
