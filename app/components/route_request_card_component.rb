@@ -13,18 +13,24 @@ class RouteRequestCardComponent < ApplicationComponent
   end
 
   def render_route_group(group_name, routes)
-    content_tag :div, nil, class: "mb-3" do
-      header = content_tag :div, group_name.humanize.upcase, class: "h6 small text-muted mb-2"
-
-      routes_section = content_tag :div, nil, class: "d-flex flex-wrap gap-1" do
-        safe_join(routes.map do |route|
-          content_tag :span,
-            route.notification_type.titleize,
-            class: "badge bg-secondary"
-        end)
-      end
-
-      safe_join([header, routes_section])
+    content_tag :div, class: "mb-3" do
+      safe_join([
+        # Group header
+        content_tag(:div, class: "text-uppercase text-muted small fw-bold mb-2") do
+          group_name.humanize
+        end,
+        # Route items as bulleted list
+        content_tag(:div, class: "ms-2") do
+          safe_join(routes.map do |route|
+            content_tag :div, class: "text-light small mb-1" do
+              safe_join([
+                content_tag(:span, "• ", class: "me-1"),
+                route.notification_type.titleize
+              ])
+            end
+          end)
+        end
+      ])
     end
   end
 end

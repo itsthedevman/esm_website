@@ -21,37 +21,14 @@
             - grouped_routes.each do |route_data|
               = render_component(RouteRequestCardComponent, user:, **route_data)
 
-  / Active Routes Management
-  .mb-5
-    .row.g-3.mb-4
-      .col-3
-        select.form-select
-          option Filter by Channel
-          option #general (5 routes)
-          option #notifications (3 routes)
-          option #raid-alerts (4 routes)
-      .col-3
-        select.form-select
-          option Filter by User
-          option PlayerOne (3 routes)
-          option ExilePlayer (2 routes)
-          option AdminUser (1 route)
-      .col-3
-        select.form-select
-          option Filter by Server
-          option abc4_altis_main (8 routes)
-          option abc4_tanoa_test (2 routes)
-          option Any server (2 routes)
-      .col-3
-        button.btn.btn-outline-secondary Clear Filters
-
-    / Route cards
-    .row.g-4
+  / Route cards
+  .mb-3
+    .row.g-3
       - if routes.size > 0
         - routes.each do |user, grouped_routes|
           .col-12
-            .card.bg-primary.bg-opacity-10.border-primary.mb-3
-              .card-body.py-2
+            .card.mb-3
+              .card-body.py-3
                 .d-flex.align-items-center.justify-content-between
                   .d-flex.align-items-center
                     img.rounded-circle.me-3[
@@ -61,9 +38,7 @@
                       height="48"
                     ]
                     div
-                      h6.mb-0.text-primary = user.discord_username
-                  .d-flex.gap-2
-                    button.btn.btn-danger.btn-sm Delete All
+                      h6.mb-0 = user.discord_username
 
             .row.g-3.mb-5
               - grouped_routes.each do |route_data|
