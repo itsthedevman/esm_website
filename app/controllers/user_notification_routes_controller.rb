@@ -15,7 +15,8 @@ class UserNotificationRoutesController < AuthenticatedController
 
     render locals: {
       pending_routes:,
-      routes:
+      routes:,
+      route_card_paths:
     }
   end
 
@@ -185,10 +186,16 @@ class UserNotificationRoutesController < AuthenticatedController
 
     route.destroy!
 
-    # No routes left? Refresh the page
-    if current_context.user_notification_routes.size == 0
+    routes_left = current_context.user_notification_routes
+      .where(
+        user_id: route.user_id,
+        source_server_id: route.source_server_id,
+        channel_id: route.channel_id
+      ).size
+
+    if routes_left == 0
       render turbo_stream: [
-        turbo_stream.replace("routes-container", partial: "no_routes"),
+        turbo_stream.replace("routes-container", partial: "no_routes_player"),
         create_success_toast("Route has been removed")
       ]
 
@@ -199,16 +206,6 @@ class UserNotificationRoutesController < AuthenticatedController
       turbo_stream.remove(route.dom_id),
       create_success_toast("Route has been removed")
     ]
-
-    # If the last route in a group has been removed, remove the group too
-    if (dom_id = remove_route_group(route))
-      actions << turbo_stream.remove(dom_id)
-
-      # Since we removed the group, check if we need to remove the card too
-      if (dom_id = remove_route_card(route))
-        actions << turbo_stream.remove(dom_id)
-      end
-    end
 
     render turbo_stream: actions
   end
@@ -266,6 +263,15 @@ class UserNotificationRoutesController < AuthenticatedController
         :incoming_envelope: #{user.mention}, this channel will now receive #{types_sentence} XM8 notifications sent to you from #{server}
       STRING
     )
+  end
+
+  def route_card_paths
+    {
+      destroy_many: method(:destroy_many_community_notification_routing_index_path)
+        .curry(2)
+        .call(current_community),
+      routing: method(:community_notification_routing_path).curry(2).call(current_community)
+    }
   end
 
   def remove_route_group(route)

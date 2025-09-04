@@ -26,7 +26,7 @@
     .row.g-3
       - if routes.size > 0
         - routes.each do |user, grouped_routes|
-          .col-12
+          .col-12[id=user.dom_id]
             .card.mb-3
               .card-body.py-3
                 .d-flex.align-items-center.justify-content-between
@@ -44,9 +44,7 @@
               - grouped_routes.each do |route_data|
                 = render_component( \
                   NotificationRouteCardComponent,
-                  user:,
-                  paths: {\
-                    destroy_many: method(:destroy_many_community_notification_routing_index_path).curry(2).call(current_community),
-                    routing: method(:community_notification_routing_path).curry(2).call(current_community),
-                  },
+                  user:, paths: route_card_paths,
                   **route_data)
+      - else
+        = render "no_routes_server"
