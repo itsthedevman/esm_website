@@ -3,9 +3,10 @@
 class NotificationRouteCardComponent < ApplicationComponent
   include NotificationGrouping
 
-  attr_reader :community, :server, :channel, :all_routes
+  attr_reader :community, :user, :server, :channel, :all_routes
 
-  def on_load(community:, server:, channel:, routes:)
+  def on_load(server:, channel:, routes:, community: nil, user: nil)
+    @user = user
     @community = community
     @server = server
     @channel = channel
@@ -16,7 +17,7 @@ class NotificationRouteCardComponent < ApplicationComponent
     content_tag(
       :div,
       class: "mb-3",
-      id: group_container_id(channel, community, server, group_name)
+      id: group_container_id(channel, community || user, server, group_name)
     ) do
       safe_join([
         render_group_header(group_name),
@@ -35,8 +36,8 @@ class NotificationRouteCardComponent < ApplicationComponent
     route.user_accepted? && route.community_accepted?
   end
 
-  def group_container_id(channel, community, server, group_name)
-    "#{channel.id}-#{community.public_id}-#{server&.server_id}-#{group_name}"
+  def group_container_id(channel, context, server, group_name)
+    "#{channel.id}-#{context.public_id}-#{server&.server_id}-#{group_name}"
   end
 
   def render_group_header(group_name)

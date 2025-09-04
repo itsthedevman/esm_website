@@ -2,13 +2,16 @@
 
 class UserNotificationRoutesController < AuthenticatedController
   before_action :redirect_if_server_mode!, if: -> { current_context == current_community }
+  before_action :check_for_community_access!, if: -> { current_context == current_community }
 
   def server_index
     pending_routes = current_community.user_notification_routes
       .pending_community_acceptance
       .by_user_channel_and_server
 
-    routes = current_user.user_notification_routes.by_user_channel_and_server
+    routes = current_community.user_notification_routes
+      .accepted
+      .by_user_channel_and_server
 
     render locals: {
       pending_routes:,
@@ -148,42 +151,29 @@ class UserNotificationRoutesController < AuthenticatedController
     ids = params[:ids].to_a
     not_found! if ids.blank?
 
-    routes = current_context.user_notification_routes.where(public_id: ids)
+    routes = current_community.user_notification_routes.where(public_id: ids)
     not_found! if routes.blank? || routes.size != ids.size
 
-    if current_community
-      routes.update_all(community_accepted: true, updated_at: Time.current)
-    else
-      routes.update_all(user_accepted: true, updated_at: Time.current)
-    end
-
+    routes.update_all(community_accepted: true, updated_at: Time.current)
     notify_channel(routes)
 
     flash[:success] = "Request accepted"
 
-    if current_community
-      redirect_to community_notification_routing_index_path
-    else
-      redirect_to users_notification_routing_index_path
-    end
+    redirect_to community_notification_routing_index_path
   end
 
   def decline
     ids = params[:ids].to_a
     not_found! if ids.blank?
 
-    routes = current_context.user_notification_routes.where(public_id: ids)
+    routes = current_community.user_notification_routes.where(public_id: ids)
     not_found! if routes.blank? || routes.size != ids.size
 
     routes.delete_all
 
     flash[:success] = "Request declined"
 
-    if current_community
-      redirect_to community_notification_routing_index_path
-    else
-      redirect_to users_notification_routing_index_path
-    end
+    redirect_to community_notification_routing_index_path
   end
 
   def destroy

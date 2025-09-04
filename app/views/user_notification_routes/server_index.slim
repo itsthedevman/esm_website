@@ -11,17 +11,15 @@
         h3.mb-0.text-warning
           i.bi.bi-clock-history.me-2
           | Pending Requests Require Your Attention
-        .d-flex.gap-2
-          button.btn.btn-danger.btn-sm Decline All
-          button.btn.btn-warning.btn-sm Accept All
 
       .card-body
         p.text-muted.small.mb-4
           | Players have requested to route their notifications to your Discord channels. Accept or decline each request.
 
         .row.g-3
-          - pending_routes.each do |(user, server, channel), routes|
-            = render_component(RouteRequestCardComponent, user:, server:, channel:, routes:)
+          - pending_routes.each do |user, grouped_routes|
+            - grouped_routes.each do |route_data|
+              = render_component(RouteRequestCardComponent, user:, **route_data)
 
   / Active Routes Management
   .mb-5
@@ -50,7 +48,7 @@
     / Route cards
     .row.g-4
       - if routes.size > 0
-        - routes.each do |(user, server, channel), routes|
+        - routes.each do |user, grouped_routes|
           .col-12
             .card.bg-primary.bg-opacity-10.border-primary.mb-3
               .card-body.py-2
@@ -68,8 +66,5 @@
                     button.btn.btn-danger.btn-sm Delete All
 
             .row.g-3.mb-5
-              .col-4
-                / = render_component( \
-                /   NotificationRouteCardComponent,
-                /   user:, server:, channel:, routes:,
-                / )
+              - grouped_routes.each do |route_data|
+                = render_component(NotificationRouteCardComponent, user:, **route_data)
