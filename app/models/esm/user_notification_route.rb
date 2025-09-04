@@ -52,9 +52,10 @@ module ESM
     end
 
     def self.by_user_channel_and_server
-      routes = includes(:user, :source_server)
+      routes = includes(:user, :source_server, :destination_community)
         .load
         .group_by(&:user)
+        .sort_by.dig(0).method(:discord_username).case_insensitive
         .map do |user, routes|
           routes = routes.group_by { |r| [r.source_server_id, r.channel_id] }
             .filter_map do |_, routes|
@@ -63,9 +64,10 @@ module ESM
               next if channel.nil? # Ensures they have access to the channel
 
               server = route.source_server
+              community = route.destination_community
               routes = routes.sort_by(&:notification_type)
 
-              {channel:, server:, routes:}
+              {channel:, server:, community:, routes:}
             end
 
           [user, routes]

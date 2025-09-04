@@ -5,19 +5,28 @@ class NotificationRouteCardComponent < ApplicationComponent
 
   attr_reader :community, :user, :server, :channel, :all_routes
 
-  def on_load(server:, channel:, routes:, community: nil, user: nil)
+  def on_load(server:, channel:, routes:, paths:, community: nil, user: nil)
     @user = user
     @community = community
     @server = server
     @channel = channel
     @all_routes = routes
+    @paths = paths
+  end
+
+  def destroy_many_path(...)
+    @paths[:destroy_many].call(...)
+  end
+
+  def routing_path(...)
+    @paths[:routing].call(...)
   end
 
   def render_route_group(group_name, routes)
     content_tag(
       :div,
       class: "mb-3",
-      id: group_container_id(channel, community || user, server, group_name)
+      id: group_container_id(group_name)
     ) do
       safe_join([
         render_group_header(group_name),
@@ -36,8 +45,14 @@ class NotificationRouteCardComponent < ApplicationComponent
     route.user_accepted? && route.community_accepted?
   end
 
-  def group_container_id(channel, context, server, group_name)
-    "#{channel.id}-#{context.public_id}-#{server&.server_id}-#{group_name}"
+  def group_container_id(group_name)
+    [
+      channel.id,
+      user&.public_id,
+      community.public_id,
+      server&.server_id,
+      group_name
+    ].join("-")
   end
 
   def render_group_header(group_name)
@@ -92,7 +107,7 @@ class NotificationRouteCardComponent < ApplicationComponent
   def render_route_checkbox(route)
     form_with(
       model: route,
-      url: users_notification_routing_path(route),
+      url: routing_path(route),
       method: :patch,
       local: false,
       class: "form-check form-switch mb-0",
@@ -112,7 +127,7 @@ class NotificationRouteCardComponent < ApplicationComponent
 
   def render_route_delete_button(route)
     button_to(
-      users_notification_routing_path(route),
+      routing_path(route),
       method: :delete,
       class: "btn btn-link btn-sm p-0 text-danger route-delete d-none",
       title: "Delete #{route.notification_type.titleize} route"

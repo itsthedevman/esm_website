@@ -272,19 +272,28 @@ class UserNotificationRoutesController < AuthenticatedController
     group_name, group_types = ESM::UserNotificationRoute::GROUPS
       .find { |_, v| v.include?(route.notification_type) }
 
-    group_routes_exist = current_context.user_notification_routes.where(
-      channel_id: route.channel_id,
-      destination_community_id: route.destination_community_id,
-      source_server_id: route.source_server_id,
-      notification_type: group_types
-    ).exists?
+    group_routes_exist = current_context.user_notification_routes
+      .includes(:user, :source_server, :destination_community)
+      .where(
+        channel_id: route.channel_id,
+        destination_community_id: route.destination_community_id,
+        source_server_id: route.source_server_id,
+        notification_type: group_types
+      ).exists?
 
     return if group_routes_exist
 
     server = route.source_server
+    user = route.user
     community = route.destination_community
 
-    "#{route.channel_id}-#{community.public_id}-#{server&.server_id}-#{group_name}"
+    [
+      route.channel_id,
+      user.public_id,
+      community.public_id,
+      server&.server_id,
+      group_name
+    ].join("-")
   end
 
   def remove_route_card(route)

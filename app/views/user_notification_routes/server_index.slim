@@ -42,4 +42,11 @@
 
             .row.g-3.mb-5
               - grouped_routes.each do |route_data|
-                = render_component(NotificationRouteCardComponent, user:, **route_data)
+                = render_component( \
+                  NotificationRouteCardComponent,
+                  user:,
+                  paths: {\
+                    destroy_many: method(:destroy_many_community_notification_routing_index_path).curry(2).call(current_community),
+                    routing: method(:community_notification_routing_path).curry(2).call(current_community),
+                  },
+                  **route_data)

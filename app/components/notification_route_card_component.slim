@@ -8,9 +8,7 @@
         - if community
           small.text-muted = community.community_name
 
-      = button_to destroy_many_users_notification_routing_index_path( \
-          ids: all_routes.map(&:public_id),
-        ),
+      = button_to destroy_many_path(ids: all_routes.map(&:public_id)),
         method: :delete,
         class: "btn btn-outline-danger btn-sm",
         data: { \
