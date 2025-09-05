@@ -98,7 +98,7 @@
                     i.bi.bi-link.me-2
                     | Register
 
-          .alert.alert-info.border-info.bg-info.bg-opacity-10.mt-4
+          .alert.alert-info.border-info.bg-info.bg-opacity-10.mt-4.mb-0
             h6.text-info.mb-2 What happens next?
             ul.small.mb-0
               li ESM will send a welcome message with your <strong>Community ID</strong>
@@ -115,7 +115,7 @@
         .card-body
           p.mb-4 Set up your server details and download the required authentication files.
 
-          .row.g-4.mb-4
+          .row.g-4
             .col-lg-8
               h6.text-success.mb-3
                 i.bi.bi-list-ol.me-2
@@ -201,8 +201,8 @@
               h6.text-light.mb-2
                 i.bi.bi-terminal.me-2
                 | Example Startup Parameter
-              pre.text-info.bg-body.p-2.rounded.mb-0
-                code -servermod="@ExileServer;@infiSTAR;@esm"
+              pre.bg-body.p-2.rounded.mb-0
+                | -servermod="@ExileServer;@infiSTAR;@esm"
 
       / Step 4: Test Everything
       .card.mb-5.border-start.border-info.border-4
@@ -240,13 +240,13 @@
                   strong.text-success Expected Result:
                   span.text-muted.ms-2 Should return the current server time
 
-          .alert.alert-warning.border-warning.bg-warning.bg-opacity-10.mt-4
+          .alert.alert-warning.border-warning.bg-warning.bg-opacity-10.mt-4.mb-0
             h6.text-warning.mb-2
               i.bi.bi-exclamation-triangle.me-2
               | Troubleshooting
             p.small.mb-0
               | If either test fails, check <code>@esm/log/esm.log</code> for errors.
-              |< Join our
+              |> Join our
               = link_to "Discord support", join_path, class: "text-warning"
               |  for help.
 
@@ -255,7 +255,8 @@
         .card-body.text-center.py-5
           i.bi.bi-check-circle.text-success.display-3.mb-4
           h2.text-success.mb-3 You're All Set!
-          p.lead.mb-4 ESM is now running on your server. Your players can use Discord commands, get notifications, and manage territories remotely.
+          p.lead.mb-4
+            | ESM is now running on your server. Your players can use Discord commands, get notifications, and manage territories remotely.
 
           .row.g-3.justify-content-center
             .col-auto
@@ -321,7 +322,7 @@
               | Need Help?
           .card-body
             p.small.mb-3
-              | Having issues? Check <code>@esm/log/esm.log</code> first, then join our
+              |> Having issues? Check <code>@esm/log/esm.log</code> first, then join our
               = link_to "Discord support server", join_path, class: "text-warning"
               |  for assistance.
 
