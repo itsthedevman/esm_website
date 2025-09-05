@@ -26,13 +26,17 @@ class NotificationRouteCardComponent < ApplicationComponent
     content_tag(
       :div,
       class: "mb-3",
-      id: group_container_id(group_name)
+      id: group_dom_id(group_name)
     ) do
       safe_join([
         render_group_header(group_name),
         render_route_rows(routes)
       ])
     end
+  end
+
+  def route_card_dom_id
+    @route_card_dom_id ||= helpers.notification_route_card_dom_id(all_routes.first)
   end
 
   private
@@ -45,14 +49,8 @@ class NotificationRouteCardComponent < ApplicationComponent
     route.user_accepted? && route.community_accepted?
   end
 
-  def group_container_id(group_name)
-    [
-      channel.id,
-      user&.public_id,
-      community.public_id,
-      server&.server_id,
-      group_name
-    ].join("-")
+  def group_dom_id(group_name)
+    "#{route_card_dom_id}-#{group_name}"
   end
 
   def render_group_header(group_name)

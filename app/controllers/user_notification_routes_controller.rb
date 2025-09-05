@@ -177,37 +177,68 @@ class UserNotificationRoutesController < AuthenticatedController
     redirect_to community_notification_routing_index_path
   end
 
-  def destroy
-    route = current_context.user_notification_routes
-      .includes(:destination_community, :source_server)
-      .find_by(public_id: params[:id])
+  def player_destroy
+    route = current_context.user_notification_routes.find_by(public_id: params[:id])
+    not_found! if route.nil?
 
+    # route.destroy!
+  end
+
+  def server_destroy
+    route = current_context.user_notification_routes.find_by(public_id: params[:id])
     not_found! if route.nil?
 
     route.destroy!
 
-    routes_left = current_context.user_notification_routes
-      .where(
-        user_id: route.user_id,
-        source_server_id: route.source_server_id,
-        channel_id: route.channel_id
-      ).size
-
-    if routes_left == 0
-      render turbo_stream: [
-        turbo_stream.replace("routes-container", partial: "no_routes_player"),
-        create_success_toast("Route has been removed")
-      ]
-
+    # The community does not have any more routes. Reload the page
+    if current_community.user_notification_routes.size == 0
+      render turbo_stream: turbo_stream.refresh(request_id: nil)
       return
     end
 
-    actions = [
-      turbo_stream.remove(route.dom_id),
-      create_success_toast("Route has been removed")
-    ]
+    # Get all remaining routes for this user
+    existing_routes = current_community.user_notification_routes
+      .where(user_id: route.user_id)
+      .by_user_channel_and_server
+      .values
+      .first
 
-    render turbo_stream: actions
+    # This user has no more routes, remove their section
+    if existing_routes.nil?
+      render turbo_stream: turbo_stream.remove(route.user.dom_id)
+      return
+    end
+
+    # If there are no routes left for this card, remove the card
+    route_card = existing_routes.find do |group|
+      group[:channel].id == route.channel_id &&
+        group[:server]&.id == route.source_server_id &&
+        group[:routes].size > 0
+    end
+
+    if route_card.nil?
+      id = helpers.notification_route_card_dom_id(route)
+      render turbo_stream: turbo_stream.remove(id)
+      return
+    end
+
+    # If there are no more routes in the group, remove the group
+    group_name = ESM::UserNotificationRoute::GROUPS
+      .find { |_, types| types.include?(route.notification_type) }
+      .first
+
+    remove_group = route_card[:routes].none? do |route|
+      ESM::UserNotificationRoute::TYPE_TO_GROUP[route.notification_type] == group_name
+    end
+
+    if remove_group
+      id = helpers.notification_route_card_dom_id(route)
+      render turbo_stream: turbo_stream.remove("#{id}-#{group_name}")
+      return
+    end
+
+    # Remove the route itself
+    render turbo_stream: turbo_stream.remove(route.dom_id)
   end
 
   def destroy_many
@@ -272,49 +303,6 @@ class UserNotificationRoutesController < AuthenticatedController
         .call(current_community),
       routing: method(:community_notification_routing_path).curry(2).call(current_community)
     }
-  end
-
-  def remove_route_group(route)
-    group_name, group_types = ESM::UserNotificationRoute::GROUPS
-      .find { |_, v| v.include?(route.notification_type) }
-
-    group_routes_exist = current_context.user_notification_routes
-      .includes(:user, :source_server, :destination_community)
-      .where(
-        channel_id: route.channel_id,
-        destination_community_id: route.destination_community_id,
-        source_server_id: route.source_server_id,
-        notification_type: group_types
-      ).exists?
-
-    return if group_routes_exist
-
-    server = route.source_server
-    user = route.user
-    community = route.destination_community
-
-    [
-      route.channel_id,
-      user.public_id,
-      community.public_id,
-      server&.server_id,
-      group_name
-    ].join("-")
-  end
-
-  def remove_route_card(route)
-    routes_exist = current_context.user_notification_routes.where(
-      channel_id: route.channel_id,
-      destination_community_id: route.destination_community_id,
-      source_server_id: route.source_server_id
-    ).exists?
-
-    return if routes_exist
-
-    server = route.source_server
-    community = route.destination_community
-
-    "#{route.channel_id}-#{community.public_id}-#{server&.public_id}"
   end
 
   def generate_type_select_data

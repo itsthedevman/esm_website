@@ -31,10 +31,15 @@ Rails.application.routes.draw do
     resources :user_notification_routes,
       path: :notification_routing,
       as: :notification_routing,
-      only: %i[create update destroy] do
+      only: %i[create update] do
       collection do
         get :/, action: :player_index
+
         delete :destroy_many
+      end
+
+      member do
+        delete :/, action: :player_destroy
       end
     end
   end
@@ -70,7 +75,7 @@ Rails.application.routes.draw do
     resources :user_notification_routes,
       path: "notification_routing",
       as: "notification_routing",
-      only: %i[create update destroy] do
+      only: %i[create update] do
       collection do
         get :/, action: :server_index
 
@@ -78,6 +83,10 @@ Rails.application.routes.draw do
         patch :decline
 
         delete :destroy_many
+      end
+
+      member do
+        delete :/, action: :server_destroy
       end
     end
   end
