@@ -5,11 +5,12 @@ class RouteRequestCardComponent < ApplicationComponent
 
   attr_reader :user, :server, :channel, :all_routes
 
-  def on_load(user:, server:, channel:, routes:)
+  def on_load(user:, server:, channel:, routes:, community: nil)
     @user = user
     @server = server
     @channel = channel
     @all_routes = routes
+    @community = community
   end
 
   def render_route_group(group_name, routes)
