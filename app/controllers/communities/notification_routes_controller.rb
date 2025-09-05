@@ -3,7 +3,6 @@
 module Communities
   class NotificationRoutesController < AuthenticatedController
     before_action :check_for_community_access!
-    before_action :redirect_if_server_mode!
 
     def index
       pending_routes = current_community.user_notification_routes
