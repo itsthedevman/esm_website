@@ -27,19 +27,12 @@ Rails.application.routes.draw do
       patch :transfer
     end
 
-    # /account/notification_routing
-    resources :user_notification_routes,
-      path: :notification_routing,
-      as: :notification_routing,
-      only: %i[create update] do
+    # /account/notification_routes
+    resources :notification_routes,
+      controller: "users/notification_routes",
+      only: %i[index create update destroy] do
       collection do
-        get :/, action: :player_index
-
         delete :destroy_many
-      end
-
-      member do
-        delete :/, action: :player_destroy
       end
     end
   end
@@ -71,22 +64,15 @@ Rails.application.routes.draw do
       end
     end
 
-    # /communities/:community_id/notification_routing
-    resources :user_notification_routes,
-      path: "notification_routing",
-      as: "notification_routing",
-      only: %i[create update] do
+    # /communities/:community_id/notification_routes
+    resources :notification_routes,
+      controller: "communities/notification_routes",
+      only: %i[index create update destroy] do
       collection do
-        get :/, action: :server_index
-
         patch :accept
         patch :decline
 
         delete :destroy_many
-      end
-
-      member do
-        delete :/, action: :server_destroy
       end
     end
   end
