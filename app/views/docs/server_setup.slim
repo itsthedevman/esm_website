@@ -47,7 +47,7 @@
               h4.mb-2.text-warning Upgrading from v1?
               p.mb-3 ESM v2 uses a completely different architecture. You'll need to follow specific upgrade steps.
 
-              .collapse#upgradeSteps
+              .collapse#upgrade_steps
                 .card.bg-dark.border-secondary.mb-3
                   .card-body
                     h6.text-warning.mb-3 Migration Steps
@@ -58,10 +58,10 @@
                       li Follow the fresh installation steps below
 
               button.btn.btn-outline-warning.btn-sm[
-                data-bs-toggle="collapse"
-                data-bs-target="#upgradeSteps"
                 data-controller="collapse-toggle"
                 data-action="click->collapse-toggle#toggle"
+                data-collapse-toggle-target-value="#upgrade_steps"
+                data-collapse-toggle-show-value="#{params.key?(:migrating)}"
                 data-collapse-toggle-default-text-value="Show Migration Guide"
                 data-collapse-toggle-active-text-value="Hide Migration Guide"
               ]
