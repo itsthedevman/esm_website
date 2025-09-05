@@ -25,6 +25,8 @@ class Discord
 
   def user_guilds
     client.get(build_url("/users/@me/guilds"))
+  rescue => e
+    binding.pry
   end
 
   private

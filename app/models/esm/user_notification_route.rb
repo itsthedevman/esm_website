@@ -32,43 +32,27 @@ module ESM
     # CLASS METHODS
     # =============================================================================
 
-    # This is under the assumption that these routes all belong to the same user
-    def self.by_community_server_and_channel_for_user
-      routes = includes(:user, :source_server, :destination_community)
-        .load
-        .group_by { |r| [r.destination_community_id, r.source_server_id, r.channel_id] }
-        .filter_map do |(community_id, channel_id), routes|
-          route = routes.first
-          channel = route.channel
-          next if channel.nil? # Ensures they have access to the channel
-
-          [
-            [route.destination_community, route.source_server, channel],
-            routes.sort_by(&:notification_type)
-          ]
-        end
-
-      routes.to_h
-    end
-
-    def self.by_user_channel_and_server
+    def self.by_user_community_channel_and_server
       routes = includes(:user, :source_server, :destination_community)
         .load
         .group_by(&:user)
         .sort_by.dig(0).method(:discord_username).case_insensitive
         .map do |user, routes|
-          routes = routes.group_by { |r| [r.source_server_id, r.channel_id] }
-            .filter_map do |_, routes|
-              route = routes.first
-              channel = route.channel
-              next if channel.nil? # Ensures they have access to the channel
+          routes = routes.group_by do |route|
+            [route.destination_community_id, route.channel_id, route.source_server_id]
+          end
 
-              server = route.source_server
-              community = route.destination_community
-              routes = routes.sort_by(&:notification_type)
+          routes = routes.filter_map do |_, routes|
+            route = routes.first
+            channel = route.channel
+            next if channel.nil? # Ensures they have access to the channel
 
-              {channel:, server:, community:, routes:}
-            end
+            server = route.source_server
+            community = route.destination_community
+            routes = routes.sort_by(&:notification_type)
+
+            {channel:, server:, community:, routes:}
+          end
 
           [user, routes]
         end

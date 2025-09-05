@@ -8,11 +8,11 @@ module Communities
     def index
       pending_routes = current_community.user_notification_routes
         .pending_community_acceptance
-        .by_user_channel_and_server
+        .by_user_community_channel_and_server
 
       routes = current_community.user_notification_routes
         .accepted
-        .by_user_channel_and_server
+        .by_user_community_channel_and_server
 
       render locals: {
         pending_routes:,
@@ -76,7 +76,7 @@ module Communities
       # Get all remaining routes for this user
       existing_routes = current_community.user_notification_routes
         .where(user_id: route.user_id)
-        .by_user_channel_and_server
+        .by_user_community_channel_and_server
         .values
         .first
 
