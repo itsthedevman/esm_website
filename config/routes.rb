@@ -67,7 +67,7 @@ Rails.application.routes.draw do
     # /communities/:community_id/notification_routes
     resources :notification_routes,
       controller: "communities/notification_routes",
-      only: %i[index create update destroy] do
+      only: %i[index update destroy] do
       collection do
         patch :accept
         patch :decline

@@ -226,7 +226,7 @@
           p.small.mb-0
             | Once created, a community admin must approve this route before notifications start flowing. You'll be notified when your request is accepted.
 
-    = form_with url: users_notification_routing_index_path,
+    = form_with url: users_notification_routes_path,
       method: :post,
       data: {route_new_target: "form", turbo: false},
       class: "d-none"

@@ -23,8 +23,9 @@
           = render_component( \
             NotificationRouteCardComponent,
             community:, server:, channel:, routes:,
+            paths: route_card_paths,
           )
       - else
-        = render "no_routes_player"
+        = render "no_routes"
 
 = render "create_modal", **local_assigns

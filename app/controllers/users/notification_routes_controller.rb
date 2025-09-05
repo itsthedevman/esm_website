@@ -1,27 +1,8 @@
 # frozen_string_literal: true
 
-class Users
+module Users
   class NotificationRoutesController < AuthenticatedController
-    before_action :redirect_if_server_mode!, if: -> { current_context == current_community }
-    before_action :check_for_community_access!, if: -> { current_context == current_community }
-
-    def server_index
-      pending_routes = current_community.user_notification_routes
-        .pending_community_acceptance
-        .by_user_channel_and_server
-
-      routes = current_community.user_notification_routes
-        .accepted
-        .by_user_channel_and_server
-
-      render locals: {
-        pending_routes:,
-        routes:,
-        route_card_paths:
-      }
-    end
-
-    def player_index
+    def index
       routes = current_user.user_notification_routes
         .by_community_server_and_channel_for_user
 
@@ -49,7 +30,8 @@ class Users
           value_method: ->(server) { "#{server.server_id}:#{server.server_name}" },
           select_all: true
         ),
-        notification_type_select_data: generate_type_select_data
+        notification_type_select_data: generate_type_select_data,
+        route_card_paths:
       }
     end
 
@@ -135,11 +117,11 @@ class Users
       notify_channel(routes) if routes.present?
 
       flash[:success] = "Routes created"
-      redirect_to users_notification_routing_index_path
+      redirect_to users_notification_routes_path
     end
 
     def update
-      route = current_context.user_notification_routes.find_by(public_id: params[:id])
+      route = current_user.user_notification_routes.find_by(public_id: params[:id])
       not_found! if route.nil?
       not_found! unless route.community_accepted?
 
@@ -149,101 +131,15 @@ class Users
       render turbo_stream: create_success_toast(message)
     end
 
-    def accept
-      ids = params[:ids].to_a
-      not_found! if ids.blank?
-
-      routes = current_community.user_notification_routes.where(public_id: ids)
-      not_found! if routes.blank? || routes.size != ids.size
-
-      routes.update_all(community_accepted: true, updated_at: Time.current)
-      notify_channel(routes)
-
-      flash[:success] = "Request accepted"
-
-      redirect_to community_notification_routing_index_path
-    end
-
-    def decline
-      ids = params[:ids].to_a
-      not_found! if ids.blank?
-
-      routes = current_community.user_notification_routes.where(public_id: ids)
-      not_found! if routes.blank? || routes.size != ids.size
-
-      routes.delete_all
-
-      flash[:success] = "Request declined"
-
-      redirect_to community_notification_routing_index_path
-    end
-
-    def player_destroy
-      route = current_context.user_notification_routes.find_by(public_id: params[:id])
+    def destroy
+      route = current_user.user_notification_routes.find_by(public_id: params[:id])
       not_found! if route.nil?
 
       # route.destroy!
     end
 
-    def server_destroy
-      route = current_context.user_notification_routes.find_by(public_id: params[:id])
-      not_found! if route.nil?
-
-      route.destroy!
-
-      # The community does not have any more routes. Reload the page
-      if current_community.user_notification_routes.size == 0
-        render turbo_stream: turbo_stream.refresh(request_id: nil)
-        return
-      end
-
-      # Get all remaining routes for this user
-      existing_routes = current_community.user_notification_routes
-        .where(user_id: route.user_id)
-        .by_user_channel_and_server
-        .values
-        .first
-
-      # This user has no more routes, remove their section
-      if existing_routes.nil?
-        render turbo_stream: turbo_stream.remove(route.user.dom_id)
-        return
-      end
-
-      # If there are no routes left for this card, remove the card
-      route_card = existing_routes.find do |group|
-        group[:channel].id == route.channel_id &&
-          group[:server]&.id == route.source_server_id &&
-          group[:routes].size > 0
-      end
-
-      if route_card.nil?
-        id = helpers.notification_route_card_dom_id(route)
-        render turbo_stream: turbo_stream.remove(id)
-        return
-      end
-
-      # If there are no more routes in the group, remove the group
-      group_name = ESM::UserNotificationRoute::GROUPS
-        .find { |_, types| types.include?(route.notification_type) }
-        .first
-
-      remove_group = route_card[:routes].none? do |route|
-        ESM::UserNotificationRoute::TYPE_TO_GROUP[route.notification_type] == group_name
-      end
-
-      if remove_group
-        id = helpers.notification_route_card_dom_id(route)
-        render turbo_stream: turbo_stream.remove("#{id}-#{group_name}")
-        return
-      end
-
-      # Remove the route itself
-      render turbo_stream: turbo_stream.remove(route.dom_id)
-    end
-
     def destroy_many
-      routes = current_context.user_notification_routes
+      routes = current_user.user_notification_routes
         .includes(:destination_community, :source_server)
         .where(public_id: params[:ids])
 
@@ -253,11 +149,7 @@ class Users
 
       flash[:success] = "Routes have been removed"
 
-      if current_community
-        redirect_to community_notification_routing_index_path
-      else
-        redirect_to users_notification_routing_index_path
-      end
+      redirect_to users_notification_routes_path
     end
 
     private
@@ -299,10 +191,8 @@ class Users
 
     def route_card_paths
       {
-        destroy_many: method(:destroy_many_community_notification_routing_index_path)
-          .curry(2)
-          .call(current_community),
-        routing: method(:community_notification_routing_path).curry(2).call(current_community)
+        destroy_many: method(:destroy_many_users_notification_routes_path),
+        routing: method(:users_notification_route_path)
       }
     end
 

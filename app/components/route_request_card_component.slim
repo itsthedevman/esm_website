@@ -38,13 +38,13 @@
 
     .card-footer.bg-transparent.border-warning.border-opacity-25
       .d-flex.gap-2.justify-content-end
-        = button_to decline_community_notification_routing_index_path,
+        = button_to decline_community_notification_routes_path,
           class: "btn btn-danger",
           method: :patch,
           data: {turbo: false}
           = hidden_field_tag :ids, all_routes.map(&:public_id).to_json
           | Decline
-        = button_to accept_community_notification_routing_index_path,
+        = button_to accept_community_notification_routes_path,
           class: "btn btn-success",
           method: :patch,
           data: {turbo: false}
