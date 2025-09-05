@@ -139,9 +139,11 @@ module Users
 
       route.destroy!
 
+      toast = create_success_toast("Route removed")
+
       # The community does not have any more routes. Reload the page
       if current_user.user_notification_routes.size == 0
-        render turbo_stream: turbo_stream.replace("routes-container", partial: "no_routes")
+        render turbo_stream: [turbo_stream.replace("routes-container", partial: "no_routes"), toast]
         return
       end
 
@@ -160,7 +162,7 @@ module Users
 
       if route_card.nil?
         id = helpers.notification_route_card_dom_id(route)
-        render turbo_stream: turbo_stream.remove(id)
+        render turbo_stream: [turbo_stream.remove(id), toast]
         return
       end
 
@@ -175,12 +177,12 @@ module Users
 
       if remove_group
         id = helpers.notification_route_card_dom_id(route)
-        render turbo_stream: turbo_stream.remove("#{id}-#{group_name}")
+        render turbo_stream: [turbo_stream.remove("#{id}-#{group_name}"), toast]
         return
       end
 
       # Remove the route itself
-      render turbo_stream: turbo_stream.remove(route.dom_id)
+      render turbo_stream: [turbo_stream.remove(route.dom_id), toast]
     end
 
     def destroy_many
