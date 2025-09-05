@@ -167,7 +167,7 @@ module Communities
         destroy_many: method(:destroy_many_community_notification_routes_path)
           .curry(2)
           .call(current_community),
-        routing: method(:community_notification_routes_path).curry(2).call(current_community)
+        routing: method(:community_notification_route_path).curry(2).call(current_community)
       }
     end
   end
